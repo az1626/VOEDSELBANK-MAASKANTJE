@@ -1,4 +1,6 @@
-/* General Styles */
+/* dashboard.css */
+
+/* General Body Styles */
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -6,6 +8,7 @@ body {
   padding: 0;
 }
 
+/* Container for Dashboard */
 .container {
   width: 80%;
   margin: 20px auto;
@@ -13,32 +16,33 @@ body {
   background: #fff;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-}
-
-h1 {
   text-align: center;
-  color: #333;
 }
 
-a {
-  display: block;
+/* Dashboard Heading */
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Dashboard Links */
+.dashboard-links a {
+  display: inline-block;
   text-decoration: none;
   color: #ffffff;
   background-color: #4caf50;
-  padding: 10px 15px;
+  padding: 10px 20px;
   border-radius: 5px;
   font-size: 16px;
-  text-align: center;
-  margin-bottom: 10px;
-  width: 200px;
-  margin: 0 auto;
+  margin: 10px;
   transition: background-color 0.3s ease;
 }
 
-a:hover {
+.dashboard-links a:hover {
   background-color: #45a049;
 }
 
+/* Navbar Styles */
 .navbar {
   background-color: #333;
   overflow: hidden;

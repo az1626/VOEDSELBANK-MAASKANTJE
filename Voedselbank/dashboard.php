@@ -13,19 +13,21 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
     <?php include 'navbar.php'; ?>
     
     <div class="container">
         <h1>Welcome to the Dashboard</h1>
-        <?php if ($_SESSION['role'] == 1): ?>
-            <a href="medewerkers.php">Medewerkers</a><br>
-            <a href="families.php">Families</a><br>
-        <?php else: ?>
-            <a href="view_data.php">View Data</a><br>
-        <?php endif; ?>
+        <div class="dashboard-links">
+            <?php if ($_SESSION['role'] == 1): ?>
+                <a href="medewerkers.php">Manage Medewerkers</a>
+                <a href="families.php">Manage Families</a>
+            <?php else: ?>
+                <a href="view_data.php">View Your Data</a>
+            <?php endif; ?>
+        </div>
     </div>
 </body>
 </html>
