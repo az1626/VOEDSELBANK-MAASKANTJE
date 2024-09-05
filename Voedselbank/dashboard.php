@@ -24,8 +24,14 @@ if (!isset($_SESSION['user_id'])) {
             <?php if ($_SESSION['role'] == 1): ?>
                 <a href="medewerkers.php">Manage Medewerkers</a>
                 <a href="families.php">Manage Families</a>
+                <a href="product.php">Producten</a>
+                <a href="leveranciers.php">Leveranciers</a>
+                <a href="extra.php">Extra</a>
             <?php else: ?>
-                <a href="view_data.php">View Your Data</a>
+                <a href="families.php">Manage Families</a>
+                <a href="product.php">Producten</a>
+                <a href="leveranciers.php">Leveranciers</a>
+                <a href="extra.php">Extra</a>
             <?php endif; ?>
         </div>
     </div>

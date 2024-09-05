@@ -92,26 +92,28 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a class="navbar-logo">Voedselbank Maaskantje</a>
-            <button class="navbar-toggle" id="navbar-toggle">☰</button>
-            <ul class="navbar-menu" id="navbar-menu">
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] == 1): ?>
+<nav class="navbar">
+    <div class="navbar-container">
+        <a class="navbar-logo">Voedselbank Maaskantje</a>
+        <button class="navbar-toggle" id="navbar-toggle">☰</button>
+        <ul class="navbar-menu" id="navbar-menu">
+            <li><a href="dashboard.php">Dashboard</a></li>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if ($_SESSION['role'] == 1): ?>
                     <li><a href="medewerkers.php">Medewerkers</a></li>
-                    <li><a href="families.php">Gezinnen</a></li>
-                    <li><a href="product.php">Producten</a></li> <!-- Added Products link -->
-                    <li><a href="leveranciers.php">Leveranciers</a></li>
                 <?php endif; ?>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <li><a href="logout.php" class="logout-button">Logout</a></li>
-                <?php else: ?>
-                    <li><a href="login.php">Login</a></li>
-                <?php endif; ?>
-            </ul>
-        </div>
-    </nav>
+                <li><a href="families.php">Gezinnen</a></li>
+                <li><a href="product.php">Producten</a></li>
+                <li><a href="leveranciers.php">Leveranciers</a></li>
+                <li><a href="extra.php">Extra</a></li>
+                <li><a href="logout.php" class="logout-button">Logout</a></li>
+            <?php else: ?>
+                <li><a href="login.php">Login</a></li>
+            <?php endif; ?>
+        </ul>
+    </div>
+</nav>
+
 
     <script>
         const navbarToggle = document.getElementById('navbar-toggle');
