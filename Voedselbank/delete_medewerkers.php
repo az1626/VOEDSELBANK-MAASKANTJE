@@ -22,7 +22,7 @@ if (isset($_GET['id'])) {
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        header("Location: manage_users.php");
+        header("Location: medewerkers.php");
         exit;
     } else {
         echo "Error: " . $stmt->error;

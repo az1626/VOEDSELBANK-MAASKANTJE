@@ -13,7 +13,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
-    header("Location: manage_data.php");
+    header("Location: families.php");
     exit;
 } else {
     echo "Error: " . $stmt->error;

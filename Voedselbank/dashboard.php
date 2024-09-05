@@ -21,8 +21,8 @@ if (!isset($_SESSION['user_id'])) {
     <div class="container">
         <h1>Welcome to the Dashboard</h1>
         <?php if ($_SESSION['role'] == 1): ?>
-            <a href="manage_users.php">Manage Users</a><br>
-            <a href="manage_data.php">Manage Data</a><br>
+            <a href="medewerkers.php">Medewerkers</a><br>
+            <a href="families.php">Families</a><br>
         <?php else: ?>
             <a href="view_data.php">View Data</a><br>
         <?php endif; ?>

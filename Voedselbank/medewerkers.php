@@ -12,14 +12,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users</title>
+    <title>Manage Medewerkers</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <?php include 'navbar.php'; ?>
 
     <div class="container">
-        <h1>Manage Users</h1>
+        <h1>Manage Medewerkers</h1>
         <?php
         // Fetch users from the database and display them
         $sql = "SELECT * FROM user";
@@ -45,7 +45,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                 <td>{$row['role']}</td>
                 <td>
                     <a href='edit_user.php?id={$row['AccountID']}'>Edit</a> | 
-                    <a href='delete_user.php?id={$row['AccountID']}' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>
+                    <a href='delete_medewerkers.php?id={$row['AccountID']}' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>
                 </td>
                 </tr>";
             }

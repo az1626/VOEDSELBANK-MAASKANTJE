@@ -14,19 +14,60 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Data</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .action-link {
+            color: #1e90ff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <?php include 'navbar.php'; ?>
 
     <div class="container">
         <h1>Manage Gezinnen Data</h1>
+        <a href="add_family.php" class="btn">Add New Family</a>
         <?php
         // Fetch data from the database and display it
         $sql = "SELECT * FROM gezinnen";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
-            echo "<table border='1'>
+            echo "<table>
             <tr>
             <th>ID</th>
             <th>Naam</th>
@@ -52,14 +93,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                 <td>{$row['wensen']}</td>
                 <td>{$row['pakket']}</td>
                 <td>
-                    <a href='edit_data.php?id={$row['id']}'>Edit</a> | 
-                    <a href='delete_data.php?id={$row['id']}'>Delete</a>
+                    <a href='edit_family.php?id={$row['id']}' class='action-link'>Edit</a>
+                    <a href='delete_family.php?id={$row['id']}' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Delete</a>
                 </td>
                 </tr>";
             }
             echo "</table>";
         } else {
-            echo "No data found.";
+            echo "<p>No data found.</p>";
         }
 
         $conn->close();
