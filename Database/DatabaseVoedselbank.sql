@@ -153,7 +153,7 @@ CREATE TABLE voedselpakket (
   id int(11) NOT NULL,
   naam varchar(255) NOT NULL,
   producten varchar(255) NOT NULL,
-  samenstellingsdatum date NOT NULL DEFAULT '0000-00-00',
+  samenstellingsdatum dateg NOT NULL DEFAULT '0000-00-00',
   ophaaldatum date NOT NULL DEFAULT '0000-00-00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

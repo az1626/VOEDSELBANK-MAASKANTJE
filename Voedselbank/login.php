@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,17 +13,35 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            position: relative;
+        }
+        .header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .header h2 {
+            margin: 0;
+            color: forestgreen;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
         .container {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            text-align: center;
         }
         h1 {
-            text-align: center;
-            color: #1877f2;
+            color: forestgreen;
             margin-bottom: 1.5rem;
         }
         form {
@@ -43,7 +61,7 @@
             font-size: 1rem;
         }
         input[type="submit"] {
-            background-color: #1877f2;
+            background-color: forestgreen;
             color: white;
             padding: 0.75rem;
             border: none;
@@ -53,20 +71,34 @@
             transition: background-color 0.3s ease;
         }
         input[type="submit"]:hover {
-            background-color: #166fe5;
+            background-color: limegreen;
+        }
+        .register-link {
+            margin-top: 1rem;
+            color: blue;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .register-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-        <form action="login_action.php" method="post">
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required>
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
-            <input type="submit" value="Login">
-        </form>
-    </div>
+<div class="header">
+    <img src="afbeeldingen/pngtree-fast-food-logo-png-image_5763171.png" alt="Logo">
+    <h2>Voedselbank Maaskantje</h2>
+</div>
+<div class="container">
+    <h1>Inloggen</h1>
+    <form action="login_action.php" method="post">
+        <label for="email">E-mail:</label>
+        <input type="email" name="email" id="email" required>
+        <label for="password">Wachtwoord:</label>
+        <input type="password" name="password" id="password" required>
+        <input type="submit" value="Inloggen">
+    </form>
+    <a href="register.php" class="register-link">Heb je nog geen account? Maak er een aan.</a>
+</div>
 </body>
 </html>
