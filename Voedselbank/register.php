@@ -14,6 +14,23 @@
             height: 100vh;
             margin: 0;
         }
+        .header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .header h2 {
+            margin: 0;
+            color: forestgreen;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
         .container {
             background-color: white;
             padding: 2rem;
@@ -23,7 +40,7 @@
         }
         h1 {
             text-align: center;
-            color: #1877f2;
+            color: forestgreen;
             margin-bottom: 1.5rem;
         }
         form {
@@ -45,7 +62,7 @@
             font-size: 1rem;
         }
         input[type="submit"] {
-            background-color: #1877f2;
+            background-color: forestgreen;
             color: white;
             padding: 0.75rem;
             border: none;
@@ -55,7 +72,7 @@
             transition: background-color 0.3s ease;
         }
         input[type="submit"]:hover {
-            background-color: #166fe5;
+            background-color: limegreen;
         }
         select {
             appearance: none;
@@ -69,6 +86,10 @@
     </style>
 </head>
 <body>
+<div class="header">
+    <img src="afbeeldingen/pngtree-fast-food-logo-png-image_5763171.png" alt="Logo">
+    <h2>Voedselbank Maaskantje</h2>
+</div>
     <div class="container">
         <h1>Register</h1>
         <form action="register_action.php" method="post">
@@ -87,6 +108,7 @@
             </select>
             <input type="submit" value="Register">
         </form>
+        <a href="login.php" class="login-link">Already got an account? Login here.</a>
     </div>
 </body>
 </html>
