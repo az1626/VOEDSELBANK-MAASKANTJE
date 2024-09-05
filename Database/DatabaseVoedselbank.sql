@@ -71,7 +71,6 @@ CREATE TABLE gezinnen (
 
 INSERT INTO gezinnen (id, naam, volwassenen, kinderen, postcode, mail, telefoonnummer, wensen, pakket) VALUES
 (48, 'peiters', 2, 2, '1333bn', 'mongus@gmail.com', 2147483647, 'notenallergie, niks', ''),
-(49, 'peiters', 2, 2, '1333bn', 'mongus@gmail.com', 2147483647, 'notenallergie, niks', ''),
 (61, 'kaas', 2, 3, '1441LO', 'kaas@gmail.com', 682836458, 'notenallergie, sesamallergie, tarweallergie', '');
 
 -- --------------------------------------------------------
@@ -142,12 +141,7 @@ CREATE TABLE user (
 --
 
 INSERT INTO user (AccountID, Email, Wachtwoord, Naam, Telefoonnummer, role) VALUES
-(1, 'joris@joris.nl', '$2y$10$5i1nXjle256QS6J.uFJAcur5HNx6yeLnBLym0IrFiABLXmKPf/H6a', 'joris', '0612345678', 0),
-(2, 'gaming@gmail.com', '$2y$10$hDNissTX5KJ3n73JGqKF9.jCQ0.iM0NMi2FcjMlQrf4UkSMaTe6uW', 'ik ben een gebruiker', '069999999', 0),
-(3, 'billy@billy.com', '$2y$10$qzgN.m.TNfhaP8zV5qceF.ObbVgud.8dwaNTC/dEakdnP3fiQroUG', 'Billy', '06245677422', 0),
-(4, 'beingchilling@china.com', '$2y$10$uL/.d1xPGVyeVEdfeU5Dv.p1VmKPFCwp8F8PGV8cFosa8h6d0x6nq', 'benjemens?', '-', 0),
-(5, 'bodi@gmail.com', '$2y$10$hFjsxjhMCFbC5ZHOAfF5E.fCQssmUSTaJqJFG6avZGTYxvFvXY/r.', 'bodi', 'bodi', 3),
-(6, 'bodilukepoels@gmail.com', '$2y$10$yEkRZ6jmrLn.xaTG2tPMXeLgeRTr05q5LtcxS59sM7UjDtyVG46V6', 'Bodi', '0640701827', 0);
+(1, 'oguzhanarguden@gmail.com', '$2y$10$5i1nXjle256QS6J.uFJAcur5HNx6yeLnBLym0IrFiABLXmKPf/H6a', 'Oguzhan', '0612345678', 0);
 
 -- --------------------------------------------------------
 

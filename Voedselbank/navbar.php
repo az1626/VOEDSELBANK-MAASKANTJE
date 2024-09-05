@@ -101,6 +101,8 @@
                 <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] == 1): ?>
                     <li><a href="medewerkers.php">Medewerkers</a></li>
                     <li><a href="families.php">Gezinnen</a></li>
+                    <li><a href="product.php">Producten</a></li> <!-- Added Products link -->
+                    <li><a href="leveranciers.php">Leveranciers</a></li>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li><a href="logout.php" class="logout-button">Logout</a></li>

@@ -7,7 +7,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     exit;
 }
 
-$id = $_GET['id'];
+// Fetch family data if ID is present
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $sql = "SELECT * FROM gezinnen WHERE id=?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
@@ -31,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_param("siiissssi", $naam, $volwassenen, $kinderen, $postcode, $mail, $telefoonnummer, $wensen, $pakket, $id);
 
     if ($stmt->execute()) {
-        $success_message = "Family data updated successfully!";
+        // Redirect to families.php with a success message
+        header("Location: families.php?updated=success");
+        exit;
     } else {
         $error_message = "Error: " . $stmt->error;
     }
@@ -113,9 +116,6 @@ $conn->close();
     <div class="container">
         <h1>Edit Family Data</h1>
         <?php
-        if (isset($success_message)) {
-            echo "<div class='message success'>$success_message</div>";
-        }
         if (isset($error_message)) {
             echo "<div class='message error'>$error_message</div>";
         }
