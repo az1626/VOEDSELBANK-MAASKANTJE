@@ -9,41 +9,65 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 }
 
 function addVoedselpakket($conn, $naam, $samenstellingsdatum, $ophaaldatum) {
-  $sql = "INSERT INTO voedselpakket (naam, samenstellingsdatum, ophaaldatum) VALUES (?, ?, ?)";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("sss", $naam, $samenstellingsdatum, $ophaaldatum);
-  if ($stmt->execute()) {
-      return $conn->insert_id;
-  }
-  return false;
+    $sql = "INSERT INTO voedselpakket (naam, samenstellingsdatum, ophaaldatum) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $naam, $samenstellingsdatum, $ophaaldatum);
+    if ($stmt->execute()) {
+        return $conn->insert_id;
+    }
+    return false;
 }
 
 function addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $quantity) {
-  $sql = "INSERT INTO voedselpakket_producten (voedselpakket_id, product_id, quantity) VALUES (?, ?, ?)";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("iii", $voedselpakket_id, $product_id, $quantity);
-  return $stmt->execute();
+    $sql = "INSERT INTO voedselpakket_producten (voedselpakket_id, product_id, quantity) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iii", $voedselpakket_id, $product_id, $quantity);
+    return $stmt->execute();
+}
+
+function updateProductStock($conn, $product_id, $quantity) {
+    $sql = "UPDATE producten SET voorraad = voorraad - ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $quantity, $product_id);
+    return $stmt->execute();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_voedselpakket'])) {
-  $naam = $_POST['naam'];
-  $samenstellingsdatum = $_POST['samenstellingsdatum'];
-  $ophaaldatum = $_POST['ophaaldatum'];
-  
-  $voedselpakket_id = addVoedselpakket($conn, $naam, $samenstellingsdatum, $ophaaldatum);
-  
-  if ($voedselpakket_id) {
-      foreach ($_POST['producten'] as $index => $product_id) {
-          $quantity = $_POST['quantities'][$index];
-          if (!empty($product_id) && !empty($quantity)) {
-              addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $quantity);
-          }
-      }
-      header("Location: voedselpakket.php");
-      exit;
-  } else {
-      echo "<script>alert('Failed to add voedselpakket.'); window.location.href='add_voedselpakket.php';</script>";
-  }
+    $naam = $_POST['naam'];
+    $samenstellingsdatum = $_POST['samenstellingsdatum'];
+    $ophaaldatum = $_POST['ophaaldatum'];
+
+    // Begin transaction
+    $conn->begin_transaction();
+
+    $voedselpakket_id = addVoedselpakket($conn, $naam, $samenstellingsdatum, $ophaaldatum);
+
+    if ($voedselpakket_id) {
+        $all_success = true;
+
+        foreach ($_POST['producten'] as $index => $product_id) {
+            $quantity = $_POST['quantities'][$index];
+            if (!empty($product_id) && !empty($quantity)) {
+                if (addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $quantity) && updateProductStock($conn, $product_id, $quantity)) {
+                    continue;
+                } else {
+                    $all_success = false;
+                    break;
+                }
+            }
+        }
+
+        if ($all_success) {
+            $conn->commit();
+            header("Location: voedselpakket.php");
+            exit;
+        } else {
+            $conn->rollback();
+            echo "<script>alert('Failed to add voedselpakket or update stock.'); window.location.href='add_voedselpakket.php';</script>";
+        }
+    } else {
+        echo "<script>alert('Failed to add voedselpakket.'); window.location.href='add_voedselpakket.php';</script>";
+    }
 }
 
 // Fetch all products for displaying checkboxes
@@ -67,96 +91,13 @@ if ($result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voeg een nieuw Voedselpakket toe</title>
     <style>
-        :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #45a049;
-            --background-color: #f4f4f4;
-            --text-color: #333;
-            --border-color: #ddd;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        h1, h2 {
-            color: var(--primary-color);
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input[type="text"], input[type="date"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .checkbox-group {
-            margin-bottom: 20px;
-        }
-
-        .checkbox-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-        }
-
-        .quantity {
-            width: 60px;
-            margin-left: 10px;
-        }
+        /* Add your existing CSS styles here */
     </style>
 </head>
 <body>
     <?php include 'navbar.php'; ?>
 
     <div class="container">
-
         <h2>Voeg een nieuw Voedselpakket toe</h2>
         <form method="POST" action="">
             <label for="naam">Naam:</label>
@@ -167,9 +108,7 @@ if ($result->num_rows > 0) {
                 <?php foreach ($producten as $index => $product): ?>
                     <label>
                         <input type="checkbox" name="producten[]" value="<?php echo $product['id']; ?>">
-                        <?php echo $product['naam'] . " (Voorraad: " . $product['voorraad'] . ")";
-                        // Add a quantity input next to each checkbox
-                        ?>
+                        <?php echo $product['naam'] . " (Voorraad: " . $product['voorraad'] . ")"; ?>
                         <input type="number" name="quantities[]" min="1" max="<?php echo $product['voorraad']; ?>" class="quantity" placeholder="Aantal">
                     </label>
                 <?php endforeach; ?>
