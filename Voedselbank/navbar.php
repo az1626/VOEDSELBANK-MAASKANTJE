@@ -102,9 +102,6 @@
                 <?php if ($_SESSION['role'] == 1): ?>
                     <li><a href="medewerkers.php">Medewerkers</a></li>
                 <?php endif; ?>
-                <li><a href="families.php">Gezinnen</a></li>
-                <li><a href="product.php">Producten</a></li>
-                <li><a href="leveranciers.php">Leveranciers</a></li>
                 <li><a href="extra.php">Extra</a></li>
                 <li><a href="logout.php" class="logout-button">Logout</a></li>
             <?php else: ?>

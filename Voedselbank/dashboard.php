@@ -22,16 +22,13 @@ if (!isset($_SESSION['user_id'])) {
         <h1>Welcome to the Dashboard</h1>
         <div class="dashboard-links">
             <?php if ($_SESSION['role'] == 1): ?>
-                <a href="medewerkers.php">Manage Medewerkers</a>
                 <a href="families.php">Manage Families</a>
                 <a href="product.php">Producten</a>
                 <a href="leveranciers.php">Leveranciers</a>
-                <a href="extra.php">Extra</a>
             <?php else: ?>
                 <a href="families.php">Manage Families</a>
                 <a href="product.php">Producten</a>
                 <a href="leveranciers.php">Leveranciers</a>
-                <a href="extra.php">Extra</a>
             <?php endif; ?>
         </div>
     </div>
