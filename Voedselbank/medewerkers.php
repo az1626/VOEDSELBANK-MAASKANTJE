@@ -2,6 +2,7 @@
 session_start();
 include 'db_connect.php';
 
+// Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     header("Location: login.php");
     exit;
@@ -100,38 +101,38 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     </style>
 </head>
 <body>
-    <?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
-    <div class="container">
-        <h1>Manage Medewerkers</h1>
-        
-        <!-- Add Medewerker Button -->
-        <div class="btn-container">
-            <a href="add_medewerkers.php">
-                <button type="button">Add New Medewerker</button>
-            </a>
-        </div>
+<div class="container">
+    <h1>Manage Medewerkers</h1>
 
-        <?php
-        // Fetch users from the database and display them
-        $sql = "SELECT * FROM user";
-        $result = $conn->query($sql);
+    <!-- Add Medewerker Button -->
+    <div class="btn-container">
+        <a href="add_medewerkers.php">
+            <button type="button">Add New Medewerker</button>
+        </a>
+    </div>
 
-        if ($result->num_rows > 0) {
-            echo "<table>
+    <?php
+    // Fetch users from the database and display them
+    $sql = "SELECT * FROM user";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        echo "<table>
             <tr>
             <th>ID</th>
-            <th>Email</th>
+            <th>Gebruikersnaam</th>
             <th>Name</th>
             <th>Phone</th>
             <th>Role</th>
             <th>Actions</th>
             </tr>";
 
-            while($row = $result->fetch_assoc()) {
-                echo "<tr>
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>
                 <td>{$row['AccountID']}</td>
-                <td>{$row['Email']}</td>
+                <td>{$row['Gebruikersnaam']}</td>
                 <td>{$row['Naam']}</td>
                 <td>{$row['Telefoonnummer']}</td>
                 <td>" . ($row['role'] == 1 ? 'Admin' : 'User') . "</td>
@@ -140,14 +141,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                     <a href='delete_medewerkers.php?id={$row['AccountID']}' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>
                 </td>
                 </tr>";
-            }
-            echo "</table>";
-        } else {
-            echo "<div class='no-data'>No users found.</div>";
         }
+        echo "</table>";
+    } else {
+        echo "<div class='no-data'>No users found.</div>";
+    }
 
-        $conn->close();
-        ?>
-    </div>
+    $conn->close();
+    ?>
+</div>
 </body>
 </html>

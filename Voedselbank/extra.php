@@ -2,6 +2,7 @@
 session_start();
 include 'db_connect.php';
 
+// Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     header("Location: login.php");
     exit;
@@ -115,45 +116,44 @@ $conn->close();
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Manage Extra Information</h1>
-        <?php
-        if (isset($success_message)) {
-            echo "<div class='message success'>$success_message</div>";
-        }
-        if (isset($error_message)) {
-            echo "<div class='message error'>$error_message</div>";
-        }
-        ?>
+<div class="container">
+    <h1>Manage Extra Information</h1>
+    <?php
+    if (isset($success_message)) {
+        echo "<div class='message success'>$success_message</div>";
+    }
+    if (isset($error_message)) {
+        echo "<div class='message error'>$error_message</div>";
+    }
+    ?>
 
-<table>
-    <tr>
-        <th>Available Allergies</th>
-        <th>Available Categories</th>
-        <th>Actions</th>
-    </tr>
-    <?php while ($row = $result->fetch_assoc()): ?>
-    <tr>
-        <td><?php echo htmlspecialchars($row['beschikbare_allergieën']); ?></td>
-        <td><?php echo htmlspecialchars($row['beschikbare_categorieën']); ?></td>
-        <td>
-            <a href="edit_extra.php?id=<?php echo urlencode($row['beschikbare_allergieën']); ?>">Edit</a> 
-            <a href="delete_extra.php?id=<?php echo urlencode($row['beschikbare_allergieën']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
-        </td>
-    </tr>
-    <?php endwhile; ?>
-</table>
+    <table>
+        <tr>
+            <th>Available Allergies</th>
+            <th>Available Categories</th>
+            <th>Actions</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($row['beschikbare_allergieën']); ?></td>
+                <td><?php echo htmlspecialchars($row['beschikbare_categorieën']); ?></td>
+                <td>
+                    <a href="edit_extra.php?id=<?php echo urlencode($row['id']); ?>">Edit</a>
+                    <a href="delete_extra.php?id=<?php echo urlencode($row['id']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+    </table>
 
+    <form action="extra.php" method="post">
+        <label for="beschikbare_allergieën">Available Allergies:</label>
+        <input type="text" id="beschikbare_allergieën" name="beschikbare_allergieën" required>
 
-        <form action="extra.php" method="post">
-            <label for="beschikbare_allergieën">Available Allergies:</label>
-            <input type="text" id="beschikbare_allergieën" name="beschikbare_allergieën" required>
+        <label for="beschikbare_categorieën">Available Categories:</label>
+        <input type="text" id="beschikbare_categorieën" name="beschikbare_categorieën" required>
 
-            <label for="beschikbare_categorieën">Available Categories:</label>
-            <input type="text" id="beschikbare_categorieën" name="beschikbare_categorieën" required>
-
-            <input type="submit" value="Add Extra Info">
-        </form>
-    </div>
+        <input type="submit" value="Add Extra Info">
+    </form>
+</div>
 </body>
 </html>

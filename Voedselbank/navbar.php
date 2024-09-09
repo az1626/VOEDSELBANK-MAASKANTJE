@@ -1,10 +1,12 @@
 <?php
+
+// Fetch session variables
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not logged in';
-$user_email = isset($_SESSION['Email']) ? $_SESSION['Email'] : 'Not available';
-$user_name = isset($_SESSION['Naam']) ? $_SESSION['Naam'] : 'Not available';
+$user_name = isset($_SESSION['Gebruikersnaam']) ? $_SESSION['Gebruikersnaam'] : 'Not available';
 $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Not available';
 $profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
 
+// Determine role description
 $role_description = $user_role == 1 ? 'Admin' : 'User';
 ?>
 
@@ -187,7 +189,6 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
 
 <div class="modal" id="profile-modal">
     <div class="modal-content">
-        <p>Email: <?php echo htmlspecialchars($user_email); ?></p>
         <p>Name: <?php echo htmlspecialchars($user_name); ?></p>
         <p>ID: <?php echo htmlspecialchars($user_id); ?></p>
         <p>Role: <?php echo htmlspecialchars($role_description); ?></p>

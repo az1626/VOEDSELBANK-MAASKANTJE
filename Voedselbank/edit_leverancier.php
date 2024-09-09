@@ -18,7 +18,7 @@ $id = intval($_GET['id']);
 
 // Fetch the supplier's current details
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $sql = "SELECT * FROM leveranciers WHERE id = ?";
+    $sql = "SELECT * FROM Leveranciers WHERE idLeveranciers = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -30,15 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 // Handle form submission for updating the supplier
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $naam = $_POST['naam'];
-    $mail = $_POST['mail'];
+    $email = $_POST['email'];
     $telefoonnummer = $_POST['telefoonnummer'];
-    $postcode = $_POST['postcode'];
-    $bezorgingsdatum = $_POST['bezorgingsdatum'];
-    $bezorgingstijd = $_POST['bezorgingstijd'];
+    $eerstevolgende_levering = $_POST['eerstevolgende_levering'];
 
-    $sql = "UPDATE leveranciers SET naam = ?, mail = ?, telefoonnummer = ?, postcode = ?, bezorgingsdatum = ?, bezorgingstijd = ? WHERE id = ?";
+    $sql = "UPDATE Leveranciers SET naam = ?, email = ?, telefoonnummer = ?, eerstevolgende_levering = ? WHERE idLeveranciers = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssisi", $naam, $mail, $telefoonnummer, $postcode, $bezorgingsdatum, $bezorgingstijd, $id);
+    $stmt->bind_param("ssisi", $naam, $email, $telefoonnummer, $eerstevolgende_levering, $id);
 
     if ($stmt->execute()) {
         header("Location: leveranciers.php?updated=success");
@@ -62,31 +60,25 @@ $conn->close();
     <link rel="stylesheet" href="suppliers.css">
 </head>
 <body>
-    <?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
-    <div class="container">
-        <h1>Edit Supplier</h1>
-        <form action="edit_leverancier.php?id=<?php echo htmlspecialchars($id); ?>" method="POST">
-            <label for="naam">Name:</label>
-            <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($supplier['naam']); ?>" required><br><br>
+<div class="container">
+    <h1>Edit Supplier</h1>
+    <form action="edit_leverancier.php?id=<?php echo htmlspecialchars($id); ?>" method="POST">
+        <label for="naam">Name:</label>
+        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($supplier['naam']); ?>" required><br><br>
 
-            <label for="mail">Email:</label>
-            <input type="email" id="mail" name="mail" value="<?php echo htmlspecialchars($supplier['mail']); ?>" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($supplier['email']); ?>" required><br><br>
 
-            <label for="telefoonnummer">Phone:</label>
-            <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($supplier['telefoonnummer']); ?>" required><br><br>
+        <label for="telefoonnummer">Phone:</label>
+        <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($supplier['telefoonnummer']); ?>" required><br><br>
 
-            <label for="postcode">Postal Code:</label>
-            <input type="text" id="postcode" name="postcode" value="<?php echo htmlspecialchars($supplier['postcode']); ?>" required><br><br>
+        <label for="eerstevolgende_levering">Next Delivery:</label>
+        <input type="text" id="eerstevolgende_levering" name="eerstevolgende_levering" value="<?php echo htmlspecialchars($supplier['eerstevolgende_levering']); ?>" required><br><br>
 
-            <label for="bezorgingsdatum">Delivery Date:</label>
-            <input type="date" id="bezorgingsdatum" name="bezorgingsdatum" value="<?php echo htmlspecialchars($supplier['bezorgingsdatum']); ?>" required><br><br>
-
-            <label for="bezorgingstijd">Delivery Time:</label>
-            <input type="text" id="bezorgingstijd" name="bezorgingstijd" value="<?php echo htmlspecialchars($supplier['bezorgingstijd']); ?>" required><br><br>
-
-            <button type="submit">Update Supplier</button>
-        </form>
-    </div>
+        <button type="submit">Update Supplier</button>
+    </form>
+</div>
 </body>
 </html>

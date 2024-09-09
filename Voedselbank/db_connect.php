@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "AymanZerDB";
-$database = "voedselbank_db";
+$database = "mydb";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);

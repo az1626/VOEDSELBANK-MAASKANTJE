@@ -28,7 +28,9 @@ if (isset($_GET['delete'])) {
 
 // Fetch suppliers from the database
 $sql = "SELECT * FROM leveranciers";
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
 
 ?>
 
@@ -41,26 +43,26 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="suppliers.css">
 </head>
 <body>
-    <?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
-    <div class="container">
-        <h1>Manage Suppliers</h1>
-        
-        <!-- Add Supplier Button -->
-        <div style="margin-bottom: 20px;">
-            <a href="add_leverancier.php">
-                <button type="button">Add New Supplier</button>
-            </a>
-        </div>
+<div class="container">
+    <h1>Manage Suppliers</h1>
 
-        <?php
-        // Show success message if the 'deleted' parameter is present
-        if (isset($_GET['deleted']) && $_GET['deleted'] == 'success') {
-            echo "<p>Supplier deleted successfully!</p>";
-        }
+    <!-- Add Supplier Button -->
+    <div style="margin-bottom: 20px;">
+        <a href="add_leverancier.php">
+            <button type="button">Add New Supplier</button>
+        </a>
+    </div>
 
-        if ($result->num_rows > 0) {
-            echo "<table>
+    <?php
+    // Show success message if the 'deleted' parameter is present
+    if (isset($_GET['deleted']) && $_GET['deleted'] == 'success') {
+        echo "<p>Supplier deleted successfully!</p>";
+    }
+
+    if ($result->num_rows > 0) {
+        echo "<table>
             <tr>
             <th>ID</th>
             <th>Name</th>
@@ -72,8 +74,8 @@ $result = $conn->query($sql);
             <th>Actions</th>
             </tr>";
 
-            while($row = $result->fetch_assoc()) {
-                echo "<tr>
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>
                 <td>{$row['id']}</td>
                 <td>{$row['naam']}</td>
                 <td>{$row['mail']}</td>
@@ -86,14 +88,15 @@ $result = $conn->query($sql);
                     <a href='leveranciers.php?delete={$row['id']}' onclick='return confirm(\"Are you sure you want to delete this supplier?\")'>Delete</a>
                 </td>
                 </tr>";
-            }
-            echo "</table>";
-        } else {
-            echo "No suppliers found.";
         }
+        echo "</table>";
+    } else {
+        echo "<p>No suppliers found.</p>";
+    }
 
-        $conn->close();
-        ?>
-    </div>
+    $stmt->close();
+    $conn->close();
+    ?>
+</div>
 </body>
 </html>

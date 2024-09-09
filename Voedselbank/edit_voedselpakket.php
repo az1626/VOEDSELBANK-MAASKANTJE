@@ -27,20 +27,19 @@ if (isset($_GET['id'])) {
     // Check if the form was submitted for updating the voedselpakket
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_voedselpakket'])) {
         $naam = $_POST['naam'];
-        $producten = $_POST['producten'];
         $samenstellingsdatum = $_POST['samenstellingsdatum'];
         $ophaaldatum = $_POST['ophaaldatum'];
 
         // Function to update an existing voedselpakket
-        function updateVoedselpakket($conn, $id, $naam, $producten, $samenstellingsdatum, $ophaaldatum) {
-            $sql = "UPDATE voedselpakket SET naam = ?, producten = ?, samenstellingsdatum = ?, ophaaldatum = ? WHERE id = ?";
+        function updateVoedselpakket($conn, $id, $naam, $samenstellingsdatum, $ophaaldatum) {
+            $sql = "UPDATE voedselpakket SET naam = ?, samenstellingsdatum = ?, ophaaldatum = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssi", $naam, $producten, $samenstellingsdatum, $ophaaldatum, $id);
+            $stmt->bind_param("sssi", $naam, $samenstellingsdatum, $ophaaldatum, $id);
             return $stmt->execute();
         }
 
         // Attempt to update the voedselpakket
-        if (updateVoedselpakket($conn, $id, $naam, $producten, $samenstellingsdatum, $ophaaldatum)) {
+        if (updateVoedselpakket($conn, $id, $naam, $samenstellingsdatum, $ophaaldatum)) {
             echo "<script>alert('Voedselpakket successfully updated.'); window.location.href='voedselpakket.php';</script>";
         } else {
             echo "<script>alert('Failed to update voedselpakket.'); window.location.href='edit_voedselpakket.php?id=$id';</script>";
@@ -60,7 +59,6 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voedselpakket Bewerken</title>
     <style>
-        /* Same CSS styling as used in voedselpakket.php for consistency */
         :root {
             --primary-color: #4CAF50;
             --secondary-color: #45a049;
@@ -130,26 +128,23 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
-    <?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
-    <div class="container">
-        <h1>Voedselpakket Bewerken</h1>
+<div class="container">
+    <h1>Voedselpakket Bewerken</h1>
 
-        <form method="POST" action="">
-            <label for="naam">Naam:</label>
-            <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($voedselpakket['naam']); ?>" required>
+    <form method="POST" action="">
+        <label for="naam">Naam:</label>
+        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($voedselpakket['naam']); ?>" required>
 
-            <label for="producten">Producten:</label>
-            <input type="text" id="producten" name="producten" value="<?php echo htmlspecialchars($voedselpakket['producten']); ?>" required>
+        <label for="samenstellingsdatum">Samenstellingsdatum:</label>
+        <input type="date" id="samenstellingsdatum" name="samenstellingsdatum" value="<?php echo htmlspecialchars($voedselpakket['samenstellingsdatum']); ?>" required>
 
-            <label for="samenstellingsdatum">Samenstellingsdatum:</label>
-            <input type="date" id="samenstellingsdatum" name="samenstellingsdatum" value="<?php echo htmlspecialchars($voedselpakket['samenstellingsdatum']); ?>" required>
+        <label for="ophaaldatum">Ophaaldatum:</label>
+        <input type="date" id="ophaaldatum" name="ophaaldatum" value="<?php echo htmlspecialchars($voedselpakket['ophaaldatum']); ?>" required>
 
-            <label for="ophaaldatum">Ophaaldatum:</label>
-            <input type="date" id="ophaaldatum" name="ophaaldatum" value="<?php echo htmlspecialchars($voedselpakket['ophaaldatum']); ?>" required>
-
-            <button type="submit" name="update_voedselpakket">Update</button>
-        </form>
-    </div>
+        <button type="submit" name="update_voedselpakket">Update</button>
+    </form>
+</div>
 </body>
 </html>

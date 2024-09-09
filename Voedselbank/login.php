@@ -52,7 +52,7 @@
             margin-bottom: 0.5rem;
             color: #606770;
         }
-        input[type="email"],
+        input[type="text"],
         input[type="password"] {
             padding: 0.5rem;
             margin-bottom: 1rem;
@@ -90,15 +90,17 @@
     <h2>Voedselbank Maaskantje</h2>
 </div>
 <div class="container">
-    <h1>Inloggen</h1>
-    <form action="login_action.php" method="post">
-        <label for="email">E-mail:</label>
-        <input type="email" name="email" id="email" required>
-        <label for="password">Wachtwoord:</label>
-        <input type="password" name="password" id="password" required>
-        <input type="submit" value="Inloggen">
+    <h2>Login</h2>
+    <form action="login_action.php" method="POST">
+        <label for="gebruikersnaam">Username:</label>
+        <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
+
+        <label for="wachtwoord">Password:</label>
+        <input type="password" id="wachtwoord" name="wachtwoord" required>
+
+        <input type="submit" value="Login">
     </form>
-    <a href="register.php" class="register-link">Heb je nog geen account? Maak er een aan.</a>
+    <p>Don't have an account? <a href="register.php">Register here</a></p>
 </div>
 </body>
 </html>

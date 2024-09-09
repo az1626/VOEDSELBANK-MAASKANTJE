@@ -4,43 +4,39 @@ session_start();
 include 'db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $gebruikersnaam = trim($_POST['gebruikersnaam']);
+    $password = trim($_POST['wachtwoord']);
 
-    // Prepare and execute statement
-    $stmt = $conn->prepare("SELECT AccountID, Email, Naam, Wachtwoord, role FROM user WHERE Email=?");
-    if (!$stmt) {
-        die("Prepare failed: " . $conn->error);
+    if (empty($gebruikersnaam) || empty($password)) {
+        echo "Please enter both username and password.";
+        exit;
     }
 
-    $stmt->bind_param("s", $email);
-    if (!$stmt->execute()) {
-        die("Execute failed: " . $stmt->error);
-    }
-
+    $stmt = $conn->prepare("SELECT idGebruikers, Gebruikersnaam, Wachtwoord, Rol FROM gebruikers WHERE Gebruikersnaam = ?");
+    $stmt->bind_param("s", $gebruikersnaam);
+    $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $email, $naam, $hashed_password, $role);
+        $stmt->bind_result($id, $db_gebruikersnaam, $hashed_password, $role);
         $stmt->fetch();
 
         if (password_verify($password, $hashed_password)) {
             $_SESSION['user_id'] = $id;
-            $_SESSION['user_email'] = $email;
-            $_SESSION['user_naam'] = $naam;
+            $_SESSION['user_naam'] = $db_gebruikersnaam;
             $_SESSION['role'] = $role;
             header("Location: dashboard.php");
             exit;
         } else {
-            echo "Invalid password.";
+            echo "Ongeldig wachtwoord.";
         }
     } else {
-        echo "No user found with this email.";
+        echo "Geen gebruiker gevonden met deze gebruikersnaam.";
     }
 
     $stmt->close();
 } else {
-    echo "Invalid request method.";
+    echo "Ongeldige aanvraagmethode.";
 }
 
 $conn->close();

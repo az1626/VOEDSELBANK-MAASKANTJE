@@ -52,7 +52,6 @@
             color: #606770;
         }
         input[type="text"],
-        input[type="email"],
         input[type="password"],
         select {
             padding: 0.5rem;
@@ -83,6 +82,16 @@
             background-position: right 0.7rem top 50%;
             background-size: 0.65rem auto;
         }
+        .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #606770;
+            text-decoration: none;
+        }
+        .login-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -90,25 +99,21 @@
     <img src="afbeeldingen/pngtree-fast-food-logo-png-image_5763171.png" alt="Logo">
     <h2>Voedselbank Maaskantje</h2>
 </div>
-    <div class="container">
-        <h1>Register</h1>
-        <form action="register_action.php" method="post">
-            <label for="naam">Name:</label>
-            <input type="text" name="naam" id="naam" required>
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required>
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
-            <label for="telefoonnummer">Phone Number:</label>
-            <input type="text" name="telefoonnummer" id="telefoonnummer" required>
-            <label for="role">Role:</label>
-            <select name="role" id="role">
-                <option value="0">User</option>
-                <option value="1">Admin</option>
-            </select>
-            <input type="submit" value="Register">
-        </form>
-        <a href="login.php" class="login-link">Already got an account? Login here.</a>
-    </div>
+<div class="container">
+    <h2>Register</h2>
+    <form action="register_action.php" method="POST">
+        <label for="gebruikersnaam">Username:</label>
+        <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
+
+        <label for="wachtwoord">Password:</label>
+        <input type="password" id="wachtwoord" name="wachtwoord" required>
+
+        <label for="rol">Role:</label>
+        <input type="text" id="rol" name="rol" required>
+
+        <input type="submit" value="Register">
+    </form>
+    <p>Already have an account? <a href="login.php">Login here</a></p>
+</div>
 </body>
 </html>

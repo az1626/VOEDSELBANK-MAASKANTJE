@@ -16,8 +16,14 @@ if (isset($_GET['id'])) {
     function deleteVoedselpakket($conn, $id) {
         $sql = "DELETE FROM voedselpakket WHERE id = ?";
         $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Prepare failed: " . $conn->error);
+        }
         $stmt->bind_param("i", $id);
-        return $stmt->execute();
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
+        return $stmt->affected_rows > 0;
     }
 
     // Attempt to delete the voedselpakket
@@ -31,4 +37,6 @@ if (isset($_GET['id'])) {
     header("Location: voedselpakket.php");
     exit;
 }
+
+$conn->close();
 ?>

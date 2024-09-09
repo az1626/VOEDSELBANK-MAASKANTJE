@@ -2,6 +2,7 @@
 session_start();
 include 'db_connect.php';
 
+// Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     header("Location: login.php");
     exit;
@@ -14,9 +15,10 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id'];
 
-$sql = "DELETE FROM extra WHERE beschikbare_allergieën=?";
+// Prepare and execute the deletion query
+$sql = "DELETE FROM extra WHERE id=?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $id);
+$stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
     $success_message = "Extra information deleted successfully!";

@@ -1,26 +1,47 @@
 <?php
-session_start();
 include 'db_connect.php';
 
-$name = $_POST['naam'];
-$email = $_POST['email'];
-$password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-$phone = $_POST['telefoonnummer'];
-$role = $_POST['role'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $gebruikersnaam = trim($_POST['gebruikersnaam']);
+    $password = trim($_POST['wachtwoord']);
+    $rol = trim($_POST['rol']);
 
-// Insert user into the database
-$sql = "INSERT INTO user (Email, Wachtwoord, Naam, Telefoonnummer, role) VALUES (?, ?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssi", $email, $password, $name, $phone, $role);
+    if (empty($gebruikersnaam) || empty($password) || empty($rol)) {
+        echo "Please fill in all fields.";
+        exit;
+    }
 
-if ($stmt->execute()) {
-    echo "Registration successful!";
-    header("Location: login.php");
-    exit;
+    // Check if the username already exists
+    $stmt = $conn->prepare("SELECT idGebruikers FROM Gebruikers WHERE Gebruikersnaam = ?");
+    $stmt->bind_param("s", $gebruikersnaam);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        echo "Username already taken.";
+        $stmt->close();
+        exit;
+    }
+
+    $stmt->close();
+
+    // Hash the password
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    // Insert new user into the database
+    $stmt = $conn->prepare("INSERT INTO Gebruikers (Gebruikersnaam, Wachtwoord, Rol) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $gebruikersnaam, $hashed_password, $rol);
+
+    if ($stmt->execute()) {
+        echo "Registration successful. <a href='login.php'>Login here</a>";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
 } else {
-    echo "Error: " . $stmt->error;
+    echo "Ongeldige aanvraagmethode.";
 }
 
-$stmt->close();
 $conn->close();
 ?>

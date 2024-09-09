@@ -10,10 +10,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
 // Check if an ID is provided in the URL
 if (isset($_GET['id'])) {
-    $user_id = $_GET['id'];
+    $user_id = intval($_GET['id']); // Cast to integer for security
 
     // Fetch user data
-    $sql = "SELECT * FROM user WHERE AccountID = ?";
+    $sql = "SELECT * FROM accounts WHERE AccountID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -35,19 +35,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $naam = $_POST['naam'];
     $telefoonnummer = $_POST['telefoonnummer'];
-    $role = $_POST['role'];
+    $role = intval($_POST['role']); // Ensure role is an integer
 
     // Update the user data in the database
-    $sql = "UPDATE user SET Email = ?, Naam = ?, Telefoonnummer = ?, role = ? WHERE AccountID = ?";
+    $sql = "UPDATE accounts SET Email = ?, Naam = ?, Telefoonnummer = ?, role = ? WHERE AccountID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssii", $email, $naam, $telefoonnummer, $role, $user_id);
 
     if ($stmt->execute()) {
-        header("Location: medewerkers.php");
+        header("Location: medewerkers.php?updated=success");
         exit;
     } else {
-        echo "Error updating record: " . $conn->error;
+        echo "Error updating record: " . htmlspecialchars($stmt->error);
     }
+
+    $stmt->close();
 }
 
 $conn->close();
@@ -129,31 +131,31 @@ $conn->close();
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Medewerker</h1>
+<div class="container">
+    <h1>Edit Medewerker</h1>
 
-        <form method="post">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
+    <form method="post">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
 
-            <label for="naam">Name:</label>
-            <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($user['Naam']); ?>" required>
+        <label for="naam">Name:</label>
+        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($user['Naam']); ?>" required>
 
-            <label for="telefoonnummer">Phone Number:</label>
-            <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($user['Telefoonnummer']); ?>" required>
+        <label for="telefoonnummer">Phone Number:</label>
+        <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($user['Telefoonnummer']); ?>" required>
 
-            <label for="role">Role:</label>
-            <select id="role" name="role" required>
-                <option value="0" <?php echo ($user['role'] == 0) ? 'selected' : ''; ?>>User</option>
-                <option value="1" <?php echo ($user['role'] == 1) ? 'selected' : ''; ?>>Admin</option>
-            </select>
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+            <option value="0" <?php echo ($user['role'] == 0) ? 'selected' : ''; ?>>User</option>
+            <option value="1" <?php echo ($user['role'] == 1) ? 'selected' : ''; ?>>Admin</option>
+        </select>
 
-            <button type="submit">Save Changes</button>
-        </form>
+        <button type="submit">Save Changes</button>
+    </form>
 
-        <div class="back-link">
-            <a href="medewerkers.php">Back to Manage Medewerkers</a>
-        </div>
+    <div class="back-link">
+        <a href="medewerkers.php">Back to Manage Medewerkers</a>
     </div>
+</div>
 </body>
 </html>
