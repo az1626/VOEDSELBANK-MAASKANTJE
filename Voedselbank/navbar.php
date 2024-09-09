@@ -1,3 +1,13 @@
+<?php
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not logged in';
+$user_email = isset($_SESSION['Email']) ? $_SESSION['Email'] : 'Not available';
+$user_name = isset($_SESSION['Naam']) ? $_SESSION['Naam'] : 'Not available';
+$user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Not available';
+$profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
+
+$role_description = $user_role == 1 ? 'Admin' : 'User';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +28,8 @@
         .navbar {
             background-color: #333;
             padding: 1rem;
+            position: relative;
+            z-index: 10;
         }
 
         .navbar-container {
@@ -26,6 +38,7 @@
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
         }
 
         .navbar-logo {
@@ -63,6 +76,63 @@
             color: white;
             font-size: 1.5rem;
             cursor: pointer;
+        }
+
+        .profile-circle {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .modal-content .logout-button {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content .logout-button:hover {
+            background-color: #c9302c;
         }
 
         @media (max-width: 768px) {
@@ -108,17 +178,42 @@
                 <li><a href="login.php">Login</a></li>
             <?php endif; ?>
         </ul>
+
+        <div class="profile-circle" id="profile-circle">
+            <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" class="profile-img">
+        </div>
     </div>
 </nav>
 
+<div class="modal" id="profile-modal">
+    <div class="modal-content">
+        <p>Email: <?php echo htmlspecialchars($user_email); ?></p>
+        <p>Name: <?php echo htmlspecialchars($user_name); ?></p>
+        <p>ID: <?php echo htmlspecialchars($user_id); ?></p>
+        <p>Role: <?php echo htmlspecialchars($role_description); ?></p>
+        <button class="logout-button" onclick="window.location.href='logout.php'">Logout</button>
+    </div>
+</div>
 
-    <script>
-        const navbarToggle = document.getElementById('navbar-toggle');
-        const navbarMenu = document.getElementById('navbar-menu');
+<script>
+    const navbarToggle = document.getElementById('navbar-toggle');
+    const navbarMenu = document.getElementById('navbar-menu');
+    const profileCircle = document.getElementById('profile-circle');
+    const profileModal = document.getElementById('profile-modal');
 
-        navbarToggle.addEventListener('click', () => {
-            navbarMenu.classList.toggle('active');
-        });
-    </script>
+    navbarToggle.addEventListener('click', () => {
+        navbarMenu.classList.toggle('active');
+    });
+
+    profileCircle.addEventListener('click', () => {
+        profileModal.style.display = 'flex';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === profileModal) {
+            profileModal.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>

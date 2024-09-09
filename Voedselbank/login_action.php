@@ -7,12 +7,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Debugging: print email and password
-    // echo "Email: $email<br>";
-    // echo "Password: $password<br>";
-
     // Prepare and execute statement
-    $stmt = $conn->prepare("SELECT AccountID, Wachtwoord, role FROM user WHERE Email=?");
+    $stmt = $conn->prepare("SELECT AccountID, Email, Naam, Wachtwoord, role FROM user WHERE Email=?");
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
@@ -25,14 +21,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $hashed_password, $role);
+        $stmt->bind_result($id, $email, $naam, $hashed_password, $role);
         $stmt->fetch();
-
-        // Debugging: print hashed password from database
-        // echo "Hashed Password: $hashed_password<br>";
 
         if (password_verify($password, $hashed_password)) {
             $_SESSION['user_id'] = $id;
+            $_SESSION['user_email'] = $email;
+            $_SESSION['user_naam'] = $naam;
             $_SESSION['role'] = $role;
             header("Location: dashboard.php");
             exit;
