@@ -1,255 +1,190 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Gegenereerd op: 15 jun 2023 om 15:10
--- Serverversie: 10.4.25-MariaDB
--- PHP-versie: 8.1.10
+-- MySQL Workbench Forward Engineering
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Gebruikers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Gebruikers` (
+  `idGebruikers` INT NOT NULL AUTO_INCREMENT,
+  `Gebruikersnaam` VARCHAR(45) NOT NULL,
+  `Wachtwoord` VARCHAR(255) NOT NULL,
+  `Rol` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idGebruikers`))
+ENGINE = InnoDB;
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+-- -----------------------------------------------------
+-- Table `mydb`.`Klanten`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Klanten` (
+  `idKlanten` INT NOT NULL AUTO_INCREMENT,
+  `naam` VARCHAR(45) NOT NULL,
+  `adres` VARCHAR(45) NOT NULL,
+  `telefoonnummer` INT NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `aantal_volwassenen` INT NOT NULL,
+  `aantal_kinderen` INT NOT NULL,
+  `aantal_babys` INT NOT NULL,
+  PRIMARY KEY (`idKlanten`))
+ENGINE = InnoDB;
 
---
--- Database: voedselbank_db
---
 
--- --------------------------------------------------------
+-- -----------------------------------------------------
+-- Table `mydb`.`Voedselpakketen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Voedselpakketen` (
+  `idVoedselpakketen` INT NOT NULL AUTO_INCREMENT,
+  `Klant_id` VARCHAR(45) NOT NULL,
+  `Gebruiker_id` VARCHAR(45) NOT NULL,
+  `Samenstellingsdatum` DATE NOT NULL,
+  `Uitgiftedatum` DATE NOT NULL,
+  `Klanten_idKlanten` INT NOT NULL,
+  PRIMARY KEY (`idVoedselpakketen`, `Klanten_idKlanten`),
+  INDEX `fk_Voedselpakketen_Klanten_idx` (`Klanten_idKlanten` ASC) VISIBLE,
+  CONSTRAINT `fk_Voedselpakketen_Klanten`
+    FOREIGN KEY (`Klanten_idKlanten`)
+    REFERENCES `mydb`.`Klanten` (`idKlanten`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
---
--- Tabelstructuur voor tabel extra
---
 
-CREATE TABLE extra (
-  beschikbare_allergieën varchar(255) NOT NULL,
-  beschikbare_categorieën varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------------
+-- Table `mydb`.`Categorieen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Categorieen` (
+  `idCategorieen` INT NOT NULL AUTO_INCREMENT,
+  `naam` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idCategorieen`))
+ENGINE = InnoDB;
 
---
--- Gegevens worden geëxporteerd voor tabel extra
---
 
-INSERT INTO extra (beschikbare_allergieën, beschikbare_categorieën) VALUES
-('Melk(eiwit) allergie', 'Pasta, Rijst en wereldkeuken'),
-('Niks', 'Aardappelen, Groente, Fruit'),
-('Notenallergie', 'Zuivel, Plantaardig en eieren'),
-('Pindaallergie', 'Bakkerij en Banket'),
-('Sesamallergie', 'Frisdrank, Sappen, Kofie en Thee'),
-('Snelle bezorging', 'Baby, Verzorging, Hygiene'),
-('Sojaallergie', 'Soepen, Sauzen, Kruiden en Olie'),
-('Tarweallergie', 'Kaas, Vleeswaren'),
-('Visallergie', 'Snoep, Koek, Chips en Chocolade');
+-- -----------------------------------------------------
+-- Table `mydb`.`Producten`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Producten` (
+  `idProducten` INT NOT NULL AUTO_INCREMENT,
+  `naam` VARCHAR(45) NOT NULL,
+  `categorie_id` VARCHAR(45) NOT NULL,
+  `ean` INT NOT NULL,
+  `aantal` INT NOT NULL,
+  `leverancier_id` VARCHAR(45) NOT NULL,
+  `Categorieen_idCategorieen` INT NOT NULL,
+  PRIMARY KEY (`idProducten`, `Categorieen_idCategorieen`),
+  INDEX `fk_Producten_Categorieen1_idx` (`Categorieen_idCategorieen` ASC) VISIBLE,
+  CONSTRAINT `fk_Producten_Categorieen1`
+    FOREIGN KEY (`Categorieen_idCategorieen`)
+    REFERENCES `mydb`.`Categorieen` (`idCategorieen`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
--- --------------------------------------------------------
 
---
--- Tabelstructuur voor tabel gezinnen
---
+-- -----------------------------------------------------
+-- Table `mydb`.`Leveranciers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Leveranciers` (
+  `idLeveranciers` INT NOT NULL AUTO_INCREMENT,
+  `naam` VARCHAR(45) NOT NULL,
+  `contactpersoon` VARCHAR(45) NOT NULL,
+  `telefoonnummer` INT NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `eerstevolgende_levering` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idLeveranciers`))
+ENGINE = InnoDB;
 
-CREATE TABLE gezinnen (
-  id int(11) NOT NULL,
-  naam varchar(200) NOT NULL,
-  volwassenen int(11) NOT NULL,
-  kinderen int(11) NOT NULL,
-  postcode varchar(25) NOT NULL,
-  mail varchar(255) NOT NULL,
-  telefoonnummer int(11) NOT NULL,
-  wensen varchar(255) NOT NULL,
-  pakket varchar(55) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Gegevens worden geëxporteerd voor tabel gezinnen
---
+-- -----------------------------------------------------
+-- Table `mydb`.`Dieetwensen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Dieetwensen` (
+  `idDieetwensen` INT NOT NULL AUTO_INCREMENT,
+  `naam` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idDieetwensen`))
+ENGINE = InnoDB;
 
-INSERT INTO gezinnen (id, naam, volwassenen, kinderen, postcode, mail, telefoonnummer, wensen, pakket) VALUES
-(48, 'peiters', 2, 2, '1333bn', 'mongus@gmail.com', 2147483647, 'notenallergie, niks', ''),
-(61, 'kaas', 2, 3, '1441LO', 'kaas@gmail.com', 682836458, 'notenallergie, sesamallergie, tarweallergie', '');
 
--- --------------------------------------------------------
+-- -----------------------------------------------------
+-- Table `mydb`.`Producten_has_Leveranciers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Producten_has_Leveranciers` (
+  `Producten_idProducten` INT NOT NULL,
+  `Leveranciers_idLeveranciers` INT NOT NULL,
+  PRIMARY KEY (`Producten_idProducten`, `Leveranciers_idLeveranciers`),
+  INDEX `fk_Producten_has_Leveranciers_Leveranciers1_idx` (`Leveranciers_idLeveranciers` ASC) VISIBLE,
+  INDEX `fk_Producten_has_Leveranciers_Producten1_idx` (`Producten_idProducten` ASC) VISIBLE,
+  CONSTRAINT `fk_Producten_has_Leveranciers_Producten1`
+    FOREIGN KEY (`Producten_idProducten`)
+    REFERENCES `mydb`.`Producten` (`idProducten`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Producten_has_Leveranciers_Leveranciers1`
+    FOREIGN KEY (`Leveranciers_idLeveranciers`)
+    REFERENCES `mydb`.`Leveranciers` (`idLeveranciers`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
---
--- Tabelstructuur voor tabel leveranciers
---
 
-CREATE TABLE leveranciers (
-  id int(11) NOT NULL,
-  naam varchar(255) NOT NULL,
-  mail varchar(100) NOT NULL,
-  telefoonnummer int(11) NOT NULL,
-  postcode varchar(6) NOT NULL,
-  bezorgingsdatum date NOT NULL,
-  bezorgingstijd varchar(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------------
+-- Table `mydb`.`Klanten_has_Dieetwensen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Klanten_has_Dieetwensen` (
+  `Klanten_idKlanten` INT NOT NULL,
+  `Dieetwensen_idDieetwensen` INT NOT NULL,
+  PRIMARY KEY (`Klanten_idKlanten`, `Dieetwensen_idDieetwensen`),
+  INDEX `fk_Klanten_has_Dieetwensen_Dieetwensen1_idx` (`Dieetwensen_idDieetwensen` ASC) VISIBLE,
+  INDEX `fk_Klanten_has_Dieetwensen_Klanten1_idx` (`Klanten_idKlanten` ASC) VISIBLE,
+  CONSTRAINT `fk_Klanten_has_Dieetwensen_Klanten1`
+    FOREIGN KEY (`Klanten_idKlanten`)
+    REFERENCES `mydb`.`Klanten` (`idKlanten`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Klanten_has_Dieetwensen_Dieetwensen1`
+    FOREIGN KEY (`Dieetwensen_idDieetwensen`)
+    REFERENCES `mydb`.`Dieetwensen` (`idDieetwensen`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
---
--- Gegevens worden geëxporteerd voor tabel leveranciers
---
 
-INSERT INTO leveranciers (id, naam, mail, telefoonnummer, postcode, bezorgingsdatum, bezorgingstijd) VALUES
-(12, 'postnl', 'postnl@nl', 640273918, '1444LO', '2023-06-14', '21:10'),
-(15, 'DHL', 'DHL@DHL.nl', 123456789, '1333ZB', '2023-06-09', '15:57');
+-- -----------------------------------------------------
+-- Table `mydb`.`Producten_has_Voedselpakketen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Producten_has_Voedselpakketen` (
+  `Producten_idProducten` INT NOT NULL,
+  `Producten_Categorieen_idCategorieen` INT NOT NULL,
+  `Voedselpakketen_idVoedselpakketen` INT NOT NULL,
+  `Voedselpakketen_Klanten_idKlanten` INT NOT NULL,
+  PRIMARY KEY (`Producten_idProducten`, `Producten_Categorieen_idCategorieen`, `Voedselpakketen_idVoedselpakketen`, `Voedselpakketen_Klanten_idKlanten`),
+  INDEX `fk_Producten_has_Voedselpakketen_Voedselpakketen1_idx` (`Voedselpakketen_idVoedselpakketen` ASC, `Voedselpakketen_Klanten_idKlanten` ASC) VISIBLE,
+  INDEX `fk_Producten_has_Voedselpakketen_Producten1_idx` (`Producten_idProducten` ASC, `Producten_Categorieen_idCategorieen` ASC) VISIBLE,
+  CONSTRAINT `fk_Producten_has_Voedselpakketen_Producten1`
+    FOREIGN KEY (`Producten_idProducten` , `Producten_Categorieen_idCategorieen`)
+    REFERENCES `mydb`.`Producten` (`idProducten` , `Categorieen_idCategorieen`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Producten_has_Voedselpakketen_Voedselpakketen1`
+    FOREIGN KEY (`Voedselpakketen_idVoedselpakketen` , `Voedselpakketen_Klanten_idKlanten`)
+    REFERENCES `mydb`.`Voedselpakketen` (`idVoedselpakketen` , `Klanten_idKlanten`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
--- --------------------------------------------------------
 
---
--- Tabelstructuur voor tabel producten
---
-
-CREATE TABLE producten (
-  id int(11) NOT NULL,
-  naam varchar(255) NOT NULL,
-  beschrijving varchar(100) NOT NULL,
-  categorie varchar(500) NOT NULL,
-  voorraad int(11) NOT NULL,
-  EAN_Nummer varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Gegevens worden geëxporteerd voor tabel producten
---
-
-INSERT INTO producten (id, naam, beschrijving, categorie, voorraad, EAN_Nummer) VALUES
-(29, 'kaas', 'kaas', 'Bakkerij en Banket', 54, '11267532348'),
-(30, 'melk', 'melk', 'Snoep, Koek, Chips en Chocolade', 149, '12345678910'),
-(31, 'groene melk', 'de melk is groen', 'Sappen', 59, '29343232457324732748');
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel user
---
-
-CREATE TABLE user (
-  AccountID int(11) NOT NULL,
-  Email varchar(100) NOT NULL,
-  Wachtwoord varchar(255) NOT NULL,
-  Naam varchar(100) NOT NULL,
-  Telefoonnummer varchar(100) NOT NULL,
-  role int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Gegevens worden geëxporteerd voor tabel user
---
-
-INSERT INTO user (AccountID, Email, Wachtwoord, Naam, Telefoonnummer, role) VALUES
-(1, 'oguzhanarguden@gmail.com', '$2y$10$5i1nXjle256QS6J.uFJAcur5HNx6yeLnBLym0IrFiABLXmKPf/H6a', 'Oguzhan', '0612345678', 0);
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel voedselpakket
---
-
-CREATE TABLE voedselpakket (
-  id int(11) NOT NULL,
-  naam varchar(255) NOT NULL,
-  producten varchar(255) NOT NULL,
-  samenstellingsdatum dateg NOT NULL DEFAULT '0000-00-00',
-  ophaaldatum date NOT NULL DEFAULT '0000-00-00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Gegevens worden geëxporteerd voor tabel voedselpakket
---
-
-INSERT INTO voedselpakket (id, naam, producten, samenstellingsdatum, ophaaldatum) VALUES
-(11, 'Familiepakket', 'kaas x3, melk x3, groene melk x4', '2023-06-13', '2023-06-22'),
-(12, 'yes', 'kaas x1, melk x2, groene melk x24', '2023-06-20', '2023-06-30'),
-(13, 'ik hou van melk', 'groene melk x3, kaas x1, melk x5', '2023-06-21', '2023-06-23'),
-(14, 'ik hou van melkll', 'groene melk x3, kaas x4, melk x5', '2023-06-21', '2023-06-24'),
-(15, 'ik hou van eten', 'groene melk x2, kaas x3, melk x4', '2023-06-20', '2023-06-25'),
-(16, 'pakket ', 'groene melk x4, kaas x4, melk x4', '2023-06-16', '2023-06-17'),
-(19, 'pakket ', 'groene melk x3, kaas x3, melk x3', '2023-06-20', '2023-06-23'),
-(20, 'pakket ', 'groene melk x3, kaas x3, melk x3', '2023-06-20', '2023-06-23'),
-(21, 'pakket ', 'groene melk x4, kaas x4, melk x4', '2023-06-22', '2023-06-23'),
-(22, 'pakket ', 'groene melk x4, kaas x4, melk x4', '2023-06-22', '2023-06-23'),
-(23, 'pakket ', 'groene melk x4, kaas x4, melk x4', '2023-06-19', '2023-06-23');
-
---
--- Indexen voor geëxporteerde tabellen
---
-
---
--- Indexen voor tabel extra
---
-ALTER TABLE extra
-  ADD PRIMARY KEY (beschikbare_allergieën);
-
---
--- Indexen voor tabel gezinnen
---
-ALTER TABLE gezinnen
-  ADD PRIMARY KEY (id);
-
---
--- Indexen voor tabel leveranciers
---
-ALTER TABLE leveranciers
-  ADD PRIMARY KEY (id),
-  ADD UNIQUE KEY username (naam);
-
---
--- Indexen voor tabel producten
---
-ALTER TABLE producten
-  ADD PRIMARY KEY (id);
-
---
--- Indexen voor tabel user
---
-ALTER TABLE user
-  ADD PRIMARY KEY (AccountID);
-
---
--- Indexen voor tabel voedselpakket
---
-ALTER TABLE voedselpakket
-  ADD PRIMARY KEY (id);
-
---
--- AUTO_INCREMENT voor geëxporteerde tabellen
---
-
---
--- AUTO_INCREMENT voor een tabel gezinnen
---
-ALTER TABLE gezinnen
-  MODIFY id int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
-
---
--- AUTO_INCREMENT voor een tabel leveranciers
---
-ALTER TABLE leveranciers
-  MODIFY id int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT voor een tabel producten
---
-ALTER TABLE producten
-  MODIFY id int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
-
---
--- AUTO_INCREMENT voor een tabel user
---
-ALTER TABLE user
-  MODIFY AccountID int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT voor een tabel voedselpakket
---
-ALTER TABLE voedselpakket
-  MODIFY id int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

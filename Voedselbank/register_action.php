@@ -1,47 +1,36 @@
 <?php
-include 'db_connect.php';
+// Include the database connection file
+include 'db_connect.php'; // Ensure this file contains your database connection logic
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $gebruikersnaam = trim($_POST['gebruikersnaam']);
-    $password = trim($_POST['wachtwoord']);
-    $rol = trim($_POST['rol']);
+    // Retrieve the form data
+    $gebruikersnaam = $_POST['gebruikersnaam'];
+    $wachtwoord = $_POST['wachtwoord'];
+    $rol = $_POST['rol'];
 
-    if (empty($gebruikersnaam) || empty($password) || empty($rol)) {
-        echo "Please fill in all fields.";
-        exit;
-    }
+    // Hash the password before storing it in the database
+    $hashed_password = password_hash($wachtwoord, PASSWORD_DEFAULT);
 
-    // Check if the username already exists
-    $stmt = $conn->prepare("SELECT idGebruikers FROM Gebruikers WHERE Gebruikersnaam = ?");
-    $stmt->bind_param("s", $gebruikersnaam);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
-        echo "Username already taken.";
-        $stmt->close();
-        exit;
-    }
-
-    $stmt->close();
-
-    // Hash the password
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
-    // Insert new user into the database
+    // Prepare an SQL statement to insert the user into the database
     $stmt = $conn->prepare("INSERT INTO Gebruikers (Gebruikersnaam, Wachtwoord, Rol) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $gebruikersnaam, $hashed_password, $rol);
 
+    // Execute the statement and check if the insertion was successful
     if ($stmt->execute()) {
-        echo "Registration successful. <a href='login.php'>Login here</a>";
+        // Redirect to the login page after successful registration
+        header("Location: login.php");
+        exit();
     } else {
-        echo "Error: " . $stmt->error;
+        // Handle errors (e.g., username already taken)
+        echo "Error: Could not register user. Please try again.";
     }
 
+    // Close the statement and connection
     $stmt->close();
+    $conn->close();
 } else {
-    echo "Ongeldige aanvraagmethode.";
+    // If the form was not submitted, redirect to the register page
+    header("Location: register.php");
+    exit();
 }
-
-$conn->close();
 ?>

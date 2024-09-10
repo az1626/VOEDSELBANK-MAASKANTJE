@@ -13,14 +13,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
     $id = intval($_POST['id']);
     $naam = $_POST['naam'];
     $beschrijving = $_POST['beschrijving'];
-    $categorie = $_POST['categorie'];
+    $categorie = intval($_POST['categorie']); // Convert to integer
     $voorraad = intval($_POST['voorraad']);
     $ean_nummer = $_POST['ean_nummer'];
 
     // Update the product details in the database
-    $sql = "UPDATE producten SET naam = ?, beschrijving = ?, categorie = ?, voorraad = ?, EAN_Nummer = ? WHERE id = ?";
+    $sql = "UPDATE Producten SET naam = ?, beschrijving = ?, categorie_id = ?, aantal = ?, ean = ? WHERE idProducten = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssisi", $naam, $beschrijving, $categorie, $voorraad, $ean_nummer, $id);
+    
+    if ($stmt === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
+    }
+
+    // Corrected the number of bind parameters
+    $stmt->bind_param("ssisis", $naam, $beschrijving, $categorie, $voorraad, $ean_nummer, $id);
 
     if ($stmt->execute()) {
         header("Location: product.php?updated=success");
@@ -34,54 +40,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
 
 // Fetch the product data for the given ID
 $id = intval($_GET['id']);
-$sql = "SELECT * FROM producten WHERE id = ?";
+$sql = "SELECT * FROM Producten WHERE idProducten = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $product = $stmt->get_result()->fetch_assoc();
 $stmt->close();
-$conn->close();
 
 // Check if the product was found
 if (!$product) {
     echo "<p>Product not found.</p>";
     exit;
 }
+
+// Fetch categories for the dropdown
+$sql = "SELECT idCategorieen, naam FROM Categorieen";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$categories = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product</title>
+    <title>Product Bewerken</title>
     <link rel="stylesheet" href="products.css">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Edit Product</h1>
+    <h1>Product Bewerken</h1>
     <form action="edit_product.php" method="POST">
-        <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['id']); ?>">
+        <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['idProducten']); ?>">
 
-        <label for="naam">Name:</label>
+        <label for="naam">Naam:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($product['naam']); ?>" required><br><br>
 
-        <label for="beschrijving">Description:</label>
+        <label for="beschrijving">Beschrijving:</label>
         <input type="text" id="beschrijving" name="beschrijving" value="<?php echo htmlspecialchars($product['beschrijving']); ?>" required><br><br>
 
-        <label for="categorie">Category:</label>
-        <input type="text" id="categorie" name="categorie" value="<?php echo htmlspecialchars($product['categorie']); ?>" required><br><br>
+        <label for="categorie">Categorie:</label>
+        <select id="categorie" name="categorie" required>
+            <?php
+            // Populate dropdown with categories
+            while ($row = $categories->fetch_assoc()) {
+                $selected = $row['idCategorieen'] == $product['Categorieen_idCategorieen'] ? 'selected' : '';
+                echo "<option value='" . htmlspecialchars($row['idCategorieen']) . "' $selected>" . htmlspecialchars($row['naam']) . "</option>";
+            }
+            ?>
+        </select><br><br>
 
-        <label for="voorraad">Stock:</label>
-        <input type="number" id="voorraad" name="voorraad" value="<?php echo htmlspecialchars($product['voorraad']); ?>" required><br><br>
+        <label for="voorraad">Voorraad:</label>
+        <input type="number" id="voorraad" name="voorraad" value="<?php echo htmlspecialchars($product['aantal']); ?>" required><br><br>
 
-        <label for="ean_nummer">EAN Number:</label>
-        <input type="text" id="ean_nummer" name="ean_nummer" value="<?php echo htmlspecialchars($product['EAN_Nummer']); ?>" required><br><br>
+        <label for="ean_nummer">EAN Nummer:</label>
+        <input type="text" id="ean_nummer" name="ean_nummer" value="<?php echo htmlspecialchars($product['ean']); ?>" required><br><br>
 
         <button type="submit" name="update">Update Product</button>
     </form>
 </div>
 </body>
 </html>
+
+<?php
+// Close the statement and connection only if they are still open
+if (isset($stmt) && $stmt !== false) {
+    $stmt->close();
+}
+if (isset($conn) && $conn instanceof mysqli) {
+    $conn->close();
+}
+?>

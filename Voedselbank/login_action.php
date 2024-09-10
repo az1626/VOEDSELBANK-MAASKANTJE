@@ -1,43 +1,52 @@
 <?php
-global $conn;
+// Start the session
 session_start();
-include 'db_connect.php';
+
+// Include your database connection
+include 'db_connect.php'; // Ensure this file contains your database connection logic
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $gebruikersnaam = trim($_POST['gebruikersnaam']);
-    $password = trim($_POST['wachtwoord']);
+    // Retrieve the username and password from the form
+    $gebruikersnaam = $_POST['gebruikersnaam'];
+    $wachtwoord = $_POST['wachtwoord'];
 
-    if (empty($gebruikersnaam) || empty($password)) {
-        echo "Please enter both username and password.";
-        exit;
-    }
-
-    $stmt = $conn->prepare("SELECT idGebruikers, Gebruikersnaam, Wachtwoord, Rol FROM gebruikers WHERE Gebruikersnaam = ?");
+    // Prepare an SQL statement to prevent SQL injection
+    $stmt = $conn->prepare("SELECT * FROM Gebruikers WHERE Gebruikersnaam = ?");
     $stmt->bind_param("s", $gebruikersnaam);
+
+    // Execute the query
     $stmt->execute();
-    $stmt->store_result();
+    $result = $stmt->get_result();
 
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $db_gebruikersnaam, $hashed_password, $role);
-        $stmt->fetch();
+    // Check if the user exists
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
 
-        if (password_verify($password, $hashed_password)) {
-            $_SESSION['user_id'] = $id;
-            $_SESSION['user_naam'] = $db_gebruikersnaam;
-            $_SESSION['role'] = $role;
+        // Verify the password
+        if (password_verify($wachtwoord, $user['Wachtwoord'])) {
+            // Password is correct, start the session and redirect
+            $_SESSION['user_id'] = $user['idGebruikers'];
+            $_SESSION['username'] = $user['Gebruikersnaam'];
+            $_SESSION['role'] = $user['Rol'];
+
+            // Redirect to a secure page
             header("Location: dashboard.php");
-            exit;
+            exit();
         } else {
-            echo "Ongeldig wachtwoord.";
+            // Invalid password
+            echo "Invalid password. Please try again.";
         }
     } else {
-        echo "Geen gebruiker gevonden met deze gebruikersnaam.";
+        // User not found
+        echo "No user found with that username.";
     }
 
+    // Close the statement and connection
     $stmt->close();
+    $conn->close();
 } else {
-    echo "Ongeldige aanvraagmethode.";
+    // If the form was not submitted, redirect to the login page
+    header("Location: login.php");
+    exit();
 }
-
-$conn->close();
 ?>

@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
     $id = intval($_GET['id']); // Ensure the ID is treated as an integer to prevent SQL injection
 
     // Prepare the SQL statement to delete the product
-    $sql = "DELETE FROM producten WHERE ProductID = ?";
+    $sql = "DELETE FROM Producten WHERE idProducten = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
