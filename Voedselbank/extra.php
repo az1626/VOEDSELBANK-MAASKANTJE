@@ -48,12 +48,37 @@ $conn->close();
     <title>Manage Dietary Wishes</title>
     <link rel="stylesheet" href="dashboard.css">
     <style>
-        body {
+        /* Reset default margin and padding for body and html */
+        html, body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            margin: 0;
-            padding: 20px;
             background-color: #f4f4f4;
+        }
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+        }
+        /* Main container to push content below navbar */
+        .main-content {
+            padding-top: 60px; /* Adjust based on navbar height */
         }
         .container {
             max-width: 800px;
@@ -123,47 +148,50 @@ $conn->close();
         }
     </style>
 </head>
-<body><?php include 'navbar.php'; ?>
+<body>
+<?php include 'navbar.php'; ?>
 
-<div class="container">
-    <h1>Manage Dietary Wishes</h1>
-    <?php
-    if (isset($success_message)) {
-        echo "<div class='message success'>$success_message</div>";
-    }
-    if (isset($error_message)) {
-        echo "<div class='message error'>$error_message</div>";
-    }
-    ?>
+<div class="main-content">
+    <div class="container">
+        <h1>Manage Dietary Wishes</h1>
+        <?php
+        if (isset($success_message)) {
+            echo "<div class='message success'>$success_message</div>";
+        }
+        if (isset($error_message)) {
+            echo "<div class='message error'>$error_message</div>";
+        }
+        ?>
 
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['naam']); ?></td>
-                    <td>
-                        <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
-                        <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
-        <?php else: ?>
+        <table>
             <tr>
-                <td colspan="2">No dietary wishes found.</td>
+                <th>Name</th>
+                <th>Actions</th>
             </tr>
-        <?php endif; ?>
-    </table>
+            <?php if ($result && $result->num_rows > 0): ?>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['naam']); ?></td>
+                        <td>
+                            <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
+                            <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="2">No dietary wishes found.</td>
+                </tr>
+            <?php endif; ?>
+        </table>
 
-    <form action="extra.php" method="post">
-        <label for="naam">Name:</label>
-        <input type="text" id="naam" name="naam" required>
+        <form action="extra.php" method="post">
+            <label for="naam">Name:</label>
+            <input type="text" id="naam" name="naam" required>
 
-        <input type="submit" value="Add Dietary Wish">
-    </form>
+            <input type="submit" value="Add Dietary Wish">
+        </form>
+    </div>
 </div>
 </body>
 </html>
