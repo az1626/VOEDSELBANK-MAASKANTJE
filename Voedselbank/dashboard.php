@@ -27,7 +27,6 @@ if (!isset($_SESSION['user_id'])) {
             <a href="families.php">Manage Families</a>
             <a href="product.php">Producten</a>
             <a href="leveranciers.php">Leveranciers</a>
-            <a href="medewerkers.php">Manage Medewerkers</a> <!-- Admin-only link -->
             <a href="extra.php">Manage Extra Information</a> <!-- Admin-only link -->
         <?php else: ?>
             <a href="families.php">Manage Families</a>

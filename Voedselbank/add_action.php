@@ -9,30 +9,29 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $naam = trim($_POST['naam']);
-    $volwassenen = (int)$_POST['volwassenen'];
-    $kinderen = (int)$_POST['kinderen'];
-    $postcode = trim($_POST['postcode']);
-    $mail = trim($_POST['mail']);
-    $telefoonnummer = trim($_POST['telefoonnummer']);
-    $wensen = trim($_POST['wensen']);
-    $pakket = trim($_POST['pakket']);
+    $adres = trim($_POST['adres']);
+    $telefoonnummer = (int)$_POST['telefoonnummer'];
+    $email = trim($_POST['email']);
+    $aantal_volwassenen = (int)$_POST['aantal_volwassenen'];
+    $aantal_kinderen = (int)$_POST['aantal_kinderen'];
+    $aantal_babys = (int)$_POST['aantal_babys'];
 
     // Basic input validation
-    if (empty($naam) || empty($postcode) || empty($mail) || empty($telefoonnummer)) {
+    if (empty($naam) || empty($adres) || empty($email) || empty($telefoonnummer)) {
         $_SESSION['error'] = "All fields are required.";
         header("Location: add_family.php");
         exit;
     }
 
-    if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['error'] = "Invalid email format.";
         header("Location: add_family.php");
         exit;
     }
 
     // Prepare and bind
-    $stmt = $conn->prepare("INSERT INTO gezinnen (naam, volwassenen, kinderen, postcode, mail, telefoonnummer, wensen, pakket) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("siiissss", $naam, $volwassenen, $kinderen, $postcode, $mail, $telefoonnummer, $wensen, $pakket);
+    $stmt = $conn->prepare("INSERT INTO Klanten (naam, adres, telefoonnummer, email, aantal_volwassenen, aantal_kinderen, aantal_babys) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssissii", $naam, $adres, $telefoonnummer, $email, $aantal_volwassenen, $aantal_kinderen, $aantal_babys);
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "New family added successfully.";

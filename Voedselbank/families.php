@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 }
 
 // Fetch data from the database
-$sql = "SELECT * FROM gezinnen";
+$sql = "SELECT * FROM Klanten"; // Updated table name
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -66,7 +66,7 @@ $result = $stmt->get_result();
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Manage Gezinnen Data</h1>
+    <h1>Manage Klanten Data</h1>
     <a href="add_family.php" class="btn">Add New Family</a>
 
     <?php
@@ -75,30 +75,28 @@ $result = $stmt->get_result();
             <tr>
             <th>ID</th>
             <th>Naam</th>
-            <th>Volwassenen</th>
-            <th>Kinderen</th>
-            <th>Postcode</th>
-            <th>Email</th>
+            <th>Adres</th>
             <th>Telefoonnummer</th>
-            <th>Wensen</th>
-            <th>Pakket</th>
+            <th>Email</th>
+            <th>Aantal Volwassenen</th>
+            <th>Aantal Kinderen</th>
+            <th>Aantal Babys</th>
             <th>Actions</th>
             </tr>";
 
         while($row = $result->fetch_assoc()) {
             echo "<tr>
-                <td>{$row['id']}</td>
+                <td>{$row['idKlanten']}</td>
                 <td>{$row['naam']}</td>
-                <td>{$row['volwassenen']}</td>
-                <td>{$row['kinderen']}</td>
-                <td>{$row['postcode']}</td>
-                <td>{$row['mail']}</td>
+                <td>{$row['adres']}</td>
                 <td>{$row['telefoonnummer']}</td>
-                <td>{$row['wensen']}</td>
-                <td>{$row['pakket']}</td>
+                <td>{$row['email']}</td>
+                <td>{$row['aantal_volwassenen']}</td>
+                <td>{$row['aantal_kinderen']}</td>
+                <td>{$row['aantal_babys']}</td>
                 <td>
-                    <a href='edit_family.php?id={$row['id']}' class='action-link'>Edit</a>
-                    <a href='delete_family.php?id={$row['id']}' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Delete</a>
+                    <a href='edit_family.php?id={$row['idKlanten']}' class='action-link'>Edit</a>
+                    <a href='delete_family.php?id={$row['idKlanten']}' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Delete</a>
                 </td>
                 </tr>";
         }
