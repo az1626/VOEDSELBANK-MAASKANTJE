@@ -12,16 +12,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve and sanitize input values
     $naam = $_POST['naam'];
-    $mail = $_POST['mail'];
+    $contactpersoon = $_POST['contactpersoon'];
     $telefoonnummer = $_POST['telefoonnummer'];
-    $postcode = $_POST['postcode'];
-    $bezorgingsdatum = $_POST['bezorgingsdatum'];
-    $bezorgingstijd = $_POST['bezorgingstijd'];
+    $email = $_POST['email'];
+    $eerstevolgende_levering = $_POST['eerstevolgende_levering'];
 
     // Prepare the SQL statement to insert the new supplier
-    $sql = "INSERT INTO leveranciers (Naam, Email, Telefoonnummer, Postcode, Bezorgingsdatum, Bezorgingstijd) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO Leveranciers (naam, contactpersoon, telefoonnummer, email, eerstevolgende_levering) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssss", $naam, $mail, $telefoonnummer, $postcode, $bezorgingsdatum, $bezorgingstijd);
+    $stmt->bind_param("sssss", $naam, $contactpersoon, $telefoonnummer, $email, $eerstevolgende_levering);
 
     // Execute the statement and handle the result
     if ($stmt->execute()) {
@@ -55,20 +54,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="naam">Name:</label>
         <input type="text" id="naam" name="naam" required><br><br>
 
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="mail" required><br><br>
+        <label for="contactpersoon">Contact Person:</label>
+        <input type="text" id="contactpersoon" name="contactpersoon" required><br><br>
 
         <label for="telefoonnummer">Phone:</label>
         <input type="text" id="telefoonnummer" name="telefoonnummer" required><br><br>
 
-        <label for="postcode">Postal Code:</label>
-        <input type="text" id="postcode" name="postcode" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
 
-        <label for="bezorgingsdatum">Delivery Date:</label>
-        <input type="date" id="bezorgingsdatum" name="bezorgingsdatum" required><br><br>
-
-        <label for="bezorgingstijd">Delivery Time:</label>
-        <input type="text" id="bezorgingstijd" name="bezorgingstijd" required><br><br>
+        <label for="eerstevolgende_levering">Next Delivery:</label>
+        <input type="datetime-local" id="eerstevolgende_levering" name="eerstevolgende_levering" required><br><br>
 
         <button type="submit">Add Supplier</button>
     </form>

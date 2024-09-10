@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 // Handle delete request
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $sql = "DELETE FROM leveranciers WHERE id = ?";
+    $sql = "DELETE FROM Leveranciers WHERE idLeveranciers = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
@@ -27,7 +27,7 @@ if (isset($_GET['delete'])) {
 }
 
 // Fetch suppliers from the database
-$sql = "SELECT * FROM leveranciers";
+$sql = "SELECT * FROM Leveranciers";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -66,26 +66,24 @@ $result = $stmt->get_result();
             <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Email</th>
+            <th>Contact Person</th>
             <th>Phone</th>
-            <th>Postal Code</th>
-            <th>Delivery Date</th>
-            <th>Delivery Time</th>
+            <th>Email</th>
+            <th>Next Delivery</th>
             <th>Actions</th>
             </tr>";
 
         while($row = $result->fetch_assoc()) {
             echo "<tr>
-                <td>{$row['id']}</td>
+                <td>{$row['idLeveranciers']}</td>
                 <td>{$row['naam']}</td>
-                <td>{$row['mail']}</td>
+                <td>{$row['contactpersoon']}</td>
                 <td>{$row['telefoonnummer']}</td>
-                <td>{$row['postcode']}</td>
-                <td>{$row['bezorgingsdatum']}</td>
-                <td>{$row['bezorgingstijd']}</td>
+                <td>{$row['email']}</td>
+                <td>{$row['eerstevolgende_levering']}</td>
                 <td>
-                    <a href='edit_leverancier.php?id={$row['id']}'>Edit</a> | 
-                    <a href='leveranciers.php?delete={$row['id']}' onclick='return confirm(\"Are you sure you want to delete this supplier?\")'>Delete</a>
+                    <a href='edit_leverancier.php?id={$row['idLeveranciers']}'>Edit</a> | 
+                    <a href='leveranciers.php?delete={$row['idLeveranciers']}' onclick='return confirm(\"Are you sure you want to delete this supplier?\")'>Delete</a>
                 </td>
                 </tr>";
         }
