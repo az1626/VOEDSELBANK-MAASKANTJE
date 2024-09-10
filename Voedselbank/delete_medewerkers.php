@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     }
 
     // Delete the user from the database
-    $sql = "DELETE FROM user WHERE AccountID=?";
+    $sql = "DELETE FROM gebruikers WHERE idGebruikers=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 

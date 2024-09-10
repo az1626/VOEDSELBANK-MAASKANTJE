@@ -115,32 +115,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
     <?php
     // Fetch users from the database and display them
-    $sql = "SELECT * FROM user";
+    $sql = "SELECT * FROM gebruikers";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         echo "<table>
             <tr>
-            <th>ID</th>
-            <th>Gebruikersnaam</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Actions</th>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Gebruikersnaam</th>
+                <th>Role</th>
+                <th>Actions</th>
             </tr>";
 
         while($row = $result->fetch_assoc()) {
             echo "<tr>
-                <td>{$row['AccountID']}</td>
+                <td>{$row['idGebruikers']}</td>
+                <td>{$row['Email']}</td>
                 <td>{$row['Gebruikersnaam']}</td>
-                <td>{$row['Naam']}</td>
-                <td>{$row['Telefoonnummer']}</td>
-                <td>" . ($row['role'] == 1 ? 'Admin' : 'User') . "</td>
+                <td>" . ($row['Rol'] == 1 ? 'Admin' : 'User') . "</td>
                 <td>
-                    <a href='edit_medewerkers.php?id={$row['AccountID']}'>Edit</a> | 
-                    <a href='delete_medewerkers.php?id={$row['AccountID']}' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>
+                    <a href='edit_medewerkers.php?id={$row['idGebruikers']}'>Edit</a> | 
+                    <a href='delete_medewerkers.php?id={$row['idGebruikers']}' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>
                 </td>
-                </tr>";
+            </tr>";
         }
         echo "</table>";
     } else {

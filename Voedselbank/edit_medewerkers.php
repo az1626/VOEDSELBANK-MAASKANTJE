@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
     $user_id = intval($_GET['id']); // Cast to integer for security
 
     // Fetch user data
-    $sql = "SELECT * FROM accounts WHERE AccountID = ?";
+    $sql = "SELECT * FROM gebruikers WHERE idGebruikers = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -34,13 +34,22 @@ if (isset($_GET['id'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $naam = $_POST['naam'];
-    $telefoonnummer = $_POST['telefoonnummer'];
     $role = intval($_POST['role']); // Ensure role is an integer
+    $password = $_POST['password'];
 
     // Update the user data in the database
-    $sql = "UPDATE accounts SET Email = ?, Naam = ?, Telefoonnummer = ?, role = ? WHERE AccountID = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssii", $email, $naam, $telefoonnummer, $role, $user_id);
+    if (!empty($password)) {
+        // If a new password is provided, hash it
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $sql = "UPDATE gebruikers SET Email = ?, Gebruikersnaam = ?, Rol = ?, Wachtwoord = ? WHERE idGebruikers = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssisi", $email, $naam, $role, $hashed_password, $user_id);
+    } else {
+        // If no new password is provided, do not update the password
+        $sql = "UPDATE gebruikers SET Email = ?, Gebruikersnaam = ?, Telefoonnummer = ?, Rol = ? WHERE idGebruikers = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssii", $email, $naam, $telefoonnummer, $role, $user_id);
+    }
 
     if ($stmt->execute()) {
         header("Location: medewerkers.php?updated=success");
@@ -93,7 +102,7 @@ $conn->close();
             font-weight: bold;
         }
 
-        input[type="text"], input[type="email"], select {
+        input[type="text"], input[type="email"], input[type="password"], select {
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
@@ -138,16 +147,16 @@ $conn->close();
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
 
-        <label for="naam">Name:</label>
-        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($user['Naam']); ?>" required>
+        <label for="naam">Username:</label>
+        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($user['Gebruikersnaam']); ?>" required>
 
-        <label for="telefoonnummer">Phone Number:</label>
-        <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($user['Telefoonnummer']); ?>" required>
+        <label for="password">New Password (leave blank to keep current password):</label>
+        <input type="password" id="password" name="password">
 
         <label for="role">Role:</label>
         <select id="role" name="role" required>
-            <option value="0" <?php echo ($user['role'] == 0) ? 'selected' : ''; ?>>User</option>
-            <option value="1" <?php echo ($user['role'] == 1) ? 'selected' : ''; ?>>Admin</option>
+            <option value="0" <?php echo ($user['Rol'] == 0) ? 'selected' : ''; ?>>User</option>
+            <option value="1" <?php echo ($user['Rol'] == 1) ? 'selected' : ''; ?>>Admin</option>
         </select>
 
         <button type="submit">Save Changes</button>

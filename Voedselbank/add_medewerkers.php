@@ -2,7 +2,7 @@
 session_start();
 include 'db_connect.php';
 
-// Check if the user is logged in and has admin role
+// Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     header("Location: login.php");
     exit;
@@ -11,23 +11,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Hash the password
-    $name = $_POST['name'];
-    $phone = $_POST['phone'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $name = $_POST['name']; // Corrected the form input name
     $role = $_POST['role'];
 
-    $sql = "INSERT INTO user (Email, Wachtwoord, Naam, Telefoonnummer, role) VALUES (?, ?, ?, ?, ?)";
+    // Adjusted the SQL query to match the actual column names in the database
+    $sql = "INSERT INTO gebruikers (Email, Wachtwoord, Gebruikersnaam, Rol) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $email, $password, $name, $phone, $role);
 
-    if ($stmt->execute()) {
-        $success_message = "New medewerker added successfully!";
-        header("Location: medewerkers.php");
-        exit;
+    if ($stmt === false) {
+        $error_message = "Error preparing statement: " . $conn->error;
     } else {
-        $error_message = "Error: " . $stmt->error;
+        $stmt->bind_param("sssi", $email, $password, $name, $role);
+
+        if ($stmt->execute()) {
+            $_SESSION['success_message'] = "New medewerker added successfully!";
+            header("Location: medewerkers.php");
+            exit;
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
     }
-    $stmt->close();
+    $conn->close();
 }
 ?>
 <!DOCTYPE html>
@@ -44,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <h1>Add New Medewerker</h1>
 
+    <!-- Display success or error messages -->
     <?php
     if (isset($success_message)) {
         echo "<div class='message success'>$success_message</div>";
@@ -60,11 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
 
-        <label for="name">Name:</label><br>
+        <label for="name">Username:</label><br>
         <input type="text" id="name" name="name" required><br><br>
-
-        <label for="phone">Phone:</label><br>
-        <input type="text" id="phone" name="phone" required><br><br>
 
         <label for="role">Role:</label><br>
         <select id="role" name="role" required>

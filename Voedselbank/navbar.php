@@ -1,7 +1,7 @@
 <?php
-
 // Fetch session variables
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not logged in';
+$user_email = isset($_SESSION['Email']) ? $_SESSION['Email'] : 'Not available';
 $user_name = isset($_SESSION['Gebruikersnaam']) ? $_SESSION['Gebruikersnaam'] : 'Not available';
 $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Not available';
 $profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
@@ -15,7 +15,7 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Improved Navbar</title>
+    <title>Navbar with Profile Modal</title>
     <style>
         * {
             margin: 0;
@@ -113,7 +113,7 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
             padding: 20px;
             border-radius: 8px;
             text-align: center;
-            max-width: 300px;
+            max-width: 400px;
             width: 100%;
         }
 
@@ -123,7 +123,26 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
             color: #333;
         }
 
-        .modal-content .logout-button {
+        .modal-content .logout-button,
+        .modal-content .change-password-button,
+        .modal-content .save-button {
+            background-color: green;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px;
+        }
+
+        .modal-content .logout-button:hover,
+        .modal-content .change-password-button:hover,
+        .modal-content .save-button:hover {
+            background-color: #c9302c;
+        }
+
+        .modal-content .cancel-button {
             background-color: #d9534f;
             color: #fff;
             border: none;
@@ -133,8 +152,37 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
             transition: background-color 0.3s ease;
         }
 
-        .modal-content .logout-button:hover {
+        .modal-content .cancel-button:hover {
             background-color: #c9302c;
+        }
+
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content form label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        .modal-content form input[type="password"],
+        .modal-content form input[type="email"],
+        .modal-content form input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .password-change-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .password-change-section.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -193,6 +241,24 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
         <p>ID: <?php echo htmlspecialchars($user_id); ?></p>
         <p>Role: <?php echo htmlspecialchars($role_description); ?></p>
         <button class="logout-button" onclick="window.location.href='logout.php'">Logout</button>
+        <button class="change-password-button" id="change-password-button">Change Password</button>
+
+        <!-- Password change section -->
+        <div class="password-change-section" id="password-change-section">
+            <form id="change-password-form" method="post" action="change_password.php">
+                <label for="old-password">Old Password:</label>
+                <input type="password" id="old-password" name="old-password" required>
+
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="new-password" required>
+
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+
+                <button type="submit" class="save-button">Save Changes</button>
+                <button type="button" class="cancel-button" id="cancel-button">Cancel</button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -201,6 +267,9 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
     const navbarMenu = document.getElementById('navbar-menu');
     const profileCircle = document.getElementById('profile-circle');
     const profileModal = document.getElementById('profile-modal');
+    const cancelButton = document.getElementById('cancel-button');
+    const changePasswordButton = document.getElementById('change-password-button');
+    const passwordChangeSection = document.getElementById('password-change-section');
 
     navbarToggle.addEventListener('click', () => {
         navbarMenu.classList.toggle('active');
@@ -214,6 +283,14 @@ $role_description = $user_role == 1 ? 'Admin' : 'User';
         if (event.target === profileModal) {
             profileModal.style.display = 'none';
         }
+    });
+
+    changePasswordButton.addEventListener('click', () => {
+        passwordChangeSection.classList.toggle('active');
+    });
+
+    cancelButton.addEventListener('click', () => {
+        passwordChangeSection.classList.remove('active');
     });
 </script>
 </body>
