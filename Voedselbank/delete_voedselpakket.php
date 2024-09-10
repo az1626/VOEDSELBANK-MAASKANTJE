@@ -12,9 +12,29 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
+    // Function to delete records from the producten_has_voedselpakketen table
+    function deleteVoedselpakketProducts($conn, $id) {
+        $sql = "DELETE FROM producten_has_voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Prepare failed: " . $conn->error);
+        }
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
+        return $stmt->affected_rows > 0;
+    }
+
     // Function to delete a voedselpakket
     function deleteVoedselpakket($conn, $id) {
-        $sql = "DELETE FROM voedselpakket WHERE id = ?";
+        // Delete related records first
+        if (!deleteVoedselpakketProducts($conn, $id)) {
+            return false;
+        }
+
+        // Now delete the voedselpakket
+        $sql = "DELETE FROM voedselpakketen WHERE idVoedselpakketen = ?";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             die("Prepare failed: " . $conn->error);

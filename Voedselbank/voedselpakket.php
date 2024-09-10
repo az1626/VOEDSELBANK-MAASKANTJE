@@ -8,51 +8,55 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     exit;
 }
 
-// Function to get all voedselpakketten with product details
-function getVoedselpakketten($conn) {
+// Function to get all voedselpakketen with product details
+function getVoedselpakketen($conn) {
     $sql = "SELECT v.idVoedselpakketen AS id, v.Samenstellingsdatum AS samenstellingsdatum, v.Uitgiftedatum AS ophaaldatum,
-                   p.naam AS product_naam, vp.quantity
+                   p.naam AS product_naam
             FROM Voedselpakketen v
             LEFT JOIN Producten_has_Voedselpakketen vp ON v.idVoedselpakketen = vp.Voedselpakketen_idVoedselpakketen
-            LEFT JOIN Producten p ON vp.Producten_idProducten = p.idProducten
+            LEFT JOIN Producten p ON vp.Producten_idProducten = p.idProducten AND vp.Producten_Categorieen_idCategorieen = p.Categorieen_idCategorieen
             ORDER BY v.idVoedselpakketen, p.naam";
 
     $result = $conn->query($sql);
 
+    // Error handling
+    if (!$result) {
+        die("Query failed: " . $conn->error);
+    }
+
     if ($result->num_rows > 0) {
-        $voedselpakketten = [];
+        $voedselpakketen = [];
         $current_id = null;
         $current_pakket = null;
 
         while ($row = $result->fetch_assoc()) {
             if ($current_id !== $row['id']) {
                 if ($current_pakket !== null) {
-                    $voedselpakketten[] = $current_pakket;
+                    $voedselpakketen[] = $current_pakket;
                 }
                 $current_id = $row['id'];
                 $current_pakket = [
                     'id' => $row['id'],
-                    'naam' => $row['naam'],
-                    'producten' => [],
                     'samenstellingsdatum' => $row['samenstellingsdatum'],
-                    'ophaaldatum' => $row['ophaaldatum']
+                    'ophaaldatum' => $row['ophaaldatum'],
+                    'producten' => []
                 ];
             }
             if ($row['product_naam'] !== null) {
-                $current_pakket['producten'][] = $row['product_naam'] . ' x' . $row['quantity'];
+                $current_pakket['producten'][] = $row['product_naam'];
             }
         }
         if ($current_pakket !== null) {
-            $voedselpakketten[] = $current_pakket;
+            $voedselpakketen[] = $current_pakket;
         }
-        return $voedselpakketten;
+        return $voedselpakketen;
     } else {
         return [];
     }
 }
 
-// Get all voedselpakketten for display
-$voedselpakketten = getVoedselpakketten($conn);
+// Get all voedselpakketen for display
+$voedselpakketen = getVoedselpakketen($conn);
 ?>
 
 <!DOCTYPE html>
@@ -60,78 +64,80 @@ $voedselpakketten = getVoedselpakketten($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voedselpakketten Beheer</title>
-    <!-- Your existing CSS styles here -->
+    <title>Voedselpakketen Beheer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            color: #333;
         }
 
         .container {
             width: 80%;
-            margin: 0 auto;
+            max-width: 1200px;
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1, h2 {
-            color: #333;
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        button:hover {
+            background-color: #2980b9;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
         }
 
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #f4f4f4;
+            background-color: #3498db;
+            color: white;
         }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
 
         .action-links a {
-            margin-right: 10px;
-            color: #007bff;
+            color: #3498db;
             text-decoration: none;
+            margin-right: 10px;
         }
 
         .action-links a:hover {
-            text-decoration: underline;
-        }
-
-        .action-links a.delete {
-            color: #dc3545;
-        }
-
-        .action-links a.delete:hover {
             text-decoration: underline;
         }
     </style>
@@ -140,35 +146,33 @@ $voedselpakketten = getVoedselpakketten($conn);
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Voedselpakketten Beheer</h1>
+    <h1>Voedselpakketen Beheer</h1>
 
     <a href="add_voedselpakket.php"><button>Voeg een nieuw Voedselpakket toe</button></a>
 
-    <h2>Alle Voedselpakketten</h2>
+    <h2>Alle Voedselpakketen</h2>
     <table>
         <thead>
         <tr>
             <th>ID</th>
-            <th>Naam</th>
-            <th>Producten</th>
             <th>Samenstellingsdatum</th>
             <th>Ophaaldatum</th>
+            <th>Producten</th>
             <th>Acties</th>
         </tr>
         </thead>
         <tbody>
-        <?php if (empty($voedselpakketten)): ?>
+        <?php if (empty($voedselpakketen)): ?>
             <tr>
-                <td colspan="6">Geen voedselpakketten gevonden.</td>
+                <td colspan="5">Geen voedselpakketen gevonden.</td>
             </tr>
         <?php else: ?>
-            <?php foreach ($voedselpakketten as $pakket) : ?>
+            <?php foreach ($voedselpakketen as $pakket) : ?>
                 <tr>
                     <td><?php echo htmlspecialchars($pakket['id']); ?></td>
-                    <td><?php echo htmlspecialchars($pakket['naam']); ?></td>
-                    <td><?php echo htmlspecialchars(implode(', ', $pakket['producten'])); ?></td>
                     <td><?php echo htmlspecialchars($pakket['samenstellingsdatum']); ?></td>
                     <td><?php echo htmlspecialchars($pakket['ophaaldatum']); ?></td>
+                    <td><?php echo htmlspecialchars(implode(', ', $pakket['producten'])); ?></td>
                     <td class="action-links">
                         <a href="edit_voedselpakket.php?id=<?php echo htmlspecialchars($pakket['id']); ?>">Bewerken</a>
                         <a href="delete_voedselpakket.php?id=<?php echo htmlspecialchars($pakket['id']); ?>" onclick="return confirm('Weet je zeker dat je dit voedselpakket wilt verwijderen?');">Verwijderen</a>
