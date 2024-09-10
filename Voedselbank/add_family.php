@@ -6,7 +6,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Gezinnen</title>
+    <title>Add Klanten</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -109,7 +109,7 @@ session_start();
 <body>
     <?php include 'navbar.php'; ?>
     <div class="container">
-        <h1>Add New Gezinnen</h1>
+        <h1>Add New Klanten</h1>
         <?php
         if (isset($_SESSION['error'])) {
             echo "<p class='error'>" . $_SESSION['error'] . "</p>";
@@ -124,28 +124,25 @@ session_start();
             <label for="naam">Naam:</label>
             <input type="text" id="naam" name="naam" required>
             
-            <label for="volwassenen">Volwassenen:</label>
-            <input type="number" id="volwassenen" name="volwassenen" required min="0">
-            
-            <label for="kinderen">Kinderen:</label>
-            <input type="number" id="kinderen" name="kinderen" required min="0">
-            
-            <label for="postcode">Postcode:</label>
-            <input type="text" id="postcode" name="postcode" required>
-            
-            <label for="mail">Email:</label>
-            <input type="email" id="mail" name="mail" required>
+            <label for="adres">Adres:</label>
+            <input type="text" id="adres" name="adres" required>
             
             <label for="telefoonnummer">Telefoonnummer:</label>
-            <input type="tel" id="telefoonnummer" name="telefoonnummer" required>
+            <input type="number" id="telefoonnummer" name="telefoonnummer" required>
             
-            <label for="wensen">Wensen:</label>
-            <input type="text" id="wensen" name="wensen">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
             
-            <label for="pakket">Pakket:</label>
-            <input type="text" id="pakket" name="pakket">
+            <label for="aantal_volwassenen">Aantal Volwassenen:</label>
+            <input type="number" id="aantal_volwassenen" name="aantal_volwassenen" required min="0">
             
-            <input type="submit" value="Add Gezinnen">
+            <label for="aantal_kinderen">Aantal Kinderen:</label>
+            <input type="number" id="aantal_kinderen" name="aantal_kinderen" required min="0">
+            
+            <label for="aantal_babys">Aantal Babys:</label>
+            <input type="number" id="aantal_babys" name="aantal_babys" required min="0">
+            
+            <input type="submit" value="Add Klanten">
         </form>
     </div>
 </body>
