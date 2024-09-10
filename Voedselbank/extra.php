@@ -10,15 +10,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $beschikbare_allergieën = $_POST['beschikbare_allergieën'];
-    $beschikbare_categorieën = $_POST['beschikbare_categorieën'];
+    $naam = $_POST['naam'];
 
-    $sql = "INSERT INTO extra (beschikbare_allergieën, beschikbare_categorieën) VALUES (?, ?)";
+    // Prepare the SQL statement
+    $sql = "INSERT INTO dieetwensen (naam) VALUES (?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $beschikbare_allergieën, $beschikbare_categorieën);
+    $stmt->bind_param("s", $naam);
 
+    // Execute the statement and handle success/error
     if ($stmt->execute()) {
-        $success_message = "New extra information added successfully!";
+        $success_message = "New dietary wish added successfully!";
     } else {
         $error_message = "Error: " . $stmt->error;
     }
@@ -26,9 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Fetch current records
-$sql = "SELECT * FROM extra";
+$sql = "SELECT * FROM dieetwensen";
 $result = $conn->query($sql);
 
+// Check if query was successful
+if ($result === false) {
+    $error_message = "Error fetching data: " . $conn->error;
+    $result = [];  // Ensure $result is defined even if it's an empty array
+}
+
+// Close the database connection
 $conn->close();
 ?>
 
@@ -37,8 +45,8 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Extra Information</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Manage Dietary Wishes</title>
+    <link rel="stylesheet" href="dashboard.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -115,9 +123,10 @@ $conn->close();
         }
     </style>
 </head>
-<body>
+<body><?php include 'navbar.php'; ?>
+
 <div class="container">
-    <h1>Manage Extra Information</h1>
+    <h1>Manage Dietary Wishes</h1>
     <?php
     if (isset($success_message)) {
         echo "<div class='message success'>$success_message</div>";
@@ -129,30 +138,31 @@ $conn->close();
 
     <table>
         <tr>
-            <th>Available Allergies</th>
-            <th>Available Categories</th>
+            <th>Name</th>
             <th>Actions</th>
         </tr>
-        <?php while ($row = $result->fetch_assoc()): ?>
+        <?php if ($result && $result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($row['naam']); ?></td>
+                    <td>
+                        <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
+                        <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
+        <?php else: ?>
             <tr>
-                <td><?php echo htmlspecialchars($row['beschikbare_allergieën']); ?></td>
-                <td><?php echo htmlspecialchars($row['beschikbare_categorieën']); ?></td>
-                <td>
-                    <a href="edit_extra.php?id=<?php echo urlencode($row['id']); ?>">Edit</a>
-                    <a href="delete_extra.php?id=<?php echo urlencode($row['id']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
-                </td>
+                <td colspan="2">No dietary wishes found.</td>
             </tr>
-        <?php endwhile; ?>
+        <?php endif; ?>
     </table>
 
     <form action="extra.php" method="post">
-        <label for="beschikbare_allergieën">Available Allergies:</label>
-        <input type="text" id="beschikbare_allergieën" name="beschikbare_allergieën" required>
+        <label for="naam">Name:</label>
+        <input type="text" id="naam" name="naam" required>
 
-        <label for="beschikbare_categorieën">Available Categories:</label>
-        <input type="text" id="beschikbare_categorieën" name="beschikbare_categorieën" required>
-
-        <input type="submit" value="Add Extra Info">
+        <input type="submit" value="Add Dietary Wish">
     </form>
 </div>
 </body>

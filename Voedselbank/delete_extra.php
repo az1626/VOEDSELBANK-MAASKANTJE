@@ -16,12 +16,12 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 
 // Prepare and execute the deletion query
-$sql = "DELETE FROM extra WHERE id=?";
+$sql = "DELETE FROM dieetwensen WHERE idDieetwensen=?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
-    $success_message = "Extra information deleted successfully!";
+    $success_message = "Dietary wish deleted successfully!";
 } else {
     $error_message = "Error: " . $stmt->error;
 }

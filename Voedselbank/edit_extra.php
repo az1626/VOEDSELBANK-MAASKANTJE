@@ -16,7 +16,7 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 
 // Fetch the current data
-$sql = "SELECT * FROM extra WHERE id=?";
+$sql = "SELECT * FROM dieetwensen WHERE idDieetwensen=?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -25,15 +25,14 @@ $data = $result->fetch_assoc();
 $stmt->close();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $beschikbare_allergieën = $_POST['beschikbare_allergieën'];
-    $beschikbare_categorieën = $_POST['beschikbare_categorieën'];
+    $naam = $_POST['naam'];
 
-    $sql = "UPDATE extra SET beschikbare_allergieën=?, beschikbare_categorieën=? WHERE id=?";
+    $sql = "UPDATE dieetwensen SET naam=? WHERE idDieetwensen=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $beschikbare_allergieën, $beschikbare_categorieën, $id);
+    $stmt->bind_param("si", $naam, $id);
 
     if ($stmt->execute()) {
-        $success_message = "Extra information updated successfully!";
+        $success_message = "Dietary wish updated successfully!";
         header("Location: extra.php");
         exit;
     } else {
@@ -50,7 +49,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Extra Information</title>
+    <title>Edit Dietary Wish</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -115,7 +114,7 @@ $conn->close();
 </head>
 <body>
 <div class="container">
-    <h1>Edit Extra Information</h1>
+    <h1>Edit Dietary Wish</h1>
     <?php
     if (isset($success_message)) {
         echo "<div class='message success'>$success_message</div>";
@@ -125,13 +124,10 @@ $conn->close();
     }
     ?>
     <form action="edit_extra.php?id=<?php echo urlencode($id); ?>" method="post">
-        <label for="beschikbare_allergieën">Available Allergies:</label>
-        <input type="text" id="beschikbare_allergieën" name="beschikbare_allergieën" value="<?php echo htmlspecialchars($data['beschikbare_allergieën']); ?>" required>
+        <label for="naam">Name:</label>
+        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($data['naam']); ?>" required>
 
-        <label for="beschikbare_categorieën">Available Categories:</label>
-        <input type="text" id="beschikbare_categorieën" name="beschikbare_categorieën" value="<?php echo htmlspecialchars($data['beschikbare_categorieën']); ?>" required>
-
-        <input type="submit" value="Update Extra Info">
+        <input type="submit" value="Update Dietary Wish">
     </form>
 </div>
 </body>
