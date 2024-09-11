@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
 
     // Function to get a specific voedselpakket by ID
     function getVoedselpakketById($conn, $id) {
-        $sql = "SELECT * FROM voedselpakket WHERE id = ?";
+        $sql = "SELECT * FROM voedselpakketen WHERE idVoedselpakketen = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -26,20 +26,19 @@ if (isset($_GET['id'])) {
 
     // Check if the form was submitted for updating the voedselpakket
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_voedselpakket'])) {
-        $naam = $_POST['naam'];
         $samenstellingsdatum = $_POST['samenstellingsdatum'];
-        $ophaaldatum = $_POST['ophaaldatum'];
+        $uitgiftedatum = $_POST['uitgiftedatum'];
 
         // Function to update an existing voedselpakket
-        function updateVoedselpakket($conn, $id, $naam, $samenstellingsdatum, $ophaaldatum) {
-            $sql = "UPDATE voedselpakket SET naam = ?, samenstellingsdatum = ?, ophaaldatum = ? WHERE id = ?";
+        function updateVoedselpakket($conn, $id, $samenstellingsdatum, $uitgiftedatum) {
+            $sql = "UPDATE voedselpakketen SET Samenstellingsdatum = ?, Uitgiftedatum = ? WHERE idVoedselpakketen = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssi", $naam, $samenstellingsdatum, $ophaaldatum, $id);
+            $stmt->bind_param("ssi", $samenstellingsdatum, $uitgiftedatum, $id);
             return $stmt->execute();
         }
 
         // Attempt to update the voedselpakket
-        if (updateVoedselpakket($conn, $id, $naam, $samenstellingsdatum, $ophaaldatum)) {
+        if (updateVoedselpakket($conn, $id, $samenstellingsdatum, $uitgiftedatum)) {
             echo "<script>alert('Voedselpakket successfully updated.'); window.location.href='voedselpakket.php';</script>";
         } else {
             echo "<script>alert('Failed to update voedselpakket.'); window.location.href='edit_voedselpakket.php?id=$id';</script>";
@@ -134,14 +133,11 @@ if (isset($_GET['id'])) {
     <h1>Voedselpakket Bewerken</h1>
 
     <form method="POST" action="">
-        <label for="naam">Naam:</label>
-        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($voedselpakket['naam']); ?>" required>
-
         <label for="samenstellingsdatum">Samenstellingsdatum:</label>
-        <input type="date" id="samenstellingsdatum" name="samenstellingsdatum" value="<?php echo htmlspecialchars($voedselpakket['samenstellingsdatum']); ?>" required>
+        <input type="date" id="samenstellingsdatum" name="samenstellingsdatum" value="<?php echo htmlspecialchars($voedselpakket['Samenstellingsdatum']); ?>" required>
 
-        <label for="ophaaldatum">Ophaaldatum:</label>
-        <input type="date" id="ophaaldatum" name="ophaaldatum" value="<?php echo htmlspecialchars($voedselpakket['ophaaldatum']); ?>" required>
+        <label for="uitgiftedatum">Uitgiftedatum:</label>
+        <input type="date" id="uitgiftedatum" name="uitgiftedatum" value="<?php echo htmlspecialchars($voedselpakket['Uitgiftedatum']); ?>" required>
 
         <button type="submit" name="update_voedselpakket">Update</button>
     </form>

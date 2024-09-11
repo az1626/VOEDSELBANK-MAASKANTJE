@@ -108,6 +108,23 @@ if ($result->num_rows > 0) {
 } else {
     echo "No clients found.";
 }
+
+// Fetch dietary preferences for each client
+$dieetwensen = [];
+foreach ($klanten as $klant) {
+    $sql = "SELECT d.naam FROM Klanten_has_Dieetwensen k_d INNER JOIN Dieetwensen d ON k_d.Dieetwensen_idDieetwensen = d.idDieetwensen WHERE k_d.Klanten_idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant['idKlanten']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $preferences = [];
+    while ($row = $result->fetch_assoc()) {
+        $preferences[] = $row['naam'];
+    }
+    $dieetwensen[$klant['idKlanten']] = $preferences;
+}
+$stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -117,101 +134,133 @@ if ($result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voeg een nieuw Voedselpakket toe</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
 
-        .container {
-            width: 80%;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
 
-        h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
+h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+}
 
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 600;
+    color: #2c3e50;
+}
 
-        input[type="text"], input[type="date"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
+input[type="text"], input[type="date"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
 
-        input[type="date"] {
-            width: auto;
-        }
+input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus {
+    border-color: #3498db;
+    outline: none;
+}
 
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
 
-        button:hover {
-            background-color: #2980b9;
-        }
+button:hover {
+    background-color: #2980b9;
+}
 
-        .client-group, .product-group {
-            background-color: #ecf0f1;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
+.client-group, .product-group {
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
 
-        .client-group > label, .product-group > label {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
+.client-group > label, .product-group > label {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
 
-        .client-option, .product-option {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+.client-option, .product-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
 
-        .client-option label, .product-option label {
-            margin-left: 10px;
-            font-weight: normal;
-        }
+.client-option input[type="radio"], .product-option input[type="checkbox"] {
+    margin-right: 10px;
+}
 
-        .quantity {
-            width: 60px;
-            margin-left: 10px;
-        }
+.product-option {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
 
-        @media (max-width: 600px) {
-            .container {
-                width: 95%;
-                padding: 10px;
-            }
-        }
+.product-option label {
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.product-option p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.quantity {
+    width: 60px;
+    margin-left: 10px;
+}
+
+.dieetwensen {
+    font-size: 16px;
+    color: #555;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .product-option {
+        padding-bottom: 5px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -224,11 +273,13 @@ if ($result->num_rows > 0) {
             <label>Selecteer een klant:</label>
             <?php foreach ($klanten as $klant): ?>
                 <div class="client-option">
-                    <input type="radio" id="klant_<?php echo $klant['idKlanten']; ?>" name="klant_id" value="<?php echo $klant['idKlanten']; ?>" required>
+                    <input type="radio" id="klant_<?php echo $klant['idKlanten']; ?>" name="klant_id" value="<?php echo $klant['idKlanten']; ?>" required onchange="showDieetwensen(<?php echo $klant['idKlanten']; ?>)">
                     <label for="klant_<?php echo $klant['idKlanten']; ?>"><?php echo htmlspecialchars($klant['naam']); ?></label>
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <div class="dieetwensen" id="dieetwensen_display"></div>
 
         <div class="product-group">
             <label>Producten:</label>
@@ -238,6 +289,7 @@ if ($result->num_rows > 0) {
                     <label for="product_<?php echo $product['idProducten']; ?>">
                         <?php echo htmlspecialchars($product['naam']) . " (Voorraad: " . $product['aantal'] . ")"; ?>
                     </label>
+                    <p><?php echo htmlspecialchars($product['beschrijving']); ?></p>
                     <input type="number" name="quantities[]" min="1" max="<?php echo $product['aantal']; ?>" class="quantity" placeholder="Aantal">
                     <input type="hidden" name="categorie_ids[]" value="<?php echo $product['Categorieen_idCategorieen']; ?>">
                 </div>
@@ -253,5 +305,18 @@ if ($result->num_rows > 0) {
         <button type="submit" name="add_voedselpakket">Voeg toe</button>
     </form>
 </div>
+
+<script>
+    const dieetwensen = <?php echo json_encode($dieetwensen); ?>;
+
+    function showDieetwensen(klantId) {
+        const display = document.getElementById('dieetwensen_display');
+        if (dieetwensen[klantId]) {
+            display.innerHTML = '<strong>Dieetwensen:</strong> ' + dieetwensen[klantId].join(', ');
+        } else {
+            display.innerHTML = '';
+        }
+    }
+</script>
 </body>
 </html>
