@@ -1,6 +1,25 @@
 <?php
 session_start();
+include 'db_connect.php';
+
+// Check if the user is logged in and has admin privileges
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
+    header("Location: login.php");
+    exit;
+}
+
+// Fetch dietary preferences from the database
+$sql = "SELECT idDieetwensen, naam FROM Dieetwensen";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$dieetwensenResult = $stmt->get_result();
+$dieetwensen = [];
+while ($row = $dieetwensenResult->fetch_assoc()) {
+    $dieetwensen[] = $row;
+}
+$stmt->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,96 +32,76 @@ session_start();
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
         }
-
-        .navbar {
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
-
-        .navbar a {
-            color: white;
-            margin: 0 10px;
-            text-decoration: none;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
         .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            margin-top: 80px; /* Adjust to add space below the fixed navbar */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
         }
-
-        .error, .success {
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .error {
-            color: red;
-            margin-bottom: 10px;
-        }
-
-        .success {
-            color: green;
-            margin-bottom: 10px;
-        }
-
         form {
             display: flex;
             flex-direction: column;
         }
-
         label {
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
             font-weight: bold;
             color: #333;
         }
-
-        input[type="text"], input[type="number"], input[type="email"], input[type="tel"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
         }
-
         input[type="submit"] {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 0.8rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 16px;
+            transition: background-color 0.3s;
         }
-
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        legend {
+            font-weight: bold;
+            color: #333;
+        }
+        .error {
+            color: #d9534f;
+            background-color: #f2dede;
+            padding: 1rem;
+            border: 1px solid #d9534f;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .success {
+            color: #5bc0de;
+            background-color: #d9edf7;
+            padding: 1rem;
+            border: 1px solid #5bc0de;
+            border-radius: 4px;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -142,6 +141,20 @@ session_start();
             <label for="aantal_babys">Aantal Babys:</label>
             <input type="number" id="aantal_babys" name="aantal_babys" required min="0">
             
+            <fieldset>
+    <legend>Dieetwensen</legend>
+    <?php foreach ($dieetwensen as $wens): ?>
+        <label>
+            <input type="checkbox" name="dieetwensen[]" value="<?php echo $wens['idDieetwensen']; ?>">
+            <?php echo htmlspecialchars($wens['naam']); ?>
+        </label><br>
+    <?php endforeach; ?>
+    
+    <label for="handmatig_input">Handmatig dieetwens toevoegen:</label>
+    <input type="text" id="handmatig_input" name="handmatig_input" placeholder="Voer dieetwens in">
+</fieldset>
+
+
             <input type="submit" value="Add Klanten">
         </form>
     </div>

@@ -25,7 +25,30 @@ if (!$data) {
     exit;
 }
 
-// Update family data if the form is submitted
+// Fetch existing dietary preferences for the client
+$sql = "SELECT Dieetwensen_idDieetwensen FROM Klanten_has_Dieetwensen WHERE Klanten_idKlanten = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$dieetwensenResult = $stmt->get_result();
+$selectedDieetwensen = [];
+while ($row = $dieetwensenResult->fetch_assoc()) {
+    $selectedDieetwensen[] = $row['Dieetwensen_idDieetwensen'];
+}
+$stmt->close();
+
+// Fetch all dietary preferences
+$sql = "SELECT idDieetwensen, naam FROM Dieetwensen";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$dieetwensenResult = $stmt->get_result();
+$allDieetwensen = [];
+while ($row = $dieetwensenResult->fetch_assoc()) {
+    $allDieetwensen[] = $row;
+}
+$stmt->close();
+
+// Update family and dietary preferences if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $naam = $_POST['naam'];
     $adres = $_POST['adres'];
@@ -34,12 +57,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $aantal_volwassenen = intval($_POST['aantal_volwassenen']);
     $aantal_kinderen = intval($_POST['aantal_kinderen']);
     $aantal_babys = intval($_POST['aantal_babys']);
+    $selectedDieetwensen = isset($_POST['dieetwensen']) ? $_POST['dieetwensen'] : [];
+    $handmatigDieetwens = $_POST['handmatig_input'];
 
+    // Update family data
     $sql = "UPDATE Klanten SET naam = ?, adres = ?, telefoonnummer = ?, email = ?, aantal_volwassenen = ?, aantal_kinderen = ?, aantal_babys = ? WHERE idKlanten = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssiiiii", $naam, $adres, $telefoonnummer, $email, $aantal_volwassenen, $aantal_kinderen, $aantal_babys, $id);
-
+    $stmt->bind_param("ssssiisi", $naam, $adres, $telefoonnummer, $email, $aantal_volwassenen, $aantal_kinderen, $aantal_babys, $id);
+    
     if ($stmt->execute()) {
+        // Update dietary preferences
+        $sql = "DELETE FROM Klanten_has_Dieetwensen WHERE Klanten_idKlanten = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        
+        foreach ($selectedDieetwensen as $dieetwensId) {
+            $sql = "INSERT INTO Klanten_has_Dieetwensen (Klanten_idKlanten, Dieetwensen_idDieetwensen) VALUES (?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $id, $dieetwensId);
+            $stmt->execute();
+        }
+        
+        // Handle manual dietary preference
+        if (!empty($handmatigDieetwens)) {
+            $sql = "INSERT INTO Dieetwensen (naam) SELECT ? FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM Dieetwensen WHERE naam = ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $handmatigDieetwens, $handmatigDieetwens);
+            $stmt->execute();
+            
+            $newDieetwensId = $stmt->insert_id;
+            
+            $sql = "INSERT INTO Klanten_has_Dieetwensen (Klanten_idKlanten, Dieetwensen_idDieetwensen) VALUES (?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $id, $newDieetwensId);
+            $stmt->execute();
+        }
+        
         // Redirect to families.php with a success message
         header("Location: families.php?updated=success");
         exit;
@@ -67,12 +121,12 @@ $conn->close();
             background-color: #f4f4f4;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
         }
         h1 {
             color: #333;
@@ -80,7 +134,7 @@ $conn->close();
         }
         form {
             display: grid;
-            gap: 15px;
+            gap: 20px;
         }
         label {
             font-weight: bold;
@@ -89,25 +143,34 @@ $conn->close();
         input[type="number"],
         input[type="email"] {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
         }
         input[type="submit"] {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         input[type="submit"]:hover {
             background-color: #45a049;
         }
-        .message {
+        fieldset {
+            border: 1px solid #ccc;
             padding: 10px;
+            border-radius: 5px;
+        }
+        legend {
+            font-weight: bold;
+        }
+        .message {
+            padding: 15px;
             margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         .success {
             background-color: #d4edda;
@@ -130,6 +193,7 @@ $conn->close();
     }
     ?>
     <form action="edit_family.php?id=<?php echo $id; ?>" method="post">
+        <!-- Existing form fields -->
         <label for="naam">Naam:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($data['naam']); ?>" required>
 
@@ -150,6 +214,21 @@ $conn->close();
 
         <label for="aantal_babys">Aantal Babys:</label>
         <input type="number" id="aantal_babys" name="aantal_babys" value="<?php echo $data['aantal_babys']; ?>" required>
+
+        <!-- Dietary preferences -->
+        <fieldset>
+            <legend>Dieetwensen</legend>
+            <?php foreach ($allDieetwensen as $wens): ?>
+                <label>
+                    <input type="checkbox" name="dieetwensen[]" value="<?php echo $wens['idDieetwensen']; ?>"
+                    <?php echo in_array($wens['idDieetwensen'], $selectedDieetwensen) ? 'checked' : ''; ?>>
+                    <?php echo htmlspecialchars($wens['naam']); ?>
+                </label><br>
+            <?php endforeach; ?>
+            
+            <label for="handmatig_input">Handmatig dieetwens toevoegen:</label>
+            <input type="text" id="handmatig_input" name="handmatig_input" placeholder="Voer dieetwens in">
+        </fieldset>
 
         <input type="submit" value="Update">
     </form>

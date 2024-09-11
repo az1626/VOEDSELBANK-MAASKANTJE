@@ -8,18 +8,41 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     exit;
 }
 
-$id = intval($_GET['id']);
-$sql = "DELETE FROM Klanten WHERE idKlanten = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
+if (isset($_GET['id'])) {
+    $klant_id = intval($_GET['id']);
 
-if ($stmt->execute()) {
-    header("Location: families.php");
-    exit;
+    // First, delete related voedselpakketen records
+    $sql = "DELETE FROM voedselpakketen WHERE Klanten_idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant_id);
+    $stmt->execute();
+    $stmt->close();
+
+    // Then, delete related dieetwensen records (if needed)
+    $sql = "DELETE FROM Klanten_has_Dieetwensen WHERE Klanten_idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant_id);
+    $stmt->execute();
+    $stmt->close();
+
+    // Finally, delete the klant record
+    $sql = "DELETE FROM klanten WHERE idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant_id);
+
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Family deleted successfully!";
+    } else {
+        $_SESSION['error'] = "Error: " . htmlspecialchars($stmt->error);
+    }
+
+    $stmt->close();
 } else {
-    echo "Error: " . $stmt->error;
+    $_SESSION['error'] = "No ID provided.";
 }
 
-$stmt->close();
+header("Location: families.php");
+exit;
+
 $conn->close();
 ?>
