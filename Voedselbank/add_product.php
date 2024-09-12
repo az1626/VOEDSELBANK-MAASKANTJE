@@ -2,6 +2,28 @@
 session_start();
 include 'db_connect.php';
 
+// Function to generate a random EAN-13 number
+function generateEAN13() {
+    $ean = '';
+    for ($i = 0; $i < 12; $i++) {
+        $ean .= rand(0, 9);
+    }
+
+    // Calculate the checksum digit
+    $sum = 0;
+    for ($i = 0; $i < 12; $i++) {
+        $digit = (int)$ean[$i];
+        if ($i % 2 == 0) {
+            $sum += $digit;
+        } else {
+            $sum += $digit * 3;
+        }
+    }
+    $checksum = (10 - ($sum % 10)) % 10;
+
+    return $ean . $checksum;
+}
+
 // Check if the user is logged in and has admin privileges
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     header("Location: login.php");
@@ -16,6 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $categorie = intval($_POST['categorie']); // Ensure this is an integer
     $voorraad = intval($_POST['voorraad']); // Convert stock to integer
     $ean_nummer = $_POST['ean_nummer'];
+
+    // If EAN number is not provided, generate one
+    if (empty($ean_nummer)) {
+        $ean_nummer = generateEAN13();
+    }
 
     // Prepare and execute the SQL statement to insert the new product
     $sql = "INSERT INTO Producten (naam, beschrijving, categorie_id, ean, aantal, Categorieen_idCategorieen) VALUES (?, ?, ?, ?, ?, ?)";
@@ -82,8 +109,8 @@ $categories = $stmt->get_result();
         <label for="voorraad">Voorraad:</label>
         <input type="number" id="voorraad" name="voorraad" required><br><br>
 
-        <label for="ean_nummer">EAN Nummer:</label>
-        <input type="text" id="ean_nummer" name="ean_nummer" required><br><br>
+        <label for="ean_nummer">EAN Nummer (leave blank to generate automatically):</label>
+        <input type="text" id="ean_nummer" name="ean_nummer"><br><br>
 
         <button type="submit">Voeg Toe</button>
     </form>
