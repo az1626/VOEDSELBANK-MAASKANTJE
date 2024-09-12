@@ -30,19 +30,21 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 // Handle form submission for updating the supplier
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $naam = $_POST['naam'];
-    $email = $_POST['email'];
+    $adres = $_POST['adres'];
+    $contactpersoon = $_POST['contactpersoon'];
     $telefoonnummer = $_POST['telefoonnummer'];
+    $email = $_POST['email'];
     $eerstevolgende_levering = $_POST['eerstevolgende_levering'];
 
-    $sql = "UPDATE Leveranciers SET naam = ?, email = ?, telefoonnummer = ?, eerstevolgende_levering = ? WHERE idLeveranciers = ?";
+    $sql = "UPDATE Leveranciers SET naam = ?, adres = ?, contactpersoon = ?, telefoonnummer = ?, email = ?, eerstevolgende_levering = ? WHERE idLeveranciers = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssisi", $naam, $email, $telefoonnummer, $eerstevolgende_levering, $id);
+    $stmt->bind_param("ssssssi", $naam, $adres, $contactpersoon, $telefoonnummer, $email, $eerstevolgende_levering, $id);
 
     if ($stmt->execute()) {
         header("Location: leveranciers.php?updated=success");
         exit;
     } else {
-        echo "<p>Error: " . $stmt->error . "</p>";
+        $error_message = "Error: " . htmlspecialchars($stmt->error);
     }
 
     $stmt->close();
@@ -57,25 +59,96 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Supplier</title>
-    <link rel="stylesheet" href="suppliers.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
 <?php include 'navbar.php'; ?>
 
 <div class="container">
     <h1>Edit Supplier</h1>
+    <?php
+    if (isset($error_message)) {
+        echo "<div class='error-message'>{$error_message}</div>";
+    }
+    ?>
     <form action="edit_leverancier.php?id=<?php echo htmlspecialchars($id); ?>" method="POST">
         <label for="naam">Name:</label>
-        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($supplier['naam']); ?>" required><br><br>
+        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($supplier['naam']); ?>" required>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($supplier['email']); ?>" required><br><br>
+        <label for="adres">Address:</label>
+        <input type="text" id="adres" name="adres" value="<?php echo htmlspecialchars($supplier['adres']); ?>" required>
+
+        <label for="contactpersoon">Contact Person:</label>
+        <input type="text" id="contactpersoon" name="contactpersoon" value="<?php echo htmlspecialchars($supplier['contactpersoon']); ?>" required>
 
         <label for="telefoonnummer">Phone:</label>
-        <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($supplier['telefoonnummer']); ?>" required><br><br>
+        <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($supplier['telefoonnummer']); ?>" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($supplier['email']); ?>" required>
 
         <label for="eerstevolgende_levering">Next Delivery:</label>
-        <input type="text" id="eerstevolgende_levering" name="eerstevolgende_levering" value="<?php echo htmlspecialchars($supplier['eerstevolgende_levering']); ?>" required><br><br>
+        <input type="datetime-local" id="eerstevolgende_levering" name="eerstevolgende_levering" value="<?php echo htmlspecialchars($supplier['eerstevolgende_levering']); ?>" required>
 
         <button type="submit">Update Supplier</button>
     </form>
