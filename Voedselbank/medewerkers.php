@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users</title>
+    <title>Beheer gebruikers</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,12 +104,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Manage Medewerkers</h1>
+    <h1>Beheer medewerker</h1>
 
     <!-- Add Medewerker Button -->
     <div class="btn-container">
         <a href="add_medewerkers.php">
-            <button type="button">Add New Medewerker</button>
+            <button type="button">Voeg nieuwe medewerker</button>
         </a>
     </div>
 
@@ -124,8 +124,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                 <th>ID</th>
                 <th>Email</th>
                 <th>Gebruikersnaam</th>
-                <th>Role</th>
-                <th>Actions</th>
+                <th>Rol</th>
+                <th>Actie</th>
             </tr>";
 
         while($row = $result->fetch_assoc()) {

@@ -23,6 +23,7 @@ $user_role = $_SESSION['role'];
 <?php include 'navbar.php'; ?>
 
 <div class="container">
+<<<<<<< HEAD
     <h1>Welkom op het Dashboard</h1>
     <div class="dashboard-links">
         <?php if ($user_role == 1): ?> <!-- Admin -->
@@ -41,6 +42,22 @@ $user_role = $_SESSION['role'];
             <a href="voedselpakket.php">Voedselpakketten</a>
         <?php else: ?>
             <p>Ongeldige rol gedetecteerd. Neem contact op met ondersteuning.</p>
+=======
+    <h1>Welkom op Dashboard</h1>
+    <div class="dashboard-links">
+        <!-- Display links based on user role -->
+        <?php if ($_SESSION['role'] == 1): ?>
+            <a href="families.php">Families beheren</a>
+            <a href="product.php">Producten</a>
+            <a href="voedselpakket.php">Voedselpakketen</a>
+            <a href="leveranciers.php">Leveranciers</a>
+            <a href="extra.php">Beheer informatie</a> <!-- Admin-only link -->
+        <?php else: ?>
+            <a href="families.php">Families beheren</a>
+            <a href="product.php">Producten</a>
+            <a href="voedselpakket.php">Voedselpakketen</a>
+            <a href="leveranciers.php">Leveranciers</a>
+>>>>>>> 8c56bb66dfebecf2d4cea75aed2e5702f52c5554
         <?php endif; ?>
     </div>
 </div>
