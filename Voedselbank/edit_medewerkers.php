@@ -15,6 +15,9 @@ if (isset($_GET['id'])) {
     // Fetch user data
     $sql = "SELECT * FROM gebruikers WHERE idGebruikers = ?";
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Error preparing statement: " . htmlspecialchars($conn->error));
+    }
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -37,18 +40,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role = intval($_POST['role']); // Ensure role is an integer
     $password = $_POST['password'];
 
-    // Update the user data in the database
     if (!empty($password)) {
         // If a new password is provided, hash it
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         $sql = "UPDATE gebruikers SET Email = ?, Gebruikersnaam = ?, Rol = ?, Wachtwoord = ? WHERE idGebruikers = ?";
         $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error preparing statement: " . htmlspecialchars($conn->error));
+        }
         $stmt->bind_param("ssisi", $email, $naam, $role, $hashed_password, $user_id);
     } else {
         // If no new password is provided, do not update the password
-        $sql = "UPDATE gebruikers SET Email = ?, Gebruikersnaam = ?, Telefoonnummer = ?, Rol = ? WHERE idGebruikers = ?";
+        $sql = "UPDATE gebruikers SET Email = ?, Gebruikersnaam = ?, Rol = ? WHERE idGebruikers = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssii", $email, $naam, $telefoonnummer, $role, $user_id);
+        if (!$stmt) {
+            die("Error preparing statement: " . htmlspecialchars($conn->error));
+        }
+        $stmt->bind_param("ssii", $email, $naam, $role, $user_id);
     }
 
     if ($stmt->execute()) {
