@@ -153,7 +153,7 @@ $conn->close();
 
 <div class="main-content">
     <div class="container">
-        <h1>Manage Dietary Wishes</h1>
+        <h1>Beheer dieetwensen</h1>
         <?php
         if (isset($success_message)) {
             echo "<div class='message success'>$success_message</div>";
@@ -165,8 +165,8 @@ $conn->close();
 
         <table>
             <tr>
-                <th>Name</th>
-                <th>Actions</th>
+                <th>Naam</th>
+                <th>Acties</th>
             </tr>
             <?php if ($result && $result->num_rows > 0): ?>
                 <?php while ($row = $result->fetch_assoc()): ?>
@@ -180,16 +180,16 @@ $conn->close();
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="2">No dietary wishes found.</td>
+                    <td colspan="2">Geen dieetwensen gevonden.</td>
                 </tr>
             <?php endif; ?>
         </table>
 
         <form action="extra.php" method="post">
-            <label for="naam">Name:</label>
+            <label for="naam">Naam:</label>
             <input type="text" id="naam" name="naam" required>
 
-            <input type="submit" value="Add Dietary Wish">
+            <input type="submit" value="Voeg dieetwensen">
         </form>
     </div>
 </div>
