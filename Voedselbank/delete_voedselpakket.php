@@ -3,10 +3,12 @@ session_start();
 include 'db_connect.php'; // Include your database connection script
 
 // Check if the user is logged in and has the admin role
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
+// Redirect if not admin (role 1), medewerker (role 2), or vrijwilliger (role 3)
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
     header("Location: login.php");
     exit;
 }
+
 
 // Check if an ID is provided
 if (isset($_GET['id'])) {

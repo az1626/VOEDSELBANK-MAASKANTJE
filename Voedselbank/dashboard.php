@@ -34,8 +34,9 @@ $user_role = $_SESSION['role'];
             <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
             <a href="leveranciers.php">Leveranciers</a>
+            <a href="families.php">Beheer Gezinnen</a>
+
         <?php elseif ($user_role == 3): ?> <!-- Vrijwilliger -->
-            <a href="extra.php">Bekijk Dieetwensen</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
         <?php else: ?>
             <p>Ongeldige rol gedetecteerd. Neem contact op met ondersteuning.</p>
