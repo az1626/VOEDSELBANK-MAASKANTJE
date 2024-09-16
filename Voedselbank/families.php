@@ -25,109 +25,65 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Families</title>
+
     <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        width: 90%;
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #ffffff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
-
-    h1 {
-        font-size: 24px;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        font-size: 16px;
-        color: #fff;
-        background-color: #007bff;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        text-align: center;
-        transition: background-color 0.3s;
-    }
-
-    .btn:hover {
-        background-color: #0056b3;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    th, td {
-        padding: 12px;
-        border: 1px solid #ddd;
-        text-align: left;
-        vertical-align: middle;
-    }
-
-    th {
-        background-color: #007bff;
-        color: #ffffff;
-        font-weight: bold;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    .action-link {
-        color: #007bff;
-        text-decoration: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .action-link:hover {
-        background-color: #007bff;
-        color: #ffffff;
-    }
-
-    p {
-        font-size: 16px;
-    }
-
-    @media (max-width: 768px) {
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
         .container {
-            width: 100%;
-            padding: 10px;
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
         }
-
+        h1 {
+            color: #333;
+            text-align: center;
+        }
         table {
-            font-size: 14px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
-
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
         .btn {
-            padding: 8px 16px;
-            font-size: 14px;
+            display: inline-block;
+            background: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
-    }
-</style>
+        .btn:hover {
+            background: #45a049;
+        }
+        .action-link {
+            color: #4CAF50;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 
 
 </head>
