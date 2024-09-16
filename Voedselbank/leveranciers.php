@@ -132,13 +132,13 @@ $result = $stmt->get_result();
         echo "<table>
             <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Contact Person</th>
-            <th>Phone</th>
+            <th>Naam</th>
+            <th>Adres</th>
+            <th>Contact Persoon</th>
+            <th>Telefoon</th>
             <th>Email</th>
-            <th>Next Delivery</th>
-            <th>Actions</th>
+            <th>Volgende Bezorging</th>
+            <th>Acties</th>
             </tr>";
 
         while($row = $result->fetch_assoc()) {
