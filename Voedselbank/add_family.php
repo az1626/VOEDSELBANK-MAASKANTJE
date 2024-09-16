@@ -25,7 +25,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Klanten</title>
+    <title>Voeg Klanten</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -127,7 +127,7 @@ $stmt->close();
 <body>
     <?php include 'navbar.php'; ?>
     <div class="container">
-        <h1>Add New Klanten</h1>
+        <h1>Voeg Klanten</h1>
         <?php
         if (isset($_SESSION['error'])) {
             echo "<p class='error'>" . $_SESSION['error'] . "</p>";
@@ -174,8 +174,8 @@ $stmt->close();
 </fieldset>
 
 
-            <input type="submit" value="Add Klanten">
+            <input type="submit" value="Voeg Klanten">
         </form>
     </div>
 </body>
-</html>
+</htm

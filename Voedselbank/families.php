@@ -24,7 +24,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Families</title>
+    <title>Beheer Families</title>
 
     <style>
         body {
@@ -91,8 +91,8 @@ $result = $stmt->get_result();
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Manage Klanten Data</h1>
-    <a href="add_family.php" class="btn">Add New Family</a>
+    <h1>Beheer Klanten Data</h1>
+    <a href="add_family.php" class="btn">Voeg Familie</a>
 
     <?php
     if ($result->num_rows > 0) {
@@ -129,7 +129,7 @@ $result = $stmt->get_result();
         }
         echo "</table>";
     } else {
-        echo "<p>No data found.</p>";
+        echo "<p>Geen data gevonden.</p>";
     }
 
     $stmt->close();

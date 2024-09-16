@@ -155,7 +155,7 @@ $categories = $stmt->get_result();
         <label for="voorraad">Voorraad:</label>
         <input type="number" id="voorraad" name="voorraad" required><br><br>
 
-        <label for="ean_nummer">EAN Nummer (leave blank to generate automatically):</label>
+        <label for="ean_nummer">EAN Nummer (laat dit vak leeg om automatisch de nummer te genereren):</label>
         <input type="text" id="ean_nummer" name="ean_nummer"><br><br>
 
         <button type="submit">Voeg Toe</button>

@@ -39,7 +39,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Suppliers</title>
+    <title>Beheer Leveranciers</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -115,11 +115,11 @@ $result = $stmt->get_result();
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Manage Suppliers</h1>
+    <h1>Beheer Leveranciers</h1>
 
     <!-- Add Supplier Button -->
     <div>
-        <a href="add_leverancier.php" class="btn">Add New Supplier</a>
+        <a href="add_leverancier.php" class="btn">Voeg leverancier</a>
     </div>
 
     <?php
@@ -158,7 +158,7 @@ $result = $stmt->get_result();
         }
         echo "</table>";
     } else {
-        echo "<p>No suppliers found.</p>";
+        echo "<p>Geen leverancier gevonden.</p>";
     }
 
     $stmt->close();
