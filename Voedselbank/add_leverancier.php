@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php';
 
 // Check if the user is logged in and has admin privileges
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2)) {
     header("Location: login.php");
     exit;
 }

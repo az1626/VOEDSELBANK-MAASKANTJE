@@ -3,10 +3,11 @@ session_start();
 include 'db_connect.php';
 
 // Check if the user is logged in and has the admin role
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
     header("Location: login.php");
     exit;
 }
+
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

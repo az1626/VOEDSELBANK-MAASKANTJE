@@ -23,41 +23,23 @@ $user_role = $_SESSION['role'];
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-<<<<<<< HEAD
     <h1>Welkom op het Dashboard</h1>
     <div class="dashboard-links">
         <?php if ($user_role == 1): ?> <!-- Admin -->
             <a href="families.php">Beheer Gezinnen</a>
-            <a href="product.php">Voorraad</a>
+            <a href="product.php">Beheer    Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
             <a href="leveranciers.php">Leveranciers</a>
-            <a href="extra.php">Beheer Extra Informatie</a>
-            <a href="medewerkers.php">Beheer Gebruikers</a> <!-- Admin-specifieke link -->
         <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
             <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
             <a href="leveranciers.php">Leveranciers</a>
+            <a href="families.php">Beheer Gezinnen</a>
+
         <?php elseif ($user_role == 3): ?> <!-- Vrijwilliger -->
-            <a href="extra.php">Bekijk Dieetwensen</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
         <?php else: ?>
             <p>Ongeldige rol gedetecteerd. Neem contact op met ondersteuning.</p>
-=======
-    <h1>Welkom op Dashboard</h1>
-    <div class="dashboard-links">
-        <!-- Display links based on user role -->
-        <?php if ($_SESSION['role'] == 1): ?>
-            <a href="families.php">Families beheren</a>
-            <a href="product.php">Producten</a>
-            <a href="voedselpakket.php">Voedselpakketen</a>
-            <a href="leveranciers.php">Leveranciers</a>
-            <a href="extra.php">Beheer informatie</a> <!-- Admin-only link -->
-        <?php else: ?>
-            <a href="families.php">Families beheren</a>
-            <a href="product.php">Producten</a>
-            <a href="voedselpakket.php">Voedselpakketen</a>
-            <a href="leveranciers.php">Leveranciers</a>
->>>>>>> 8c56bb66dfebecf2d4cea75aed2e5702f52c5554
         <?php endif; ?>
     </div>
 </div>

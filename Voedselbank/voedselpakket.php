@@ -3,10 +3,12 @@ session_start();
 include 'db_connect.php';
 
 // Check if the user is logged in and has the admin role
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
+// Redirect if not admin (role 1), medewerker (role 2), or vrijwilliger (role 3)
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
     header("Location: login.php");
     exit;
 }
+
 
 // Function to get all voedselpakketen with product details
 function getVoedselpakketen($conn) {
