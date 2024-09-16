@@ -16,8 +16,10 @@ $sort_column = isset($_GET['sort']) ? $_GET['sort'] : 'idProducten'; // Default 
 $sort_order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'DESC' : 'ASC';
 
 // Haal producten op uit de database, eventueel met zoekopdracht en sortering
-$sql = "SELECT * FROM Producten 
-        WHERE naam LIKE ? OR ean LIKE ? 
+$sql = "SELECT p.idProducten, p.naam, p.aantal, p.ean, c.naam AS categorie
+        FROM Producten p
+        LEFT JOIN Categorieen c ON p.Categorieen_idCategorieen = c.idCategorieen
+        WHERE p.naam LIKE ? OR p.ean LIKE ? 
         ORDER BY $sort_column $sort_order";
 $stmt = $conn->prepare($sql);
 $search_param = "%" . $search . "%";
@@ -25,6 +27,7 @@ $stmt->bind_param("ss", $search_param, $search_param);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="nl">
@@ -163,8 +166,7 @@ $result = $stmt->get_result();
             <tr>
             <th><a href='?sort=idProducten&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>ID</a></th>
             <th><a href='?sort=naam&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Naam</a></th>
-            <th><a href='?sort=beschrijving&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Beschrijving</a></th>
-            <th><a href='?sort=Categorieen_idCategorieen&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Categorie</a></th>
+            <th><a href='?sort=categorie&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Categorie</a></th>
             <th><a href='?sort=aantal&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Voorraad</a></th>
             <th><a href='?sort=ean&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>EAN Nummer</a></th>
             <th>Acties</th>
@@ -174,8 +176,7 @@ $result = $stmt->get_result();
             echo "<tr>
                 <td>{$row['idProducten']}</td>
                 <td>{$row['naam']}</td>
-                <td>{$row['beschrijving']}</td>
-                <td>{$row['Categorieen_idCategorieen']}</td>
+                <td>{$row['categorie']}</td>
                 <td>{$row['aantal']}</td>
                 <td>{$row['ean']}</td>
                 <td>

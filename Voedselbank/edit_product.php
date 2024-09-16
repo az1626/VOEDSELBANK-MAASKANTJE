@@ -12,13 +12,12 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
     $id = intval($_POST['id']);
     $naam = $_POST['naam'];
-    $beschrijving = $_POST['beschrijving'];
     $categorie = intval($_POST['categorie']); // Convert to integer
     $voorraad = intval($_POST['voorraad']);
     $ean_nummer = $_POST['ean_nummer'];
 
     // Update the product details in the database
-    $sql = "UPDATE Producten SET naam = ?, beschrijving = ?, categorie_id = ?, aantal = ?, ean = ? WHERE idProducten = ?";
+    $sql = "UPDATE Producten SET naam = ?, categorie_id = ?, aantal = ?, ean = ? WHERE idProducten = ?";
     $stmt = $conn->prepare($sql);
     
     if ($stmt === false) {
@@ -26,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
     }
 
     // Corrected the number of bind parameters
-    $stmt->bind_param("ssisis", $naam, $beschrijving, $categorie, $voorraad, $ean_nummer, $id);
+    $stmt->bind_param("sisis", $naam, $categorie, $voorraad, $ean_nummer, $id);
 
     if ($stmt->execute()) {
         header("Location: product.php?updated=success");
@@ -129,15 +128,12 @@ $categories = $stmt->get_result();
         <label for="naam">Naam:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($product['naam']); ?>" required><br><br>
 
-        <label for="beschrijving">Beschrijving:</label>
-        <input type="text" id="beschrijving" name="beschrijving" value="<?php echo htmlspecialchars($product['beschrijving']); ?>" required><br><br>
-
         <label for="categorie">Categorie:</label>
         <select id="categorie" name="categorie" required>
             <?php
             // Populate dropdown with categories
             while ($row = $categories->fetch_assoc()) {
-                $selected = $row['idCategorieen'] == $product['Categorieen_idCategorieen'] ? 'selected' : '';
+                $selected = $row['idCategorieen'] == $product['categorie_id'] ? 'selected' : '';
                 echo "<option value='" . htmlspecialchars($row['idCategorieen']) . "' $selected>" . htmlspecialchars($row['naam']) . "</option>";
             }
             ?>

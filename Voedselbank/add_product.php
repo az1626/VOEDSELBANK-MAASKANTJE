@@ -34,7 +34,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve and sanitize input values
     $naam = $_POST['naam'];
-    $beschrijving = $_POST['beschrijving'];
     $categorie = intval($_POST['categorie']); // Ensure this is an integer
     $voorraad = intval($_POST['voorraad']); // Convert stock to integer
     $ean_nummer = $_POST['ean_nummer'];
@@ -45,14 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Prepare and execute the SQL statement to insert the new product
-    $sql = "INSERT INTO Producten (naam, beschrijving, categorie_id, ean, aantal, Categorieen_idCategorieen) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO Producten (naam, categorie_id, ean, aantal, Categorieen_idCategorieen) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
 
-    $stmt->bind_param("ssisis", $naam, $beschrijving, $categorie, $ean_nummer, $voorraad, $categorie);
+    $stmt->bind_param("sisis", $naam, $categorie, $ean_nummer, $voorraad, $categorie);
 
     if ($stmt->execute()) {
         header("Location: product.php?added=success");
@@ -142,9 +141,6 @@ $categories = $stmt->get_result();
     <form action="add_product.php" method="POST">
         <label for="naam">Naam:</label>
         <input type="text" id="naam" name="naam" required><br><br>
-
-        <label for="beschrijving">Beschrijving:</label>
-        <input type="text" id="beschrijving" name="beschrijving" required><br><br>
 
         <label for="categorie">Categorie:</label>
         <select id="categorie" name="categorie" required>
