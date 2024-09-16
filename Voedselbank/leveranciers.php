@@ -132,7 +132,7 @@ $result = $stmt->get_result();
         echo "<table>
             <tr>
             <th>ID</th>
-            <th>Naam</th>
+            <th>Bedrijfs Naam</th>
             <th>Adres</th>
             <th>Contact Persoon</th>
             <th>Telefoon</th>
