@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beheer gebruikers</title>
+    <title>Beheer Medewerkers</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,12 +104,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Beheer medewerker</h1>
+    <h1>Beheer Medewerkers</h1>
 
     <!-- Add Medewerker Button -->
     <div class="btn-container">
         <a href="add_medewerkers.php">
-            <button type="button">Voeg nieuwe medewerker</button>
+            <button type="button">Voeg nieuwe medewerker toe</button>
         </a>
     </div>
 
@@ -128,21 +128,24 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                 <th>Actie</th>
             </tr>";
 
-        while($row = $result->fetch_assoc()) {
+        while ($row = $result->fetch_assoc()) {
+            // Updated role display logic
+            $role = ($row['Rol'] == 1) ? 'Admin' : (($row['Rol'] == 2) ? 'Medewerker' : 'Vrijwilliger');
+
             echo "<tr>
                 <td>{$row['idGebruikers']}</td>
                 <td>{$row['Email']}</td>
                 <td>{$row['Gebruikersnaam']}</td>
-                <td>" . ($row['Rol'] == 1 ? 'Admin' : 'User') . "</td>
+                <td>{$role}</td>
                 <td>
                     <a href='edit_medewerkers.php?id={$row['idGebruikers']}'>Edit</a> | 
-                    <a href='delete_medewerkers.php?id={$row['idGebruikers']}' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>
+                    <a href='delete_medewerkers.php?id={$row['idGebruikers']}' onclick='return confirm(\"Weet je zeker dat je deze gebruiker wilt verwijderen?\")'>Delete</a>
                 </td>
             </tr>";
         }
         echo "</table>";
     } else {
-        echo "<div class='no-data'>No users found.</div>";
+        echo "<div class='no-data'>Geen gebruikers gevonden.</div>";
     }
 
     $conn->close();

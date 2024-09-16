@@ -74,45 +74,49 @@ $voedselpakketen = getVoedselpakketen($conn);
             margin: 0;
             padding: 0;
             color: #333;
+            line-height: 1.6;
         }
 
         .container {
-            width: 80%;
+            width: 90%;
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 2rem auto;
+            padding: 2rem;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
+        h1, h2 {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
 
-        button {
-            background-color: #3498db;
+        button, .btn {
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 12px 20px;
-            font-size: 16px;
+            font-size: 1rem;
             cursor: pointer;
             border-radius: 4px;
             transition: background-color 0.3s;
             text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1rem;
         }
 
-        button:hover {
-            background-color: #2980b9;
+        button:hover, .btn:hover {
+            background-color: #45a049;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         table, th, td {
@@ -125,7 +129,7 @@ $voedselpakketen = getVoedselpakketen($conn);
         }
 
         th {
-            background-color: #3498db;
+            background-color: #4CAF50;
             color: white;
         }
 
@@ -133,14 +137,33 @@ $voedselpakketen = getVoedselpakketen($conn);
             background-color: #f2f2f2;
         }
 
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+
         .action-links a {
-            color: #3498db;
+            color: #4CAF50;
             text-decoration: none;
             margin-right: 10px;
+            padding: 5px 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            transition: all 0.3s;
         }
 
         .action-links a:hover {
-            text-decoration: underline;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .action-links a:last-child {
+            color: #d9534f;
+            border-color: #d9534f;
+        }
+
+        .action-links a:last-child:hover {
+            background-color: #d9534f;
+            color: white;
         }
     </style>
 </head>

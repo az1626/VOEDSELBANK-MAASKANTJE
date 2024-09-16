@@ -32,6 +32,7 @@ $stmt->close();
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            line-height: 1.6;
         }
         .container {
             width: 80%;
@@ -40,11 +41,12 @@ $stmt->close();
             padding: 2rem;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 1.5rem;
         }
         form {
             display: flex;
@@ -68,14 +70,14 @@ $stmt->close();
             padding: 0.8rem;
             border: none;
             border-radius: 4px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: #fff;
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
         fieldset {
             border: 1px solid #ddd;
@@ -86,6 +88,7 @@ $stmt->close();
         legend {
             font-weight: bold;
             color: #333;
+            padding: 0 0.5rem;
         }
         .error {
             color: #d9534f;
@@ -102,6 +105,22 @@ $stmt->close();
             border: 1px solid #5bc0de;
             border-radius: 4px;
             margin-bottom: 1rem;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        #handmatig_input {
+            margin-top: 1rem;
         }
     </style>
 </head>

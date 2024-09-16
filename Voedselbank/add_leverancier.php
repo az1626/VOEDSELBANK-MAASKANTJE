@@ -117,10 +117,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     ?>
     <form action="add_leverancier.php" method="POST">
-        <label for="naam">Name:</label>
+        <label for="naam">Bedrijf:</label>
         <input type="text" id="naam" name="naam" required>
 
-        <label for="adres">Address:</label>
+        <label for="adres">Adress:</label>
         <input type="text" id="adres" name="adres" required>
 
         <label for="contactpersoon">Contact Person:</label>

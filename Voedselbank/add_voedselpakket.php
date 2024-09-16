@@ -136,133 +136,141 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voeg een nieuw Voedselpakket toe</title>
     <style>
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    color: #333;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
 
-.container {
-    width: 80%;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
 
-h2 {
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: 600;
-}
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
 
-label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: 600;
-    color: #2c3e50;
-}
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
 
-input[type="text"], input[type="date"], input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
-}
+        input[type="text"], input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
 
-input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus {
-    border-color: #3498db;
-    outline: none;
-}
+        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
 
-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
 
-button:hover {
-    background-color: #2980b9;
-}
+        button:hover {
+            background-color: #45a049;
+        }
 
-.client-group, .product-group {
-    background-color: #ecf0f1;
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
+        .client-group, .product-group {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
 
-.client-group > label, .product-group > label {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #2c3e50;
-}
+        .client-group > label, .product-group > label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
 
-.client-option, .product-option {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
+        .client-option, .product-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
-.client-option input[type="radio"], .product-option input[type="checkbox"] {
-    margin-right: 10px;
-}
+        .client-option input[type="radio"], .product-option input[type="checkbox"] {
+            margin-right: 10px;
+        }
 
-.product-option {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
+        .product-option {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
 
-.product-option label {
-    font-size: 16px;
-    color: #2c3e50;
-}
+        .product-option label {
+            font-size: 16px;
+            color: #2c3e50;
+        }
 
-.product-option p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555;
-}
+        .product-option p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
 
-.quantity {
-    width: 60px;
-    margin-left: 10px;
-}
+        .quantity {
+            width: 60px;
+            margin-left: 10px;
+        }
 
-.dieetwensen {
-    font-size: 16px;
-    color: #555;
-    margin-top: 10px;
-}
+        .dieetwensen {
+            font-size: 16px;
+            color: #555;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+        }
 
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-        padding: 10px;
-    }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 1rem;
+            }
 
-    .product-option {
-        padding-bottom: 5px;
-    }
-}
+            .product-option {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
+            .quantity {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
     </style>
 </head>
 <body>
