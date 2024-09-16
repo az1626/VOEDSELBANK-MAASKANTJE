@@ -27,11 +27,9 @@ $user_role = $_SESSION['role'];
     <div class="dashboard-links">
         <?php if ($user_role == 1): ?> <!-- Admin -->
             <a href="families.php">Beheer Gezinnen</a>
-            <a href="product.php">Voorraad</a>
+            <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
             <a href="leveranciers.php">Leveranciers</a>
-            <a href="extra.php">Beheer Extra Informatie</a>
-            <a href="medewerkers.php">Beheer Gebruikers</a> <!-- Admin-specifieke link -->
         <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
             <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
