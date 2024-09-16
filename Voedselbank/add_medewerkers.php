@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Medewerker</title>
+    <title>Voeg Medewerker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Add New Medewerker</h1>
+    <h1>Voeg nieuwe medewerker</h1>
 
     <!-- Display success or error messages -->
     <?php
@@ -139,20 +139,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br><br>
 
-        <label for="password">Password:</label><br>
+        <label for="password">Wachtwoord:</label><br>
         <input type="password" id="password" name="password" required><br><br>
 
-        <label for="name">Username:</label><br>
+        <label for="name">Gebruikersnaam:</label><br>
         <input type="text" id="name" name="name" required><br><br>
 
-        <label for="role">Role:</label><br>
+        <label for="role">Rol:</label><br>
         <select id="role" name="role" required>
             <option value="3">Vrijwilliger</option>
             <option value="2x">Medewerker</option>
             <option value="1">Admin</option>
         </select><br><br>
 
-        <input type="submit" value="Add Medewerker">
+        <input type="submit" value="Voeg Medewerker">
     </form>
 </div>
 </body>
