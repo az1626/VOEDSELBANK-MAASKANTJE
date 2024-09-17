@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include '../db_connect.php';
 
 // Check if user is logged in and has the correct role
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2)) {
@@ -112,7 +112,7 @@ $result = $stmt->get_result();
     </style>
 </head>
 <body>
-<?php include 'navbar.php'; ?>
+<?php include '../navbar.php'; ?>
 
 <div class="container">
     <h1>Beheer Leveranciers</h1>

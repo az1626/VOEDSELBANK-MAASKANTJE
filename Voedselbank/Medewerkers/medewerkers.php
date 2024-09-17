@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include '../db_connect.php';
 
 // Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
@@ -101,14 +101,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     </style>
 </head>
 <body>
-<?php include 'navbar.php'; ?>
+<?php include '../navbar.php'; ?>
+
 
 <div class="container">
     <h1>Beheer Medewerkers</h1>
 
     <!-- Add Medewerker Button -->
     <div class="btn-container">
-        <a href="add_medewerkers.php">
+        <a href="../add_medewerkers.php">
             <button type="button">Voeg nieuwe medewerker toe</button>
         </a>
     </div>
