@@ -6,22 +6,27 @@ $user_name = isset($_SESSION['Gebruikersnaam']) ? $_SESSION['Gebruikersnaam'] : 
 $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Niet beschikbaar';
 $profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
 
-// Determine role description
+// Determine role description and dashboard link
 switch ($user_role) {
     case 0:
         $role_description = 'Klant';
+        $dashboard_link = 'klantdashboard.php';  // Redirect klant to klantdashboard.php
         break;
     case 1:
         $role_description = 'Admin';
+        $dashboard_link = 'dashboard.php';  // Redirect admin to dashboard.php
         break;
     case 2:
         $role_description = 'Medewerker';
+        $dashboard_link = 'dashboard.php';  // Redirect medewerker to dashboard.php
         break;
     case 3:
         $role_description = 'Vrijwilliger';
+        $dashboard_link = 'dashboard.php';  // Redirect vrijwilliger to dashboard.php
         break;
     default:
         $role_description = 'Unknown Role';
+        $dashboard_link = 'dashboard.php';  // Default to dashboard.php
 }
 ?>
 
@@ -232,12 +237,11 @@ switch ($user_role) {
         <a class="navbar-logo">Voedselbank Maaskantje</a>
         <button class="navbar-toggle" id="navbar-toggle">☰</button>
         <ul class="navbar-menu" id="navbar-menu">
-            <li><a href="dashboard.php">Dashboard</a></li>
+            <li><a href="<?php echo htmlspecialchars($dashboard_link); ?>">Dashboard</a></li>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if ($_SESSION['role'] == 1): ?>
                     <li><a href="medewerkers.php">Medewerkers</a></li>
                 <?php endif; ?>
-                <li><a href="extra.php">Extra</a></li>
                 <li><a href="logout.php" class="logout-button">Logout</a></li>
             <?php else: ?>
                 <li><a href="login.php">Login</a></li>
