@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Voeg nieuw leverancier</h1>
+    <h1>Add New Supplier</h1>
     <?php
     if (isset($error_message)) {
         echo "<div class='error-message'>{$error_message}</div>";
@@ -120,22 +120,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="naam">Bedrijf:</label>
         <input type="text" id="naam" name="naam" required>
 
-        <label for="adres">Adres:</label>
+        <label for="adres">Adress:</label>
         <input type="text" id="adres" name="adres" required>
 
-        <label for="contactpersoon">Contact Persoon:</label>
+        <label for="contactpersoon">Contact Person:</label>
         <input type="text" id="contactpersoon" name="contactpersoon" required>
 
-        <label for="telefoonnummer">Telefoon:</label>
+        <label for="telefoonnummer">Phone:</label>
         <input type="text" id="telefoonnummer" name="telefoonnummer" required>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
-        <label for="eerstevolgende_levering">Volgende Bezorging:</label>
+        <label for="eerstevolgende_levering">Next Delivery:</label>
         <input type="datetime-local" id="eerstevolgende_levering" name="eerstevolgende_levering" required>
 
-        <button type="submit">Voeg Leverancier</button>
+        <button type="submit">Add Supplier</button>
     </form>
 </div>
 </body>
