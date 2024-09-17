@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <style>
+        /* Styles blijven hetzelfde als voorheen */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
@@ -13,23 +14,6 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-        }
-        .header {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .header img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .header h2 {
-            margin: 0;
-            color: forestgreen;
-            font-size: 1.5rem;
-            font-weight: bold;
         }
         .container {
             background-color: white;
@@ -52,8 +36,7 @@
             color: #606770;
         }
         input[type="text"],
-        input[type="password"],
-        select {
+        input[type="password"] {
             padding: 0.5rem;
             margin-bottom: 1rem;
             border: 1px solid #dddfe2;
@@ -73,32 +56,9 @@
         input[type="submit"]:hover {
             background-color: limegreen;
         }
-        select {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23606770' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.7rem top 50%;
-            background-size: 0.65rem auto;
-        }
-        .login-link {
-            display: block;
-            text-align: center;
-            margin-top: 1rem;
-            color: #606770;
-            text-decoration: none;
-        }
-        .login-link:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
-<div class="header">
-    <img src="afbeeldingen/pngtree-fast-food-logo-png-image_5763171.png" alt="Logo">
-    <h2>Voedselbank Maaskantje</h2>
-</div>
 <div class="container">
     <h2>Register</h2>
     <form action="register_action.php" method="POST">
@@ -107,9 +67,6 @@
 
         <label for="wachtwoord">Password:</label>
         <input type="password" id="wachtwoord" name="wachtwoord" required>
-
-        <label for="rol">Role:</label>
-        <input type="text" id="rol" name="rol" required>
 
         <input type="submit" value="Register">
     </form>

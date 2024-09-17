@@ -299,7 +299,6 @@ $conn->close();
                     <label for="product_<?php echo $product['idProducten']; ?>">
                         <?php echo htmlspecialchars($product['naam']) . " (Voorraad: " . $product['aantal'] . ")"; ?>
                     </label>
-                    <p><?php echo htmlspecialchars($product['beschrijving']); ?></p>
                     <input type="number" name="quantities[]" min="1" max="<?php echo $product['aantal']; ?>" class="quantity" placeholder="Aantal">
                     <input type="hidden" name="categorie_ids[]" value="<?php echo $product['Categorieen_idCategorieen']; ?>">
                 </div>

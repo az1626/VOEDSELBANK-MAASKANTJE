@@ -114,6 +114,8 @@ $conn->close();
     </style>
 </head>
 <body>
+<?php include 'navbar.php'; ?>
+
 <div class="container">
     <h1>Bewerk dieetwensen</h1>
     <?php
