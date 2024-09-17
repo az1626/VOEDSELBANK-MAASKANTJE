@@ -29,18 +29,18 @@ $user_role = $_SESSION['role'];
             <a href="families.php">Beheer Gezinnen</a>
             <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
-            <a href="extra.php">Leveranciers</a>
+            <a href="extra.php">Extra</a>
             <a href="leveranciers.php">Leveranciers</a>
         <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
             <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>
             <a href="leveranciers.php">Leveranciers</a>
-            <a href="extra.php">Leveranciers</a>
+            <a href="extra.php">Extra</a>
             <a href="families.php">Beheer Gezinnen</a>
 
         <?php elseif ($user_role == 3): ?> <!-- Vrijwilliger -->
             <a href="voedselpakket.php">Voedselpakketten</a>
-            <a href="extra.php">Leveranciers</a>
+            <a href="extra.php">Extra</a>
         <?php else: ?>
             <p>Ongeldige rol gedetecteerd. Neem contact op met ondersteuning.</p>
         <?php endif; ?>

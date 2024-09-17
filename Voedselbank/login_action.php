@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($wachtwoord, $user['Wachtwoord'])) {
             // Wachtwoord is correct, start de sessie en zet sessie-variabelen
             $_SESSION['user_id'] = $user['idGebruikers'];
-            $_SESSION['username'] = $user['Gebruikersnaam'];
+            $_SESSION['Gebruikersnaam'] = $user['Gebruikersnaam']; // Updated to match HTML
             $_SESSION['role'] = $user['Rol'];
 
             // Redirect op basis van de rol van de gebruiker
