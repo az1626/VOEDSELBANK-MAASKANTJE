@@ -44,42 +44,89 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $ean_nummer = generateEAN13();
     }
 
-    // Prepare and execute the SQL statement to insert the new product
-    $sql = "INSERT INTO Producten (naam, categorie_id, ean, aantal, Categorieen_idCategorieen) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
+    // Check if the product already exists
+    $sql_check = "SELECT idProducten, aantal FROM Producten WHERE naam = ? OR ean = ?";
+    $stmt_check = $conn->prepare($sql_check);
 
-    if ($stmt === false) {
+    if ($stmt_check === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
 
-    $stmt->bind_param("sisis", $naam, $categorie, $ean_nummer, $voorraad, $categorie);
+    $stmt_check->bind_param("ss", $naam, $ean_nummer);
+    $stmt_check->execute();
+    $result_check = $stmt_check->get_result();
 
-    if ($stmt->execute()) {
-        $product_id = $conn->insert_id; // Get the ID of the inserted product
+    if ($result_check->num_rows > 0) {
+        // Product exists, update quantity
+        $row = $result_check->fetch_assoc();
+        $product_id = $row['idProducten'];
+        $new_voorraad = $row['aantal'] + $voorraad;
 
-        // Insert into Producten_has_Leveranciers
-        $sql2 = "INSERT INTO Producten_has_Leveranciers (Producten_idProducten, Leveranciers_idLeveranciers) VALUES (?, ?)";
-        $stmt2 = $conn->prepare($sql2);
+        $sql_update = "UPDATE Producten SET aantal = ? WHERE idProducten = ?";
+        $stmt_update = $conn->prepare($sql_update);
 
-        if ($stmt2 === false) {
+        if ($stmt_update === false) {
             die('Prepare failed: ' . htmlspecialchars($conn->error));
         }
 
-        $stmt2->bind_param("ii", $product_id, $leverancier);
+        $stmt_update->bind_param("ii", $new_voorraad, $product_id);
 
-        if ($stmt2->execute()) {
+        if ($stmt_update->execute()) {
+            // Update Producten_has_Leveranciers
+            $sql_update_leverancier = "INSERT INTO Producten_has_Leveranciers (Producten_idProducten, Leveranciers_idLeveranciers) VALUES (?, ?) ON DUPLICATE KEY UPDATE Leveranciers_idLeveranciers = VALUES(Leveranciers_idLeveranciers)";
+            $stmt_update_leverancier = $conn->prepare($sql_update_leverancier);
+
+            if ($stmt_update_leverancier === false) {
+                die('Prepare failed: ' . htmlspecialchars($conn->error));
+            }
+
+            $stmt_update_leverancier->bind_param("ii", $product_id, $leverancier);
+            $stmt_update_leverancier->execute();
+            $stmt_update_leverancier->close();
+
             header("Location: product.php?added=success");
             exit;
         } else {
-            echo "<p>Error: " . htmlspecialchars($stmt2->error) . "</p>"; // Display error message securely
+            echo "<p>Error: " . htmlspecialchars($stmt_update->error) . "</p>"; // Display error message securely
         }
 
-        $stmt2->close();
+        $stmt_update->close();
     } else {
-        echo "<p>Error: " . htmlspecialchars($stmt->error) . "</p>"; // Display error message securely
+        // Product does not exist, insert new product
+        $sql_insert = "INSERT INTO Producten (naam, categorie_id, ean, aantal, Categorieen_idCategorieen) VALUES (?, ?, ?, ?, ?)";
+        $stmt_insert = $conn->prepare($sql_insert);
+
+        if ($stmt_insert === false) {
+            die('Prepare failed: ' . htmlspecialchars($conn->error));
+        }
+
+        $stmt_insert->bind_param("sisis", $naam, $categorie, $ean_nummer, $voorraad, $categorie);
+
+        if ($stmt_insert->execute()) {
+            $product_id = $conn->insert_id; // Get the ID of the inserted product
+
+            // Insert into Producten_has_Leveranciers
+            $sql_insert_leverancier = "INSERT INTO Producten_has_Leveranciers (Producten_idProducten, Leveranciers_idLeveranciers) VALUES (?, ?)";
+            $stmt_insert_leverancier = $conn->prepare($sql_insert_leverancier);
+
+            if ($stmt_insert_leverancier === false) {
+                die('Prepare failed: ' . htmlspecialchars($conn->error));
+            }
+
+            $stmt_insert_leverancier->bind_param("ii", $product_id, $leverancier);
+            $stmt_insert_leverancier->execute();
+            $stmt_insert_leverancier->close();
+
+            header("Location: product.php?added=success");
+            exit;
+        } else {
+            echo "<p>Error: " . htmlspecialchars($stmt_insert->error) . "</p>"; // Display error message securely
+        }
+
+        $stmt_insert->close();
     }
 
-    $stmt->close();
+    $stmt_check->close();
 }
 
 // Fetch categories and leveranciers from the database
@@ -161,7 +208,7 @@ $leveranciers = $stmt2->get_result();
         button:hover {
             background-color: #4cae4c;
         }
-    </style>
+        </style>
 </head>
 <body>
 <?php include 'navbar.php'; ?>
