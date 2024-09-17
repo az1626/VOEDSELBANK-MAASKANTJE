@@ -125,32 +125,32 @@ $conn->close();
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Edit Supplier</h1>
+    <h1>Bewerk Leverancier</h1>
     <?php
     if (isset($error_message)) {
         echo "<div class='error-message'>{$error_message}</div>";
     }
     ?>
     <form action="edit_leverancier.php?id=<?php echo htmlspecialchars($id); ?>" method="POST">
-        <label for="naam">Name:</label>
+        <label for="naam">Naam:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($supplier['naam']); ?>" required>
 
-        <label for="adres">Address:</label>
+        <label for="adres">Adres:</label>
         <input type="text" id="adres" name="adres" value="<?php echo htmlspecialchars($supplier['adres']); ?>" required>
 
-        <label for="contactpersoon">Contact Person:</label>
+        <label for="contactpersoon">Contact Persoon:</label>
         <input type="text" id="contactpersoon" name="contactpersoon" value="<?php echo htmlspecialchars($supplier['contactpersoon']); ?>" required>
 
-        <label for="telefoonnummer">Phone:</label>
+        <label for="telefoonnummer">Telefoonnummer:</label>
         <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($supplier['telefoonnummer']); ?>" required>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($supplier['email']); ?>" required>
 
-        <label for="eerstevolgende_levering">Next Delivery:</label>
+        <label for="eerstevolgende_levering">Volgende bezorging:</label>
         <input type="datetime-local" id="eerstevolgende_levering" name="eerstevolgende_levering" value="<?php echo htmlspecialchars($supplier['eerstevolgende_levering']); ?>" required>
 
-        <button type="submit">Update Supplier</button>
+        <button type="submit">Update Leveranciers</button>
     </form>
 </div>
 </body>
