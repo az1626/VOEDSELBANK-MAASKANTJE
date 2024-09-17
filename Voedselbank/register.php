@@ -15,6 +15,7 @@
             height: 100vh;
             margin: 0;
         }
+        
         .container {
             background-color: white;
             padding: 2rem;
@@ -35,6 +36,7 @@
             margin-bottom: 0.5rem;
             color: #606770;
         }
+        input[type="email"],
         input[type="text"],
         input[type="password"] {
             padding: 0.5rem;
@@ -59,9 +61,16 @@
     </style>
 </head>
 <body>
+<div class="header">
+    <img src="afbeeldingen/pngtree-fast-food-logo-png-image_5763171.png" alt="Logo">
+    <h2>Voedselbank Maaskantje</h2>
+</div>
 <div class="container">
     <h2>Register</h2>
     <form action="register_action.php" method="POST">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
         <label for="gebruikersnaam">Username:</label>
         <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
 
