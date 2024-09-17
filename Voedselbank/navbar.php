@@ -7,7 +7,22 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Not available';
 $profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
 
 // Determine role description
-$role_description = $user_role == 1 ? 'Admin' : 'User';
+switch ($user_role) {
+    case 0:
+        $role_description = 'Klant';
+        break;
+    case 1:
+        $role_description = 'Admin';
+        break;
+    case 2:
+        $role_description = 'Medewerker';
+        break;
+    case 3:
+        $role_description = 'Vrijwilliger';
+        break;
+    default:
+        $role_description = 'Unknown Role';
+}
 ?>
 
 <!DOCTYPE html>

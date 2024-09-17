@@ -3,49 +3,61 @@
 session_start();
 
 // Include your database connection
-include 'db_connect.php'; // Ensure this file contains your database connection logic
+include 'db_connect.php'; // Zorg dat deze file de database-verbinding bevat
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve the username and password from the form
+    // Haal de gebruikersnaam en wachtwoord uit het formulier
     $gebruikersnaam = $_POST['gebruikersnaam'];
     $wachtwoord = $_POST['wachtwoord'];
 
-    // Prepare an SQL statement to prevent SQL injection
+    // Bereid een SQL-statement voor om SQL-injectie te voorkomen
     $stmt = $conn->prepare("SELECT * FROM Gebruikers WHERE Gebruikersnaam = ?");
     $stmt->bind_param("s", $gebruikersnaam);
 
-    // Execute the query
+    // Voer de query uit
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Check if the user exists
+    // Controleer of de gebruiker bestaat
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // Verify the password
+        // Verifieer het wachtwoord
         if (password_verify($wachtwoord, $user['Wachtwoord'])) {
-            // Password is correct, start the session and redirect
+            // Wachtwoord is correct, start de sessie en zet sessie-variabelen
             $_SESSION['user_id'] = $user['idGebruikers'];
             $_SESSION['username'] = $user['Gebruikersnaam'];
             $_SESSION['role'] = $user['Rol'];
 
-            // Redirect to a secure page
-            header("Location: dashboard.php");
+            // Redirect op basis van de rol van de gebruiker
+            if ($user['Rol'] == 1) {
+                // Admin
+                header("Location: dashboard.php");
+            } elseif ($user['Rol'] == 2) {
+                // Medewerker
+                header("Location: dashboard.php");
+            } elseif ($user['Rol'] == 3) {
+                // Vrijwilliger
+                header("Location: dashboard.php");
+            } elseif ($user['Rol'] == 0) {
+                // Klant
+                header("Location: klantdashboard.php");
+            }
             exit();
         } else {
-            // Invalid password
+            // Ongeldig wachtwoord
             echo "Invalid password. Please try again.";
         }
     } else {
-        // User not found
+        // Gebruiker niet gevonden
         echo "No user found with that username.";
     }
 
-    // Close the statement and connection
+    // Sluit de statement en de connectie
     $stmt->close();
     $conn->close();
 } else {
-    // If the form was not submitted, redirect to the login page
+    // Als het formulier niet is ingediend, redirect naar de login pagina
     header("Location: login.php");
     exit();
 }
