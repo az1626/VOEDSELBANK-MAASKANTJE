@@ -50,7 +50,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Dietary Wish</title>
+    <title>Bewerk dieetwensen</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -115,7 +115,7 @@ $conn->close();
 </head>
 <body>
 <div class="container">
-    <h1>Edit Dietary Wish</h1>
+    <h1>Bewerk dieetwensen</h1>
     <?php
     if (isset($success_message)) {
         echo "<div class='message success'>$success_message</div>";
@@ -125,10 +125,10 @@ $conn->close();
     }
     ?>
     <form action="edit_extra.php?id=<?php echo urlencode($id); ?>" method="post">
-        <label for="naam">Name:</label>
+        <label for="naam">Naam:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($data['naam']); ?>" required>
 
-        <input type="submit" value="Update Dietary Wish">
+        <input type="submit" value="Upgrade Dieetwensen">
     </form>
 </div>
 </body>

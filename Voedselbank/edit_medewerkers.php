@@ -77,7 +77,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Medewerker</title>
+    <title>Bewerk Medewerker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -151,29 +151,29 @@ $conn->close();
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Edit Medewerker</h1>
+    <h1> Bewerk Medewerker </h1>
 
     <form method="post">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
 
-        <label for="naam">Username:</label>
+        <label for="naam">Gebruiksnaam:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($user['Gebruikersnaam']); ?>" required>
 
-        <label for="password">New Password (leave blank to keep current password):</label>
+        <label for="password">Nieuwe Wachtwoord (laat dit leeg om het huidige wachtwoord te behouden):</label>
         <input type="password" id="password" name="password">
 
-        <label for="role">Role:</label>
+        <label for="role">Rol:</label>
         <select id="role" name="role" required>
             <option value="0" <?php echo ($user['Rol'] == 0) ? 'selected' : ''; ?>>User</option>
             <option value="1" <?php echo ($user['Rol'] == 1) ? 'selected' : ''; ?>>Admin</option>
         </select>
 
-        <button type="submit">Save Changes</button>
+        <button type="submit">Wijzigingen opslaan</button>
     </form>
 
     <div class="back-link">
-        <a href="medewerkers.php">Back to Manage Medewerkers</a>
+        <a href="medewerkers.php">Terug naar Beheer Medewerker</a>
     </div>
 </div>
 </body>
