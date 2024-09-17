@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../db_connect.php';
+include 'db_connect.php';
 
 // Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
@@ -77,7 +77,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bewerk Medewerker</title>
+    <title>Edit Medewerker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -148,32 +148,32 @@ $conn->close();
     </style>
 </head>
 <body>
-<?php include '../navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1> Bewerk Medewerker </h1>
+    <h1>Edit Medewerker</h1>
 
     <form method="post">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
 
-        <label for="naam">Gebruiksnaam:</label>
+        <label for="naam">Username:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($user['Gebruikersnaam']); ?>" required>
 
-        <label for="password">Nieuwe Wachtwoord (laat dit leeg om het huidige wachtwoord te behouden):</label>
+        <label for="password">New Password (leave blank to keep current password):</label>
         <input type="password" id="password" name="password">
 
-        <label for="role">Rol:</label>
+        <label for="role">Role:</label>
         <select id="role" name="role" required>
             <option value="0" <?php echo ($user['Rol'] == 0) ? 'selected' : ''; ?>>User</option>
             <option value="1" <?php echo ($user['Rol'] == 1) ? 'selected' : ''; ?>>Admin</option>
         </select>
 
-        <button type="submit">Wijzigingen opslaan</button>
+        <button type="submit">Save Changes</button>
     </form>
 
     <div class="back-link">
-        <a href="medewerkers.php">Terug naar Beheer Medewerker</a>
+        <a href="medewerkers.php">Back to Manage Medewerkers</a>
     </div>
 </div>
 </body>

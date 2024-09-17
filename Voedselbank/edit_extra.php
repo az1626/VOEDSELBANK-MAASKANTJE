@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../db_connect.php';
+include 'db_connect.php';
 
 // Check if the user is logged in and has the admin role
 
@@ -50,7 +50,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bewerk dieetwensen</title>
+    <title>Edit Dietary Wish</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -117,7 +117,7 @@ $conn->close();
 <?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Bewerk dieetwensen</h1>
+    <h1>Edit Dietary Wish</h1>
     <?php
     if (isset($success_message)) {
         echo "<div class='message success'>$success_message</div>";
@@ -127,10 +127,10 @@ $conn->close();
     }
     ?>
     <form action="edit_extra.php?id=<?php echo urlencode($id); ?>" method="post">
-        <label for="naam">Naam:</label>
+        <label for="naam">Name:</label>
         <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($data['naam']); ?>" required>
 
-        <input type="submit" value="Upgrade Dieetwensen">
+        <input type="submit" value="Update Dietary Wish">
     </form>
 </div>
 </body>

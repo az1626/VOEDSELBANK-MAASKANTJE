@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../db_connect.php';
+include 'db_connect.php';
 
 // Check if the user is logged in and has the admin role
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
@@ -150,7 +150,7 @@ $conn->close();
     </style>
 </head>
 <body>
-<?php include '../navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
 <div class="main-content">
     <div class="container">

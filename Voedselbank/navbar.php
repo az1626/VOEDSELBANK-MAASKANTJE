@@ -232,13 +232,13 @@ switch ($user_role) {
         <a class="navbar-logo">Voedselbank Maaskantje</a>
         <button class="navbar-toggle" id="navbar-toggle">☰</button>
         <ul class="navbar-menu" id="navbar-menu">
-            <li><a href="../dashboard.php">Dashboard</a></li>
+            <li><a href="dashboard.php">Dashboard</a></li>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if ($_SESSION['role'] == 1): ?>
-                    <li><a href="medewerkers/medewerkers.php">Medewerkers</a></li>
+                    <li><a href="medewerkers.php">Medewerkers</a></li>
                 <?php endif; ?>
-                <li><a href="../extra.php">Extra</a></li>
-                <li><a href="../logout.php" class="logout-button">Logout</a></li>
+                <li><a href="extra.php">Extra</a></li>
+                <li><a href="logout.php" class="logout-button">Logout</a></li>
             <?php else: ?>
                 <li><a href="login.php">Login</a></li>
             <?php endif; ?>

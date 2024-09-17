@@ -1,34 +1,16 @@
 <?php
 session_start();
-include '../db_connect.php';
+include 'db_connect.php';
 
-// Check if user is logged in and has the correct role
+// Check if the user is logged in and has admin privileges
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2)) {
     header("Location: login.php");
     exit;
 }
 
-// Check if an ID is provided for editing
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header("Location: leveranciers.php");
-    exit;
-}
-
-$id = intval($_GET['id']);
-
-// Fetch the supplier's current details
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $sql = "SELECT * FROM Leveranciers WHERE idLeveranciers = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $supplier = $result->fetch_assoc();
-    $stmt->close();
-}
-
-// Handle form submission for updating the supplier
+// Handle the form submission to add a new supplier
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve and sanitize input values
     $naam = $_POST['naam'];
     $adres = $_POST['adres'];
     $contactpersoon = $_POST['contactpersoon'];
@@ -36,21 +18,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $eerstevolgende_levering = $_POST['eerstevolgende_levering'];
 
-    $sql = "UPDATE Leveranciers SET naam = ?, adres = ?, contactpersoon = ?, telefoonnummer = ?, email = ?, eerstevolgende_levering = ? WHERE idLeveranciers = ?";
+    // Prepare the SQL statement to insert the new supplier
+    $sql = "INSERT INTO Leveranciers (naam, adres, contactpersoon, telefoonnummer, email, eerstevolgende_levering) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssi", $naam, $adres, $contactpersoon, $telefoonnummer, $email, $eerstevolgende_levering, $id);
+    $stmt->bind_param("ssssss", $naam, $adres, $contactpersoon, $telefoonnummer, $email, $eerstevolgende_levering);
 
+    // Execute the statement and handle the result
     if ($stmt->execute()) {
-        header("Location: leveranciers.php?updated=success");
+        // Redirect to leveranciers.php with a success message
+        header("Location: leveranciers.php?added=success");
         exit;
     } else {
         $error_message = "Error: " . htmlspecialchars($stmt->error);
     }
 
+    // Close the statement and the connection
     $stmt->close();
+    $conn->close();
 }
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +43,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bewerk leverancier</title>
+    <title>Add Supplier</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -122,35 +107,35 @@ $conn->close();
     </style>
 </head>
 <body>
-<?php include '../navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
 <div class="container">
-    <h1>Bewerk Leverancier</h1>
+    <h1>Voeg nieuw leverancier</h1>
     <?php
     if (isset($error_message)) {
         echo "<div class='error-message'>{$error_message}</div>";
     }
     ?>
-    <form action="edit_leverancier.php?id=<?php echo htmlspecialchars($id); ?>" method="POST">
-        <label for="naam">Naam:</label>
-        <input type="text" id="naam" name="naam" value="<?php echo htmlspecialchars($supplier['naam']); ?>" required>
+    <form action="add_leverancier.php" method="POST">
+        <label for="naam">Bedrijf:</label>
+        <input type="text" id="naam" name="naam" required>
 
         <label for="adres">Adres:</label>
-        <input type="text" id="adres" name="adres" value="<?php echo htmlspecialchars($supplier['adres']); ?>" required>
+        <input type="text" id="adres" name="adres" required>
 
         <label for="contactpersoon">Contact Persoon:</label>
-        <input type="text" id="contactpersoon" name="contactpersoon" value="<?php echo htmlspecialchars($supplier['contactpersoon']); ?>" required>
+        <input type="text" id="contactpersoon" name="contactpersoon" required>
 
-        <label for="telefoonnummer">Telefoonnummer:</label>
-        <input type="text" id="telefoonnummer" name="telefoonnummer" value="<?php echo htmlspecialchars($supplier['telefoonnummer']); ?>" required>
+        <label for="telefoonnummer">Telefoon:</label>
+        <input type="text" id="telefoonnummer" name="telefoonnummer" required>
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($supplier['email']); ?>" required>
+        <input type="email" id="email" name="email" required>
 
-        <label for="eerstevolgende_levering">Volgende bezorging:</label>
-        <input type="datetime-local" id="eerstevolgende_levering" name="eerstevolgende_levering" value="<?php echo htmlspecialchars($supplier['eerstevolgende_levering']); ?>" required>
+        <label for="eerstevolgende_levering">Volgende Bezorging:</label>
+        <input type="datetime-local" id="eerstevolgende_levering" name="eerstevolgende_levering" required>
 
-        <button type="submit">Update Leveranciers</button>
+        <button type="submit">Voeg Leverancier</button>
     </form>
 </div>
 </body>
