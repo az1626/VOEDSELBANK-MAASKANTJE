@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $categorie = intval($_POST['categorie']); // Ensure this is an integer
     $voorraad = intval($_POST['voorraad']); // Convert stock to integer
     $ean_nummer = $_POST['ean_nummer'];
+    $leverancier = intval($_POST['leverancier']); // Convert leverancier to integer
 
     // If EAN number is not provided, generate one
     if (empty($ean_nummer)) {
@@ -54,8 +55,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sisis", $naam, $categorie, $ean_nummer, $voorraad, $categorie);
 
     if ($stmt->execute()) {
-        header("Location: product.php?added=success");
-        exit;
+        $product_id = $conn->insert_id; // Get the ID of the inserted product
+
+        // Insert into Producten_has_Leveranciers
+        $sql2 = "INSERT INTO Producten_has_Leveranciers (Producten_idProducten, Leveranciers_idLeveranciers) VALUES (?, ?)";
+        $stmt2 = $conn->prepare($sql2);
+
+        if ($stmt2 === false) {
+            die('Prepare failed: ' . htmlspecialchars($conn->error));
+        }
+
+        $stmt2->bind_param("ii", $product_id, $leverancier);
+
+        if ($stmt2->execute()) {
+            header("Location: product.php?added=success");
+            exit;
+        } else {
+            echo "<p>Error: " . htmlspecialchars($stmt2->error) . "</p>"; // Display error message securely
+        }
+
+        $stmt2->close();
     } else {
         echo "<p>Error: " . htmlspecialchars($stmt->error) . "</p>"; // Display error message securely
     }
@@ -63,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 
-// Fetch categories from the database
+// Fetch categories and leveranciers from the database
 $sql = "SELECT idCategorieen, naam FROM Categorieen";
 $stmt = $conn->prepare($sql);
 
@@ -73,6 +92,16 @@ if ($stmt === false) {
 
 $stmt->execute();
 $categories = $stmt->get_result();
+
+$sql2 = "SELECT idLeveranciers, naam FROM Leveranciers";
+$stmt2 = $conn->prepare($sql2);
+
+if ($stmt2 === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+
+$stmt2->execute();
+$leveranciers = $stmt2->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +111,7 @@ $categories = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voeg Product Toe</title>
     <style>
+
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -158,6 +188,16 @@ $categories = $stmt->get_result();
         <label for="ean_nummer">EAN Nummer (laat dit vak leeg om automatisch de nummer te genereren):</label>
         <input type="text" id="ean_nummer" name="ean_nummer"><br><br>
 
+        <label for="leverancier">Leverancier:</label>
+        <select id="leverancier" name="leverancier" required>
+            <?php
+            // Populate dropdown with leveranciers
+            while ($row = $leveranciers->fetch_assoc()) {
+                echo "<option value='" . htmlspecialchars($row['idLeveranciers']) . "'>" . htmlspecialchars($row['naam']) . "</option>";
+            }
+            ?>
+        </select><br><br>
+
         <button type="submit">Voeg Toe</button>
     </form>
 </div>
@@ -168,6 +208,9 @@ $categories = $stmt->get_result();
 // Close the statement and connection only if they are still open
 if (isset($stmt) && $stmt !== false) {
     $stmt->close();
+}
+if (isset($stmt2) && $stmt2 !== false) {
+    $stmt2->close();
 }
 if (isset($conn) && $conn instanceof mysqli) {
     $conn->close();

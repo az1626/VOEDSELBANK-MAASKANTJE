@@ -15,19 +15,28 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort_column = isset($_GET['sort']) ? $_GET['sort'] : 'idProducten'; // Default sort by product ID
 $sort_order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'DESC' : 'ASC';
 
-// Haal producten op uit de database, eventueel met zoekopdracht en sortering
-$sql = "SELECT p.idProducten, p.naam, p.aantal, p.ean, c.naam AS categorie
+// Haal producten en leveranciers op uit de database, eventueel met zoekopdracht en sortering
+$sql = "SELECT p.idProducten, p.naam, p.aantal, p.ean, c.naam AS categorie, 
+               GROUP_CONCAT(l.idLeveranciers SEPARATOR ', ') AS leveranciers
         FROM Producten p
         LEFT JOIN Categorieen c ON p.Categorieen_idCategorieen = c.idCategorieen
-        WHERE p.naam LIKE ? OR p.ean LIKE ? 
+        LEFT JOIN Producten_has_Leveranciers phl ON p.idProducten = phl.Producten_idProducten
+        LEFT JOIN Leveranciers l ON phl.Leveranciers_idLeveranciers = l.idLeveranciers
+        WHERE p.naam LIKE ? OR p.ean LIKE ?
+        GROUP BY p.idProducten
         ORDER BY $sort_column $sort_order";
+
 $stmt = $conn->prepare($sql);
+
+if ($stmt === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+
 $search_param = "%" . $search . "%";
 $stmt->bind_param("ss", $search_param, $search_param);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="nl">
@@ -169,6 +178,7 @@ $result = $stmt->get_result();
             <th><a href='?sort=categorie&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Categorie</a></th>
             <th><a href='?sort=aantal&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>Voorraad</a></th>
             <th><a href='?sort=ean&order=" . ($sort_order === 'ASC' ? 'desc' : 'asc') . "'>EAN Nummer</a></th>
+            <th>Leverancier ID</th>
             <th>Acties</th>
             </tr>";
 
@@ -179,6 +189,7 @@ $result = $stmt->get_result();
                 <td>{$row['categorie']}</td>
                 <td>{$row['aantal']}</td>
                 <td>{$row['ean']}</td>
+                <td>{$row['leveranciers']}</td>
                 <td>
                     <a href='edit_product.php?id={$row['idProducten']}'>Bewerken</a> | 
                     <a href='delete_product.php?id={$row['idProducten']}' onclick='return confirm(\"Weet je zeker dat je dit product wilt verwijderen?\")'>Verwijderen</a>
