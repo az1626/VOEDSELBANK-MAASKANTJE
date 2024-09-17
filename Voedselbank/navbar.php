@@ -1,9 +1,9 @@
 <?php
 // Fetch session variables
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not logged in';
-$user_email = isset($_SESSION['Email']) ? $_SESSION['Email'] : 'Not available';
-$user_name = isset($_SESSION['Gebruikersnaam']) ? $_SESSION['Gebruikersnaam'] : 'Not available';
-$user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Not available';
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Niet ingelogd';
+$user_email = isset($_SESSION['Email']) ? $_SESSION['Email'] : 'Niet beschikbaar';
+$user_name = isset($_SESSION['Gebruikersnaam']) ? $_SESSION['Gebruikersnaam'] : 'Niet beschikbaar';
+$user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Niet beschikbaar';
 $profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
 
 // Determine role description and dashboard link
@@ -256,25 +256,25 @@ switch ($user_role) {
 
 <div class="modal" id="profile-modal">
     <div class="modal-content">
-        <p>Name: <?php echo htmlspecialchars($user_name); ?></p>
+        <p>Naam: <?php echo htmlspecialchars($user_name); ?></p>
         <p>ID: <?php echo htmlspecialchars($user_id); ?></p>
-        <p>Role: <?php echo htmlspecialchars($role_description); ?></p>
+        <p>Rol: <?php echo htmlspecialchars($role_description); ?></p>
         <button class="logout-button" onclick="window.location.href='logout.php'">Logout</button>
-        <button class="change-password-button" id="change-password-button">Change Password</button>
+        <button class="change-password-button" id="change-password-button">Verander Wachtwoord</button>
 
         <!-- Password change section -->
         <div class="password-change-section" id="password-change-section">
             <form id="change-password-form" method="post" action="change_password.php">
-                <label for="old-password">Old Password:</label>
+                <label for="old-password">Oude wachtwoord:</label>
                 <input type="password" id="old-password" name="old-password" required>
 
-                <label for="new-password">New Password:</label>
+                <label for="new-password">Nieuwe wachtwoord:</label>
                 <input type="password" id="new-password" name="new-password" required>
 
-                <label for="confirm-password">Confirm New Password:</label>
+                <label for="confirm-password">Bevestig Nieuwe wachtwoord:</label>
                 <input type="password" id="confirm-password" name="confirm-password" required>
 
-                <button type="submit" class="save-button">Save Changes</button>
+                <button type="submit" class="save-button">Opslaan</button>
                 <button type="button" class="cancel-button" id="cancel-button">Cancel</button>
             </form>
         </div>
