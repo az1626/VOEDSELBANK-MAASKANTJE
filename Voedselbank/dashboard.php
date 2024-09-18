@@ -31,6 +31,7 @@ $user_role = $_SESSION['role'];
             <a href="voedselpakket.php">Voedselpakketten</a>
             <a href="extra.php">Extra</a>
             <a href="leveranciers.php">Leveranciers</a>
+            <a href="management_report.php">Management Rapport</a>
         <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
             <a href="product.php">Beheer Voorraad</a>
             <a href="voedselpakket.php">Voedselpakketten</a>

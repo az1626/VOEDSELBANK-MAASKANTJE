@@ -165,8 +165,10 @@ $conn->close();
 
         <label for="role">Role:</label>
         <select id="role" name="role" required>
-            <option value="0" <?php echo ($user['Rol'] == 0) ? 'selected' : ''; ?>>User</option>
+            <option value="0" <?php echo ($user['Rol'] == 0) ? 'selected' : ''; ?>>Klant</option>
             <option value="1" <?php echo ($user['Rol'] == 1) ? 'selected' : ''; ?>>Admin</option>
+            <option value="1" <?php echo ($user['Rol'] == 2) ? 'selected' : ''; ?>>Medewerker</option>
+            <option value="1" <?php echo ($user['Rol'] == 3) ? 'selected' : ''; ?>>Vrijwilliger</option>
         </select>
 
         <button type="submit">Save Changes</button>
