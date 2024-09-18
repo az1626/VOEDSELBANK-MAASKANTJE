@@ -2,15 +2,14 @@
 session_start();
 include 'db_connect.php';
 
-// Check if the user is logged in and has the admin role
+// Check if the user is logged in and has the admin, manager, or volunteer role
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
     header("Location: login.php");
     exit;
 }
 
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Handle form submission (only for admins and managers, not volunteers)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($_SESSION['role'] == 1 || $_SESSION['role'] == 2)) {
     $naam = $_POST['naam'];
 
     // Prepare the SQL statement
@@ -174,8 +173,12 @@ $conn->close();
                     <tr>
                         <td><?php echo htmlspecialchars($row['naam']); ?></td>
                         <td>
-                            <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
-                            <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                            <?php if ($_SESSION['role'] == 1 || $_SESSION['role'] == 2): ?>
+                                <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
+                                <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                            <?php else: ?>
+                                <span>Alleen bekijken</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -186,12 +189,14 @@ $conn->close();
             <?php endif; ?>
         </table>
 
-        <form action="extra.php" method="post">
-            <label for="naam">Naam:</label>
-            <input type="text" id="naam" name="naam" required>
+        <?php if ($_SESSION['role'] == 1 || $_SESSION['role'] == 2): ?>
+            <form action="extra.php" method="post">
+                <label for="naam">Naam:</label>
+                <input type="text" id="naam" name="naam" required>
 
-            <input type="submit" value="Voeg dieetwensen">
-        </form>
+                <input type="submit" value="Voeg dieetwensen">
+            </form>
+        <?php endif; ?>
     </div>
 </div>
 </body>

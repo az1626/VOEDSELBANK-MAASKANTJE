@@ -13,13 +13,20 @@
         }
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f7f9;
+            background: url('afbeeldingen/eten.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: #333;
+            image-rendering: pixelated;
+            height: 100vh; /* Ensures the body covers the full height of the viewport */
+            display: flex;
+            flex-direction: column;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* White background with slight transparency */
+            border-radius: 8px;
         }
         h1 {
             color: #2c3e50;
@@ -78,70 +85,104 @@
     </style>
 </head>
 <body>
-    <?php
-    session_start();
-    include 'db_connect.php';
+<?php
+session_start();
+include 'db_connect.php';
 
-    // Check if the user is logged in
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: login.php");
-        exit;
-    }
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
 
-    // Get user role from session
-    $user_role = $_SESSION['role'];
-    ?>
+// Get user role from session
+$user_role = $_SESSION['role'];
+?>
 
-    <?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 
-    <div class="container">
-        <h1>Welkom op het Dashboard</h1>
-        <div class="dashboard-grid">
-            <?php if ($user_role == 1): ?> <!-- Admin -->
-                <div class="dashboard-item">
-                    <i class="fas fa-users"></i>
-                    <h2>Beheer Gezinnen</h2>
-                    <p>Beheer en organiseer gezinsinformatie</p>
-                    <a href="families.php">Ga naar Gezinnen</a>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fas fa-box-open"></i>
-                    <h2>Beheer Voorraad</h2>
-                    <p>Beheer de voorraad van producten</p>
-                    <a href="product.php">Ga naar Voorraad</a>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fas fa-shopping-basket"></i>
-                    <h2>Voedselpakketten</h2>
-                    <p>Stel voedselpakketten samen</p>
-                    <a href="voedselpakket.php">Ga naar Pakketten</a>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fas fa-plus-circle"></i>
-                    <h2>Extra</h2>
-                    <p>Aanvullende functies en opties</p>
-                    <a href="extra.php">Ga naar Extra</a>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fas fa-truck"></i>
-                    <h2>Leveranciers</h2>
-                    <p>Beheer leveranciersinformatie</p>
-                    <a href="leveranciers.php">Ga naar Leveranciers</a>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fas fa-briefcase"></i>
-                    <h2>Management</h2>
-                    <p>Beheer management</p>
-                    <a href="management_report.php">Ga naar Management</a>
-                </div>
-            <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
-                <!-- (Medewerker items remain the same) -->
-            <?php elseif ($user_role == 3): ?> <!-- Vrijwilliger -->
-                <!-- (Vrijwilliger items remain the same) -->
-            <?php else: ?>
-                <p>Ongeldige rol gedetecteerd. Neem contact op met ondersteuning.</p>
-            <?php endif; ?>
-        </div>
+<div class="container">
+    <h1>Welkom op het Dashboard</h1>
+    <div class="dashboard-grid">
+        <?php if ($user_role == 1): ?> <!-- Admin -->
+            <div class="dashboard-item">
+                <i class="fas fa-users"></i>
+                <h2>Beheer Gezinnen</h2>
+                <p>Beheer en organiseer gezinsinformatie</p>
+                <a href="families.php">Ga naar Gezinnen</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-box-open"></i>
+                <h2>Beheer Voorraad</h2>
+                <p>Beheer de voorraad van producten</p>
+                <a href="product.php">Ga naar Voorraad</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-shopping-basket"></i>
+                <h2>Voedselpakketten</h2>
+                <p>Stel voedselpakketten samen</p>
+                <a href="voedselpakket.php">Ga naar Pakketten</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-plus-circle"></i>
+                <h2>Extra</h2>
+                <p>Aanvullende functies en opties</p>
+                <a href="extra.php">Ga naar Extra</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-truck"></i>
+                <h2>Leveranciers</h2>
+                <p>Beheer leveranciersinformatie</p>
+                <a href="leveranciers.php">Ga naar Leveranciers</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-briefcase"></i>
+                <h2>Management</h2>
+                <p>Beheer Mannagement Rapport</p>
+                <a href="management_report.php">Ga naar Rapportage</a>
+            </div>
+        <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
+            <div class="dashboard-item">
+                <i class="fas fa-shopping-basket"></i>
+                <h2>Voedselpakketten</h2>
+                <p>Stel voedselpakketten samen</p>
+                <a href="voedselpakket.php">Ga naar Pakketten</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-box-open"></i>
+                <h2>Beheer Voorraad</h2>
+                <p>Beheer de voorraad van producten</p>
+                <a href="product.php">Ga naar Voorraad</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-users"></i>
+                <h2>Beheer Gezinnen</h2>
+                <p>Beheer en organiseer gezinsinformatie</p>
+                <a href="families.php">Ga naar Gezinnen</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-plus-circle"></i>
+                <h2>Extra</h2>
+                <p>Aanvullende functies en opties</p>
+                <a href="extra.php">Ga naar Extra</a>
+            </div>
+        <?php elseif ($user_role == 3): ?> <!-- Vrijwilliger -->
+            <div class="dashboard-item">
+                <i class="fas fa-shopping-basket"></i>
+                <h2>Voedselpakketten</h2>
+                <p>Stel voedselpakketten samen</p>
+                <a href="voedselpakket.php">Ga naar Pakketten</a>
+            </div>
+            <div class="dashboard-item">
+                <i class="fas fa-plus-circle"></i>
+                <h2>Extra</h2>
+                <p>Aanvullende functies en opties</p>
+                <a href="extra.php">Ga naar Extra</a>
+            </div>
+        <?php else: ?>
+            <p>Ongeldige rol gedetecteerd. Neem contact op met ondersteuning.</p>
+        <?php endif; ?>
     </div>
+</div>
 </body>
 </html>
