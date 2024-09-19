@@ -27,7 +27,7 @@ if (isset($_GET['delete'])) {
 }
 
 // Fetch suppliers from the database
-$sql = "SELECT * FROM Leveranciers";
+$sql = "SELECT idLeveranciers, naam, contactpersoon, telefoonnummer, email, eerstevolgende_levering, adres FROM leveranciers";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();

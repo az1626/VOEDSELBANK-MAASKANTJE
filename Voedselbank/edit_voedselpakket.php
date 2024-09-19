@@ -16,7 +16,7 @@ if (isset($_GET['id'])) {
 
     // Function to get a specific voedselpakket by ID
     function getVoedselpakketById($conn, $id) {
-        $sql = "SELECT * FROM voedselpakketen WHERE idVoedselpakketen = ?";
+        $sql = "SELECT idVoedselpakketen, Klant_id, Gebruiker_id, Samenstellingsdatum, Uitgiftedatum, Klanten_idKlanten FROM voedselpakketen WHERE idVoedselpakketen = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();

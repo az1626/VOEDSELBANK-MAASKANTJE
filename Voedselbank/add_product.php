@@ -45,14 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Check if the product already exists
-    $sql_check = "SELECT idProducten, aantal FROM Producten WHERE naam = ? OR ean = ?";
+    $sql_check = "SELECT idProducten, aantal FROM Producten WHERE ean = ?";
     $stmt_check = $conn->prepare($sql_check);
 
     if ($stmt_check === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
 
-    $stmt_check->bind_param("ss", $naam, $ean_nummer);
+    $stmt_check->bind_param("s", $ean_nummer);
     $stmt_check->execute();
     $result_check = $stmt_check->get_result();
 

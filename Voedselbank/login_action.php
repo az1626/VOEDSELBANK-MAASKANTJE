@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $wachtwoord = $_POST['wachtwoord'];
 
     // Bereid een SQL-statement voor om SQL-injectie te voorkomen
-    $stmt = $conn->prepare("SELECT * FROM Gebruikers WHERE Gebruikersnaam = ?");
+    $stmt = $conn->prepare("SELECT idGebruikers, Gebruikersnaam, Wachtwoord, Rol, Email FROM gebruikers WHERE Gebruikersnaam = ?");
     $stmt->bind_param("s", $gebruikersnaam);
 
     // Voer de query uit

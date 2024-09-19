@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
     $user_id = intval($_GET['id']); // Cast to integer for security
 
     // Fetch user data
-    $sql = "SELECT * FROM gebruikers WHERE idGebruikers = ?";
+    $sql = "SELECT idGebruikers, Gebruikersnaam, Wachtwoord, Rol, Email FROM gebruikers WHERE idGebruikers = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Error preparing statement: " . htmlspecialchars($conn->error));

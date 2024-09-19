@@ -115,7 +115,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
     <?php
     // Fetch users from the database and display them
-    $sql = "SELECT * FROM gebruikers";
+    $sql = "SELECT idGebruikers, Gebruikersnaam, Wachtwoord, Rol, Email FROM gebruikers";
+
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

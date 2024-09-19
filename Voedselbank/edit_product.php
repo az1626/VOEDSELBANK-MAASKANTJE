@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
 
 // Fetch the product data for the given ID
 $id = intval($_GET['id']);
-$sql = "SELECT * FROM Producten WHERE idProducten = ?";
+$sql = "SELECT idProducten, naam, categorie_id, ean, aantal, Categorieen_idCategorieen, created_at FROM Producten WHERE idProducten = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();

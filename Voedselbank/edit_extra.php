@@ -17,7 +17,7 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 
 // Fetch the current data
-$sql = "SELECT * FROM dieetwensen WHERE idDieetwensen=?";
+$sql = "SELECT idDieetwensen, naam FROM dieetwensen WHERE idDieetwensen = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();

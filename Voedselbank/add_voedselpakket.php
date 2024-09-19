@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_voedselpakket'])) 
 }
 
 // Fetch all products for displaying checkboxes
-$sql = "SELECT * FROM producten";
+$sql = "SELECT idProducten, naam, categorie_id, ean, aantal, Categorieen_idCategorieen, created_at FROM producten";
 $result = $conn->query($sql);
 $producten = [];
 
@@ -98,8 +98,9 @@ if ($result->num_rows > 0) {
     echo "No products found.";
 }
 
-// Fetch all clients for displaying radio buttons
-$sql = "SELECT * FROM klanten";
+// Fetch all clients for displaying radio
+$sql = "SELECT idKlanten, naam, adres, telefoonnummer, email, aantal_volwassenen, aantal_kinderen, aantal_babys, idGebruikers, postcode FROM klanten";
+
 $result = $conn->query($sql);
 $klanten = [];
 

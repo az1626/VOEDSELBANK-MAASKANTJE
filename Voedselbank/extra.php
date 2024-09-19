@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($_SESSION['role'] == 1 || $_SESSION
 }
 
 // Fetch current records
-$sql = "SELECT * FROM dieetwensen";
+$sql = "SELECT idDieetwensen, naam FROM dieetwensen";
 $result = $conn->query($sql);
 
 // Check if query was successful
@@ -173,7 +173,7 @@ $conn->close();
                     <tr>
                         <td><?php echo htmlspecialchars($row['naam']); ?></td>
                         <td>
-                            <?php if ($_SESSION['role'] == 1 || $_SESSION['role'] == 2): ?>
+                            <?php if ($_SESSION['role'] == 1): ?>
                                 <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
                                 <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
                             <?php else: ?>

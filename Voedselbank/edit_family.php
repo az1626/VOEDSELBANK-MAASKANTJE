@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // Fetch family data for the given ID
-$sql = "SELECT * FROM Klanten WHERE idKlanten = ?";
+$sql = "SELECT idKlanten, naam, adres, telefoonnummer, email, aantal_volwassenen, aantal_kinderen, aantal_babys, idGebruikers, postcode FROM Klanten WHERE idKlanten = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();

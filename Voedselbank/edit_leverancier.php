@@ -18,7 +18,7 @@ $id = intval($_GET['id']);
 
 // Fetch the supplier's current details
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $sql = "SELECT * FROM Leveranciers WHERE idLeveranciers = ?";
+    $sql = "SELECT idLeveranciers, naam, contactpersoon, telefoonnummer, email, eerstevolgende_levering, adres FROM Leveranciers WHERE idLeveranciers = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
