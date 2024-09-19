@@ -67,3 +67,65 @@ tr:hover {
 .action-links a:hover {
   text-decoration: underline;
 }
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto; /* Center horizontally */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 600px; /* Set a max width */
+  border-radius: 5px; /* Rounded corners */
+  position: relative; /* Relative positioning for transform */
+  top: 50%; /* Move down 50% of the viewport height */
+  transform: translateY(
+    -50%
+  ); /* Adjust back up by 50% of the modal's own height */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+}
+
+.action-links a {
+  margin-right: 10px;
+}

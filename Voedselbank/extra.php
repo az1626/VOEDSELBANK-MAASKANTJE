@@ -8,18 +8,52 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
     exit;
 }
 
-// Handle form submission (only for admins and managers, not volunteers)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && ($_SESSION['role'] == 1 || $_SESSION['role'] == 2)) {
-    $naam = $_POST['naam'];
+// Handle form submission for adding and updating dietary wishes
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['id'])) {
+        // Update dietary wish
+        $id = $_POST['id'];
+        $naam = $_POST['naam'];
 
-    // Prepare the SQL statement
-    $sql = "INSERT INTO dieetwensen (naam) VALUES (?)";
+        $sql = "UPDATE dieetwensen SET naam=? WHERE idDieetwensen=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $naam, $id);
+
+        if ($stmt->execute()) {
+            $success_message = "Dietary wish updated successfully!";
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        // Add new dietary wish
+        $naam = $_POST['naam'];
+
+        // Prepare the SQL statement
+        $sql = "INSERT INTO dieetwensen (naam) VALUES (?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $naam);
+
+        // Execute the statement and handle success/error
+        if ($stmt->execute()) {
+            $success_message = "New dietary wish added successfully!";
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+        $stmt->close();
+    }
+}
+
+// Handle deletion of dietary wish
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+
+    $sql = "DELETE FROM dieetwensen WHERE idDieetwensen=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $naam);
+    $stmt->bind_param("i", $delete_id);
 
-    // Execute the statement and handle success/error
     if ($stmt->execute()) {
-        $success_message = "New dietary wish added successfully!";
+        $success_message = "Dietary wish deleted successfully!";
     } else {
         $error_message = "Error: " . $stmt->error;
     }
@@ -47,6 +81,45 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Dietary Wishes</title>
     <link rel="stylesheet" href="CSS/extra.css">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0, 0, 0); 
+            background-color: rgba(0, 0, 0, 0.4); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 500px;
+            border-radius: 5px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <?php include 'navbar.php'; ?>
@@ -74,8 +147,8 @@ $conn->close();
                         <td><?php echo htmlspecialchars($row['naam']); ?></td>
                         <td>
                             <?php if ($_SESSION['role'] == 1): ?>
-                                <a href="edit_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>">Edit</a>
-                                <a href="delete_extra.php?id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                                <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Edit</button>
+                                <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
                             <?php else: ?>
                                 <span>Alleen bekijken</span>
                             <?php endif; ?>
@@ -99,5 +172,20 @@ $conn->close();
         <?php endif; ?>
     </div>
 </div>
+
+<!-- Modal for Editing -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Dietary Wish</h2>
+        <form id="editForm" action="extra.php" method="post">
+            <label for="editNaam">Name:</label>
+            <input type="text" id="editNaam" name="naam" required>
+            <input type="hidden" id="editId" name="id">
+            <input type="submit" value="Update Dietary Wish">
+        </form>
+    </div>
+</div>
+<script src="JS/extra.js"></script>
 </body>
 </html>
