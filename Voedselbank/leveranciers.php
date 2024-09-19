@@ -40,76 +40,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beheer Leveranciers</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .btn {
-            display: inline-block;
-            background: #4CAF50;
-            color: #fff;
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 15px;
-            font-family: inherit;
-        }
-        .btn:hover {
-            background: #45a049;
-        }
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        .action-links a {
-            color: #4CAF50;
-            text-decoration: none;
-            margin-right: 10px;
-        }
-        .action-links a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="CSS/leveranciers.css">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
