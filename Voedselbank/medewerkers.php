@@ -7,6 +7,31 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     header("Location: login.php");
     exit;
 }
+
+// Handle deletion if an ID is provided
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+
+    // Check if the user is trying to delete themselves
+    if ($id == $_SESSION['user_id']) {
+        echo "Je kunt je eigen account niet verwijderen.";
+        exit;
+    }
+
+    // Delete the user from the database
+    $sql = "DELETE FROM gebruikers WHERE idGebruikers=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Gebruiker succesvol verwijderd!";
+        header("Location: medewerkers.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Fout: " . htmlspecialchars($stmt->error);
+    }
+    $stmt->close();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,9 +55,19 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
     </div>
 
     <?php
+    // Display success or error messages
+    if (isset($_SESSION['success'])) {
+        echo "<p class='success'>{$_SESSION['success']}</p>";
+        unset($_SESSION['success']);
+    }
+
+    if (isset($_SESSION['error'])) {
+        echo "<p class='error'>{$_SESSION['error']}</p>";
+        unset($_SESSION['error']);
+    }
+
     // Fetch users from the database and display them
     $sql = "SELECT idGebruikers, Gebruikersnaam, Wachtwoord, Rol, Email FROM gebruikers";
-
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -56,7 +91,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                 <td>{$role}</td>
                 <td>
                     <a href='edit_medewerkers.php?id={$row['idGebruikers']}'>Edit</a> | 
-                    <a href='delete_medewerkers.php?id={$row['idGebruikers']}' onclick='return confirm(\"Weet je zeker dat je deze gebruiker wilt verwijderen?\")'>Delete</a>
+                    <a href='?id={$row['idGebruikers']}' onclick='return confirm(\"Weet je zeker dat je deze gebruiker wilt verwijderen?\")'>Delete</a>
                 </td>
             </tr>";
         }
