@@ -4,7 +4,6 @@ $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Niet ingelogd';
 $user_email = isset($_SESSION['Email']) ? $_SESSION['Email'] : 'Niet beschikbaar';
 $user_name = isset($_SESSION['Gebruikersnaam']) ? $_SESSION['Gebruikersnaam'] : 'Niet beschikbaar';
 $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Niet beschikbaar';
-$profile_pic = isset($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : 'afbeeldingen/defaultacc.jpg';
 
 // Determine role description and dashboard link
 switch ($user_role) {
@@ -56,7 +55,7 @@ switch ($user_role) {
         </ul>
 
         <div class="profile-circle" id="profile-circle">
-            <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" class="profile-img">
+            <img src="<?php echo htmlspecialchars('Images/defaultacc.jpg'); ?>" alt="Profile" class="profile-img">
         </div>
     </div>
 </nav>
