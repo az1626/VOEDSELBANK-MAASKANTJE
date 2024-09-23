@@ -61,26 +61,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h1>Management Report</h1>
 
     <form method="post">
-        <label for="month">Month:</label>
+        <label for="month">Maand:</label>
         <input type="number" id="month" name="month" min="1" max="12" value="<?php echo htmlspecialchars($month ?? '', ENT_QUOTES, 'UTF-8'); ?>" required>
 
-        <label for="year">Year:</label>
+        <label for="year">Jaar:</label>
         <input type="number" id="year" name="year" min="1900" max="<?php echo date('Y'); ?>" value="<?php echo htmlspecialchars($year ?? '', ENT_QUOTES, 'UTF-8'); ?>" required>
 
         <label for="postcode">Postcode:</label>
         <input type="text" id="postcode" name="postcode" value="<?php echo htmlspecialchars($postcode ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
-        <button type="submit">Generate Report</button>
+        <button type="submit">Genereer Report</button>
     </form>
 
-    <h2>Monthly Report by Product Category</h2>
+    <h2>Maandelijks Report by Product Category</h2>
     <?php if (!empty($category_data)): ?>
         <table>
             <thead>
             <tr>
-                <th>Product Name</th>
-                <th>Supplier Name</th>
-                <th>Quantity</th>
+                <th>Product Naam</th>
+                <th>Leverancier Naam</th>
+                <th>Hoeveelheid</th>
             </tr>
             </thead>
             <tbody>
@@ -94,16 +94,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tbody>
         </table>
     <?php else: ?>
-        <p>No data available for the selected month and year.</p>
+        <p>Er zijn geen gegevens beschikbaar voor de geselecteerde maand en jaar.</p>
     <?php endif; ?>
 
-    <h2>Monthly Report by Postcode</h2>
+    <h2>Maandelijks Report bij Postcode</h2>
     <?php if (!empty($postcode_data)): ?>
         <table>
             <thead>
             <tr>
-                <th>Category Name</th>
-                <th>Quantity</th>
+                <th>Categorie Naam</th>
+                <th>Hoeveelheid</th>
             </tr>
             </thead>
             <tbody>
@@ -116,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tbody>
         </table>
     <?php else: ?>
-        <p>No data available for the selected postcode, month, and year.</p>
+        <p>Er zijn geen gegevens beschikbaar voor de geselecteerde maand en jaar.</p>
     <?php endif; ?>
 </div>
 </body>
