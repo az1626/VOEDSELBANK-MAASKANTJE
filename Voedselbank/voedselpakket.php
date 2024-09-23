@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 // Function to get all voedselpakketen with product details and klant name
 function getVoedselpakketen($conn) {
     $sql = "SELECT v.idVoedselpakketen AS id, v.Samenstellingsdatum AS samenstellingsdatum, v.Uitgiftedatum AS ophaaldatum,
-                   p.naam AS product_naam, vp.aantal AS product_aantal, k.naam AS klant_naam
+                p.naam AS product_naam, vp.aantal AS product_aantal, k.naam AS klant_naam
             FROM Voedselpakketen v
             LEFT JOIN Producten_has_Voedselpakketen vp ON v.idVoedselpakketen = vp.Voedselpakketen_idVoedselpakketen
             LEFT JOIN Producten p ON vp.Producten_idProducten = p.idProducten
