@@ -2,13 +2,11 @@
 session_start();
 include 'db_connect.php';
 
-// Check if the user is logged in and has the admin role
-// Redirect if not admin (role 1), medewerker (role 2), or vrijwilliger (role 3)
+// Check if the user is logged in and has the admin, medewerker, or vrijwilliger role
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
     header("Location: login.php");
     exit;
 }
-
 
 // Function to get all voedselpakketen with product details
 function getVoedselpakketen($conn) {
@@ -21,7 +19,6 @@ function getVoedselpakketen($conn) {
 
     $result = $conn->query($sql);
 
-    // Error handling
     if (!$result) {
         die("Query failed: " . $conn->error);
     }
@@ -59,6 +56,33 @@ function getVoedselpakketen($conn) {
 
 // Get all voedselpakketen for display
 $voedselpakketen = getVoedselpakketen($conn);
+
+// Check if an ID is provided for deletion
+if (isset($_GET['delete_id'])) {
+    $id = intval($_GET['delete_id']);
+    deleteVoedselpakket($conn, $id);
+}
+
+// Function to delete voedselpakket and related products
+function deleteVoedselpakket($conn, $id) {
+    // Delete related records first
+    $sql = "DELETE FROM producten_has_voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    // Now delete the voedselpakket
+    $sql = "DELETE FROM voedselpakketen WHERE idVoedselpakketen = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        echo "<script>alert('Voedselpakket successfully deleted.'); window.location.href='voedselpakket.php';</script>";
+    } else {
+        echo "<script>alert('Failed to delete voedselpakket.'); window.location.href='voedselpakket.php';</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -102,7 +126,7 @@ $voedselpakketen = getVoedselpakketen($conn);
                     <td><?php echo htmlspecialchars(implode(', ', $pakket['producten'])); ?></td>
                     <td class="action-links">
                         <a href="edit_voedselpakket.php?id=<?php echo htmlspecialchars($pakket['id']); ?>">Bewerken</a>
-                        <a href="delete_voedselpakket.php?id=<?php echo htmlspecialchars($pakket['id']); ?>" onclick="return confirm('Weet je zeker dat je dit voedselpakket wilt verwijderen?');">Verwijderen</a>
+                        <a href="?delete_id=<?php echo htmlspecialchars($pakket['id']); ?>" onclick="return confirm('Weet je zeker dat je dit voedselpakket wilt verwijderen?');">Verwijderen</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -8,6 +8,28 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
     exit;
 }
 
+// Check if a product ID is provided in the URL for deletion
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']); // Ensure the ID is treated as an integer to prevent SQL injection
+
+    // Prepare the SQL statement to delete the product
+    $sql = "DELETE FROM Producten WHERE idProducten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    // Execute the statement and handle the result
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Product succesvol verwijderd!";
+        header("Location: product.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Fout: " . htmlspecialchars($stmt->error);
+    }
+
+    // Close the statement
+    $stmt->close();
+}
+
 // Zoekopdracht op barcode of productnaam
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -66,6 +88,17 @@ $result = $stmt->get_result();
     </div>
 
     <?php
+    // Display success or error messages
+    if (isset($_SESSION['success'])) {
+        echo "<p class='success'>{$_SESSION['success']}</p>";
+        unset($_SESSION['success']);
+    }
+
+    if (isset($_SESSION['error'])) {
+        echo "<p class='error'>{$_SESSION['error']}</p>";
+        unset($_SESSION['error']);
+    }
+
     if ($result->num_rows > 0) {
         echo "<table>
             <tr>
@@ -88,7 +121,7 @@ $result = $stmt->get_result();
                 <td>{$row['leveranciers']}</td>
                 <td>
                     <a href='edit_product.php?id={$row['idProducten']}'>Bewerken</a> | 
-                    <a href='delete_product.php?id={$row['idProducten']}' onclick='return confirm(\"Weet je zeker dat je dit product wilt verwijderen?\")'>Verwijderen</a>
+                    <a href='?id={$row['idProducten']}' onclick='return confirm(\"Weet je zeker dat je dit product wilt verwijderen?\")'>Verwijderen</a>
                 </td>
                 </tr>";
         }

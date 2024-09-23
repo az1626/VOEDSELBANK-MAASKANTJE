@@ -8,6 +8,38 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
     exit;
 }
 
+// Handle deletion if an ID is provided
+if (isset($_POST['delete_id'])) {
+    $klant_id = intval($_POST['delete_id']);
+
+    // First, delete related voedselpakketen records
+    $sql = "DELETE FROM voedselpakketen WHERE Klanten_idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant_id);
+    $stmt->execute();
+    $stmt->close();
+
+    // Then, delete related dieetwensen records (if needed)
+    $sql = "DELETE FROM Klanten_has_Dieetwensen WHERE Klanten_idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant_id);
+    $stmt->execute();
+    $stmt->close();
+
+    // Finally, delete the klant record
+    $sql = "DELETE FROM Klanten WHERE idKlanten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $klant_id);
+
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Family deleted successfully!";
+    } else {
+        $_SESSION['error'] = "Error: " . htmlspecialchars($stmt->error);
+    }
+
+    $stmt->close();
+}
+
 // Fetch data from the database
 $sql = "SELECT Klanten.*, GROUP_CONCAT(Dieetwensen.naam SEPARATOR ', ') AS dieetwensen
         FROM Klanten
@@ -35,6 +67,16 @@ $result = $stmt->get_result();
     <a href="add_family.php" class="btn">Voeg Familie</a>
 
     <?php
+    if (isset($_SESSION['success'])) {
+        echo "<p class='success'>{$_SESSION['success']}</p>";
+        unset($_SESSION['success']);
+    }
+
+    if (isset($_SESSION['error'])) {
+        echo "<p class='error'>{$_SESSION['error']}</p>";
+        unset($_SESSION['error']);
+    }
+
     if ($result->num_rows > 0) {
         echo "<table>
             <tr>
@@ -63,7 +105,10 @@ $result = $stmt->get_result();
                 <td>{$row['dieetwensen']}</td>
                 <td>
                     <a href='edit_family.php?id={$row['idKlanten']}' class='action-link'>Edit</a>
-                    <a href='delete_family.php?id={$row['idKlanten']}' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Delete</a>
+                    <form method='post' action='' style='display:inline;'>
+                        <input type='hidden' name='delete_id' value='{$row['idKlanten']}'>
+                        <button type='submit' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Delete</button>
+                    </form>
                 </td>
                 </tr>";
         }
