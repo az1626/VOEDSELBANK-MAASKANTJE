@@ -146,12 +146,14 @@ $conn->close();
                     <tr>
                         <td><?php echo htmlspecialchars($row['naam']); ?></td>
                         <td>
-                            <?php if ($_SESSION['role'] == 1): ?>
-                                <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Edit</button>
-                                <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
-                            <?php else: ?>
-                                <span>Alleen bekijken</span>
-                            <?php endif; ?>
+                        
+                        <?php if ($_SESSION['role'] == 1): ?>
+                      <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Edit</button>
+                        <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                      <?php else: ?>
+                      <span>Alleen bekijken</span>
+                     <?php endif; ?>
+</td>
                         </td>
                     </tr>
                 <?php endwhile; ?>

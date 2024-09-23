@@ -1,6 +1,4 @@
-/* Reset default margin and padding for body and html */
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -19,12 +17,14 @@ body {
   left: 0;
   z-index: 1000;
 }
+
 .navbar a {
   color: #fff;
   text-decoration: none;
   padding: 10px 15px;
   display: inline-block;
 }
+
 .navbar a:hover {
   background-color: #575757;
 }
@@ -33,6 +33,7 @@ body {
 .main-content {
   padding-top: 60px; /* Adjust based on navbar height */
 }
+
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -41,41 +42,47 @@ body {
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 h1 {
   color: #333;
   text-align: center;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
-table,
-th,
-td {
+
+table, th, td {
   border: 1px solid #ddd;
 }
-th,
-td {
+
+th, td {
   padding: 8px;
   text-align: left;
 }
+
 th {
   background-color: #f2f2f2;
 }
+
 form {
   display: grid;
   gap: 15px;
 }
+
 label {
   font-weight: bold;
 }
+
 input[type="text"] {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
+
 input[type="submit"] {
   background-color: #4caf50;
   color: white;
@@ -84,19 +91,23 @@ input[type="submit"] {
   cursor: pointer;
   border-radius: 4px;
 }
+
 input[type="submit"]:hover {
   background-color: #45a049;
 }
+
 .message {
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 4px;
 }
+
 .success {
   background-color: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
 }
+
 .error {
   background-color: #f8d7da;
   color: #721c24;
@@ -139,4 +150,32 @@ input[type="submit"]:hover {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* New styles for edit and delete buttons */
+.edit-btn, .delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.edit-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
 }
