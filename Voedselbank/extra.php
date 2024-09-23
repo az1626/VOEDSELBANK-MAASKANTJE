@@ -148,8 +148,8 @@ $conn->close();
                         <td>
                         
                         <?php if ($_SESSION['role'] == 1): ?>
-                      <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Edit</button>
-                        <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                      <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Wijzig</button>
+                        <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this entry?');">Verwijder</a>
                       <?php else: ?>
                       <span>Alleen bekijken</span>
                      <?php endif; ?>
@@ -179,9 +179,9 @@ $conn->close();
 <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Edit Dietary Wish</h2>
+        <h2>Beheer Dieetwensen</h2>
         <form id="editForm" action="extra.php" method="post">
-            <label for="editNaam">Name:</label>
+            <label for="editNaam">Naam:</label>
             <input type="text" id="editNaam" name="naam" required>
             <input type="hidden" id="editId" name="id">
             <input type="submit" value="Update Dietary Wish">
