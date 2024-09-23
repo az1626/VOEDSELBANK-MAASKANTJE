@@ -8,13 +8,14 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
     exit;
 }
 
-// Function to get all voedselpakketen with product details
+// Function to get all voedselpakketen with product details and klant name
 function getVoedselpakketen($conn) {
     $sql = "SELECT v.idVoedselpakketen AS id, v.Samenstellingsdatum AS samenstellingsdatum, v.Uitgiftedatum AS ophaaldatum,
-                   p.naam AS product_naam
+                   p.naam AS product_naam, vp.aantal AS product_aantal, k.naam AS klant_naam
             FROM Voedselpakketen v
             LEFT JOIN Producten_has_Voedselpakketen vp ON v.idVoedselpakketen = vp.Voedselpakketen_idVoedselpakketen
-            LEFT JOIN Producten p ON vp.Producten_idProducten = p.idProducten AND vp.Producten_Categorieen_idCategorieen = p.Categorieen_idCategorieen
+            LEFT JOIN Producten p ON vp.Producten_idProducten = p.idProducten
+            LEFT JOIN Klanten k ON v.Klanten_idKlanten = k.idKlanten
             ORDER BY v.idVoedselpakketen, p.naam";
 
     $result = $conn->query($sql);
@@ -38,11 +39,13 @@ function getVoedselpakketen($conn) {
                     'id' => $row['id'],
                     'samenstellingsdatum' => $row['samenstellingsdatum'],
                     'ophaaldatum' => $row['ophaaldatum'],
+                    'klant_naam' => $row['klant_naam'], // Added klant name
                     'producten' => []
                 ];
             }
             if ($row['product_naam'] !== null) {
-                $current_pakket['producten'][] = $row['product_naam'];
+                // Append product name and quantity to the producten array
+                $current_pakket['producten'][] = $row['product_naam'] . " (Aantal: " . $row['product_aantal'] . ")";
             }
         }
         if ($current_pakket !== null) {
@@ -66,14 +69,14 @@ if (isset($_GET['delete_id'])) {
 // Function to delete voedselpakket and related products
 function deleteVoedselpakket($conn, $id) {
     // Delete related records first
-    $sql = "DELETE FROM producten_has_voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
+    $sql = "DELETE FROM Producten_has_Voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
 
     // Now delete the voedselpakket
-    $sql = "DELETE FROM voedselpakketen WHERE idVoedselpakketen = ?";
-    $stmt = $conn->prepare($sql);
+    $sql = "DELETE FROM Voedselpakketen WHERE idVoedselpakketen = ?";
+    $stmt->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
 
@@ -108,6 +111,7 @@ function deleteVoedselpakket($conn, $id) {
             <th>ID</th>
             <th>Samenstellingsdatum</th>
             <th>Ophaaldatum</th>
+            <th>Klant</th> <!-- Added Klant -->
             <th>Producten</th>
             <th>Acties</th>
         </tr>
@@ -115,7 +119,7 @@ function deleteVoedselpakket($conn, $id) {
         <tbody>
         <?php if (empty($voedselpakketen)): ?>
             <tr>
-                <td colspan="5">Geen voedselpakketen gevonden.</td>
+                <td colspan="6">Geen voedselpakketen gevonden.</td>
             </tr>
         <?php else: ?>
             <?php foreach ($voedselpakketen as $pakket) : ?>
@@ -123,7 +127,8 @@ function deleteVoedselpakket($conn, $id) {
                     <td><?php echo htmlspecialchars($pakket['id']); ?></td>
                     <td><?php echo htmlspecialchars($pakket['samenstellingsdatum']); ?></td>
                     <td><?php echo htmlspecialchars($pakket['ophaaldatum']); ?></td>
-                    <td><?php echo htmlspecialchars(implode(', ', $pakket['producten'])); ?></td>
+                    <td><?php echo htmlspecialchars($pakket['klant_naam']); ?></td> <!-- Display Klant Name -->
+                    <td><?php echo htmlspecialchars(implode(', ', $pakket['producten'])); ?></td> <!-- Display Products with Quantities -->
                     <td class="action-links">
                         <a href="edit_voedselpakket.php?id=<?php echo htmlspecialchars($pakket['id']); ?>">Bewerken</a>
                         <a href="?delete_id=<?php echo htmlspecialchars($pakket['id']); ?>" onclick="return confirm('Weet je zeker dat je dit voedselpakket wilt verwijderen?');">Verwijderen</a>
