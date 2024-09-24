@@ -136,141 +136,41 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voeg een nieuw Voedselpakket toe</title>
+    <link rel="stylesheet" href="CSS/Add_Voedselpakket.css">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        input[type="text"], input[type="date"], input[type="number"] {
+        .dropdown {
+            position: relative;
+            display: inline-block;
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
         }
 
-        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .client-group, .product-group {
+        .dropdown-content {
+            display: none;
+            position: absolute;
             background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .client-group > label, .product-group > label {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
-        .client-option, .product-option {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .client-option input[type="radio"], .product-option input[type="checkbox"] {
-            margin-right: 10px;
-        }
-
-        .product-option {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-
-        .product-option label {
-            font-size: 16px;
-            color: #2c3e50;
-        }
-
-        .product-option p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .quantity {
-            width: 60px;
-            margin-left: 10px;
-        }
-
-        .dieetwensen {
-            font-size: 16px;
-            color: #555;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e8f5e9;
+            min-width: 160px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1;
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                width: 95%;
-                padding: 1rem;
-            }
+        .dropdown-content div {
+            padding: 12px;
+            cursor: pointer;
+        }
 
-            .product-option {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        .dropdown-content div:hover {
+            background-color: #f1f1f1;
+        }
 
-            .quantity {
-                margin-left: 0;
-                margin-top: 5px;
-            }
+        .dropdown input {
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -282,12 +182,17 @@ $conn->close();
     <form method="POST" action="">
         <div class="client-group">
             <label>Selecteer een klant:</label>
-            <?php foreach ($klanten as $klant): ?>
-                <div class="client-option">
-                    <input type="radio" id="klant_<?php echo $klant['idKlanten']; ?>" name="klant_id" value="<?php echo $klant['idKlanten']; ?>" required onchange="showDieetwensen(<?php echo $klant['idKlanten']; ?>)">
-                    <label for="klant_<?php echo $klant['idKlanten']; ?>"><?php echo htmlspecialchars($klant['naam']); ?></label>
+            <div class="dropdown">
+                <input type="text" id="clientSearch" placeholder="Zoek klant..." autocomplete="off" onkeyup="filterClients()">
+                <div class="dropdown-content" id="clientList">
+                    <?php foreach ($klanten as $klant): ?>
+                        <div class="client-option" data-id="<?php echo $klant['idKlanten']; ?>" onclick="selectClient('<?php echo $klant['idKlanten']; ?>', '<?php echo htmlspecialchars($klant['naam']); ?>')">
+                            <?php echo htmlspecialchars($klant['naam']); ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
+            </div>
+            <input type="hidden" name="klant_id" id="selectedClientId" required>
         </div>
 
         <div class="dieetwensen" id="dieetwensen_display"></div>
@@ -318,6 +223,44 @@ $conn->close();
 
 <script>
     const dieetwensen = <?php echo json_encode($dieetwensen); ?>;
+
+    function filterClients() {
+        const input = document.getElementById('clientSearch');
+        const filter = input.value.toLowerCase();
+        const clientList = document.getElementById('clientList');
+        const clientOptions = clientList.getElementsByTagName('div');
+
+        // Show the dropdown
+        clientList.style.display = 'block';
+
+        for (let i = 0; i < clientOptions.length; i++) {
+            const txtValue = clientOptions[i].textContent || clientOptions[i].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                clientOptions[i].style.display = '';
+            } else {
+                clientOptions[i].style.display = 'none';
+            }
+        }
+
+        // Hide dropdown if no options
+        if (Array.from(clientOptions).every(option => option.style.display === 'none')) {
+            clientList.style.display = 'none';
+        }
+    }
+
+    function selectClient(id, name) {
+        document.getElementById('selectedClientId').value = id;
+        document.getElementById('clientSearch').value = name;
+        document.getElementById('clientList').style.display = 'none';
+        showDieetwensen(id); // Show dietary preferences
+    }
+
+    // Hide dropdown if clicking outside
+    window.onclick = function(event) {
+        if (!event.target.matches('#clientSearch')) {
+            document.getElementById('clientList').style.display = 'none';
+        }
+    }
 
     function showDieetwensen(klantId) {
         const display = document.getElementById('dieetwensen_display');
