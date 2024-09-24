@@ -24,7 +24,7 @@ function generateEAN13() {
     return $ean . $checksum;
 }
 
-// Check if the user is logged in and has admin privileges
+// Check if the user is logged in and has admin or medewerker privileges
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2)) {
     header("Location: login.php");
     exit;
@@ -44,20 +44,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $ean_nummer = generateEAN13();
     }
 
-    // Check if the product already exists
-    $sql_check = "SELECT idProducten, aantal FROM Producten WHERE ean = ?";
+    // Check if the product with the same name exists
+    $sql_check = "SELECT idProducten, aantal FROM Producten WHERE naam = ?";
     $stmt_check = $conn->prepare($sql_check);
 
     if ($stmt_check === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
 
-    $stmt_check->bind_param("s", $ean_nummer);
+    $stmt_check->bind_param("s", $naam);
     $stmt_check->execute();
     $result_check = $stmt_check->get_result();
 
     if ($result_check->num_rows > 0) {
-        // Product exists, update quantity
+        // Product exists, update the quantity
         $row = $result_check->fetch_assoc();
         $product_id = $row['idProducten'];
         $new_voorraad = $row['aantal'] + $voorraad;
@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: product.php?added=success");
             exit;
         } else {
-            echo "<p>Error: " . htmlspecialchars($stmt_update->error) . "</p>"; // Display error message securely
+            echo "<p>Error: " . htmlspecialchars($stmt_update->error) . "</p>";
         }
 
         $stmt_update->close();
@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_insert->bind_param("sisis", $naam, $categorie, $ean_nummer, $voorraad, $categorie);
 
         if ($stmt_insert->execute()) {
-            $product_id = $conn->insert_id; // Get the ID of the inserted product
+            $product_id = $conn->insert_id;
 
             // Insert into Producten_has_Leveranciers
             $sql_insert_leverancier = "INSERT INTO Producten_has_Leveranciers (Producten_idProducten, Leveranciers_idLeveranciers) VALUES (?, ?)";
@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: product.php?added=success");
             exit;
         } else {
-            echo "<p>Error: " . htmlspecialchars($stmt_insert->error) . "</p>"; // Display error message securely
+            echo "<p>Error: " . htmlspecialchars($stmt_insert->error) . "</p>";
         }
 
         $stmt_insert->close();
@@ -150,6 +150,7 @@ if ($stmt2 === false) {
 $stmt2->execute();
 $leveranciers = $stmt2->get_result();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="nl">
