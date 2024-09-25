@@ -3,7 +3,7 @@
 session_start();
 
 // Include your database connection
-include 'db_connect.php'; // Zorg dat deze file de database-verbinding bevat
+include 'db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Haal de gebruikersnaam en wachtwoord uit het formulier
@@ -46,11 +46,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         } else {
             // Ongeldig wachtwoord
-            echo "Invalid password. Please try again.";
+            $_SESSION['error_message'] = "Wachtwoord of gebruikersnaam is incorrect.";
+            header("Location: login.php");
+            exit();
         }
     } else {
         // Gebruiker niet gevonden
-        echo "No user found with that username.";
+        $_SESSION['error_message'] = "Wachtwoord of gebruikersnaam is incorrect.";
+        header("Location: login.php");
+        exit();
     }
 
     // Sluit de statement en de connectie

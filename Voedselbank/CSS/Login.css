@@ -53,6 +53,10 @@ input[type="password"] {
   border-radius: 4px;
   font-size: 1rem;
 }
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
 input[type="submit"] {
   background-color: forestgreen;
   color: white;
