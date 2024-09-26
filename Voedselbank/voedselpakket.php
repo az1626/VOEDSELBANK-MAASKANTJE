@@ -10,8 +10,12 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 
 // Function to get all voedselpakketen with product details and klant name
 function getVoedselpakketen($conn) {
-    $sql = "SELECT v.idVoedselpakketen AS id, v.Samenstellingsdatum AS samenstellingsdatum, v.Uitgiftedatum AS ophaaldatum,
-                p.naam AS product_naam, vp.aantal AS product_aantal, k.naam AS klant_naam
+    $sql = "SELECT v.idVoedselpakketen AS id, 
+                   v.Samenstellingsdatum AS samenstellingsdatum, 
+                   v.Uitgiftedatum AS ophaaldatum,
+                   p.naam AS product_naam, 
+                   vp.Quantity AS product_aantal,  -- Change from vp.aantal to vp.Quantity
+                   k.naam AS klant_naam
             FROM Voedselpakketen v
             LEFT JOIN Producten_has_Voedselpakketen vp ON v.idVoedselpakketen = vp.Voedselpakketen_idVoedselpakketen
             LEFT JOIN Producten p ON vp.Producten_idProducten = p.idProducten
@@ -39,13 +43,13 @@ function getVoedselpakketen($conn) {
                     'id' => $row['id'],
                     'samenstellingsdatum' => $row['samenstellingsdatum'],
                     'ophaaldatum' => $row['ophaaldatum'],
-                    'klant_naam' => $row['klant_naam'], // Added klant name
+                    'klant_naam' => $row['klant_naam'],
                     'producten' => []
                 ];
             }
             if ($row['product_naam'] !== null) {
                 // Append product name and quantity to the producten array
-                $current_pakket['producten'][] = $row['product_naam'] . " (Aantal: " . $row['product_aantal'] . ")";
+                $current_pakket['producten'][] = $row['product_naam'] . " (Aantal: " . $row['product_aantal'] . ")"; // Show product quantity
             }
         }
         if ($current_pakket !== null) {
@@ -56,6 +60,7 @@ function getVoedselpakketen($conn) {
         return [];
     }
 }
+
 
 // Get all voedselpakketen for display
 $voedselpakketen = getVoedselpakketen($conn);
