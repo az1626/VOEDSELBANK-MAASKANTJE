@@ -24,24 +24,24 @@ function addVoedselpakket($conn, $klant_id, $gebruiker_id, $samenstellingsdatum,
 }
 
 // Function to add products to the voedselpakket
-function addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $categorie_id, $klant_id, $quantity) {
-    $sql = "INSERT INTO producten_has_voedselpakketen (Producten_idProducten, Producten_Categorieen_idCategorieen, Voedselpakketen_idVoedselpakketen, Voedselpakketen_Klanten_idKlanten, Quantity) VALUES (?, ?, ?, ?, ?)";
+function addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $categorie_id, $klant_id, $aantal) {
+    $sql = "INSERT INTO producten_has_voedselpakketen (Producten_idProducten, Producten_Categorieen_idCategorieen, Voedselpakketen_idVoedselpakketen, Voedselpakketen_Klanten_idKlanten, Aantal) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if ($stmt === false) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("iiiii", $product_id, $categorie_id, $voedselpakket_id, $klant_id, $quantity); // Include quantity
+    $stmt->bind_param("iiiii", $product_id, $categorie_id, $voedselpakket_id, $klant_id, $aantal); // Include quantity
     return $stmt->execute();
 }
 
 // Function to update product stock
-function updateProductStock($conn, $product_id, $quantity) {
+function updateProductStock($conn, $product_id, $aantal) {
     $sql = "UPDATE producten SET aantal = aantal - ? WHERE idProducten = ?";
     $stmt = $conn->prepare($sql);
     if ($stmt === false) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("ii", $quantity, $product_id);
+    $stmt->bind_param("ii", $aantal, $product_id);
     return $stmt->execute();
 }
 
@@ -61,11 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_voedselpakket'])) 
         $all_success = true;
 
         foreach ($_POST['producten'] as $index => $product_id) {
-            $quantity = $_POST['quantities'][$index]; // Retrieve quantity from form submission
+            $aantal = $_POST['quantities'][$index]; // Retrieve quantity from form submission
             $categorie_id = $_POST['categorie_ids'][$index];
-            if (!empty($product_id) && !empty($quantity)) {
+            if (!empty($product_id) && !empty($aantal)) {
                 // Add the product and its quantity to the food package
-                if (!addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $categorie_id, $klant_id, $quantity) || !updateProductStock($conn, $product_id, $quantity)) {
+                if (!addVoedselpakketProducts($conn, $voedselpakket_id, $product_id, $categorie_id, $klant_id, $aantal) || !updateProductStock($conn, $product_id, $aantal)) {
                     $all_success = false;
                     break;
                 }
@@ -219,7 +219,7 @@ $conn->close();
             <input type="hidden" id="selectedProductId">
             <div class="quantity-input">
                 <label for="productQuantity">Aantal:</label>
-                <input type="number" id="productQuantity" min="1" max="" placeholder="Aantal" required>
+                <input type="number" id="productQuantity" min="1" max="" placeholder="Aantal">
                 <input type="hidden" id="selectedCategoryId">
             </div>
             <button type="button" onclick="addProduct()">Voeg product toe</button>

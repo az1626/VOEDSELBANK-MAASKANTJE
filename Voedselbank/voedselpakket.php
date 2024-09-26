@@ -14,7 +14,7 @@ function getVoedselpakketen($conn) {
                    v.Samenstellingsdatum AS samenstellingsdatum, 
                    v.Uitgiftedatum AS ophaaldatum,
                    p.naam AS product_naam, 
-                   vp.Quantity AS product_aantal,  -- Change from vp.aantal to vp.Quantity
+                   vp.Aantal AS product_aantal,  -- Change from vp.aantal to vp.Quantity
                    k.naam AS klant_naam
             FROM Voedselpakketen v
             LEFT JOIN Producten_has_Voedselpakketen vp ON v.idVoedselpakketen = vp.Voedselpakketen_idVoedselpakketen
