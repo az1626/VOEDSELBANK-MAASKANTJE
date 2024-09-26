@@ -19,12 +19,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $postcode = isset($_POST['postcode']) ? $_POST['postcode'] : '';
 
     // Prepare and execute query for product category report
-    $stmt = $conn->prepare("SELECT p.naam AS product_naam, l.naam AS leverancier_naam, COUNT(*) AS aantal
-                             FROM producten p
-                             JOIN producten_has_leveranciers phl ON p.idProducten = phl.Producten_idProducten
-                             JOIN leveranciers l ON phl.Leveranciers_idLeveranciers = l.idLeveranciers
-                             WHERE MONTH(p.created_at) = ? AND YEAR(p.created_at) = ?
-                             GROUP BY p.naam, l.naam");
+    $stmt = $conn->prepare("
+        SELECT p.naam AS product_naam, l.naam AS leverancier_naam, SUM(phv.aantal) AS aantal
+        FROM producten p
+        JOIN producten_has_leveranciers phl ON p.idProducten = phl.Producten_idProducten
+        JOIN leveranciers l ON phl.Leveranciers_idLeveranciers = l.idLeveranciers
+        JOIN producten_has_voedselpakketen phv ON phv.Producten_idProducten = p.idProducten
+        JOIN voedselpakketen v ON v.idVoedselpakketen = phv.Voedselpakketen_idVoedselpakketen
+        WHERE MONTH(v.Samenstellingsdatum) = ? AND YEAR(v.Samenstellingsdatum) = ?
+        GROUP BY p.naam, l.naam
+    ");
     $stmt->bind_param("ii", $month, $year);
     $stmt->execute();
     $category_data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -32,12 +36,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Prepare and execute query for postcode report
     if ($postcode) {
-        $stmt = $conn->prepare("SELECT c.naam AS categorie_naam, COUNT(*) AS aantal
-                                 FROM producten p
-                                 JOIN categorieen c ON p.Categorieen_idCategorieen = c.idCategorieen
-                                 JOIN klanten k ON k.idKlanten = p.idProducten
-                                 WHERE MONTH(p.created_at) = ? AND YEAR(p.created_at) = ? AND k.postcode = ?
-                                 GROUP BY c.naam");
+        $stmt = $conn->prepare("
+            SELECT c.naam AS categorie_naam, SUM(phv.aantal) AS aantal
+            FROM producten p
+            JOIN categorieen c ON p.Categorieen_idCategorieen = c.idCategorieen
+            JOIN producten_has_voedselpakketen phv ON phv.Producten_idProducten = p.idProducten
+            JOIN voedselpakketen v ON v.idVoedselpakketen = phv.Voedselpakketen_idVoedselpakketen
+            JOIN klanten k ON k.idKlanten = v.Klanten_idKlanten
+            WHERE MONTH(v.Samenstellingsdatum) = ? AND YEAR(v.Samenstellingsdatum) = ? AND k.postcode = ?
+            GROUP BY c.naam
+        ");
         $stmt->bind_param("iis", $month, $year, $postcode);
         $stmt->execute();
         $postcode_data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -73,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit">Genereer Report</button>
     </form>
 
-    <h2>Maandelijks Report by Product Category</h2>
+    <h2>Maandelijks Report per Productcategorie</h2>
     <?php if (!empty($category_data)): ?>
         <table>
             <thead>
@@ -97,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p>Er zijn geen gegevens beschikbaar voor de geselecteerde maand en jaar.</p>
     <?php endif; ?>
 
-    <h2>Maandelijks Report bij Postcode</h2>
+    <h2>Maandelijks Report per Postcode</h2>
     <?php if (!empty($postcode_data)): ?>
         <table>
             <thead>
@@ -116,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tbody>
         </table>
     <?php else: ?>
-        <p>Er zijn geen gegevens beschikbaar voor de geselecteerde maand en jaar.</p>
+        <p>Er zijn geen gegevens beschikbaar voor de geselecteerde maand, jaar en postcode.</p>
     <?php endif; ?>
 </div>
 </body>
