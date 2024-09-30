@@ -14,7 +14,7 @@ function getVoedselpakketen($conn) {
                    v.Samenstellingsdatum AS samenstellingsdatum, 
                    v.Uitgiftedatum AS ophaaldatum,
                    p.naam AS product_naam, 
-                   vp.Aantal AS product_aantal,  -- Change from vp.aantal to vp.Quantity
+                   vp.Aantal AS product_aantal,
                    k.naam AS klant_naam
             FROM Voedselpakketen v
             LEFT JOIN Producten_has_Voedselpakketen vp ON v.idVoedselpakketen = vp.Voedselpakketen_idVoedselpakketen
@@ -61,7 +61,6 @@ function getVoedselpakketen($conn) {
     }
 }
 
-
 // Get all voedselpakketen for display
 $voedselpakketen = getVoedselpakketen($conn);
 
@@ -73,6 +72,20 @@ if (isset($_GET['delete_id'])) {
 
 // Function to delete voedselpakket and related products
 function deleteVoedselpakket($conn, $id) {
+    // Fetch product quantities before deletion
+    $sql = "SELECT Producten_idProducten, Aantal FROM Producten_has_Voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Array to hold the quantities to restore
+    $products_to_restore = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $products_to_restore[$row['Producten_idProducten']] = $row['Aantal'];
+    }
+
     // Delete related records first
     $sql = "DELETE FROM Producten_has_Voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
     $stmt = $conn->prepare($sql);
@@ -85,12 +98,26 @@ function deleteVoedselpakket($conn, $id) {
     $stmt->bind_param("i", $id);
     $stmt->execute();
 
+    // Restore the product quantities
+    foreach ($products_to_restore as $product_id => $quantity) {
+        restoreProductQuantity($conn, $product_id, $quantity);
+    }
+
     if ($stmt->affected_rows > 0) {
         echo "<script>alert('Voedselpakket successfully deleted.'); window.location.href='voedselpakket.php';</script>";
     } else {
         echo "<script>alert('Failed to delete voedselpakket.'); window.location.href='voedselpakket.php';</script>";
     }
 }
+
+// Function to restore product quantity
+function restoreProductQuantity($conn, $product_id, $quantity) {
+    $sql = "UPDATE Producten SET aantal = aantal + ? WHERE idProducten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $quantity, $product_id);
+    $stmt->execute();
+}
+
 ?>
 
 <!DOCTYPE html>
