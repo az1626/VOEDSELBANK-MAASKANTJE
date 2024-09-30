@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php'; // Include your database connection script
 
 // Check if the user is logged in and has the admin role
-// Redirect if not admin (role 1), medewerker (role 2), of vrijwilliger (role 3)
+// Redirect if not admin (role 1), medewerker (role 2), or vrijwilliger (role 3)
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2 && $_SESSION['role'] != 3)) {
     header("Location: login.php");
     exit;
@@ -13,12 +13,9 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
-    // Start transaction
-    $conn->begin_transaction();
-
-    // Function to restore the stock of products related to a voedselpakket
+    // Function to restore stock of products associated with a voedselpakket
     function restoreProductStock($conn, $voedselpakket_id) {
-        // Get all products and their quantities from producten_has_voedselpakketen related to the voedselpakket
+        // Retrieve all products and their quantities from producten_has_voedselpakketen
         $sql = "SELECT Producten_idProducten, Aantal FROM producten_has_voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
@@ -33,7 +30,7 @@ if (isset($_GET['id'])) {
             $product_id = $row['Producten_idProducten'];
             $aantal = $row['Aantal'];
 
-            // Update the stock in the producten table (add the aantal back to the stock)
+            // Update the stock in the producten table
             $updateSql = "UPDATE producten SET aantal = aantal + ? WHERE idProducten = ?";
             $updateStmt = $conn->prepare($updateSql);
             if (!$updateStmt) {
@@ -41,19 +38,19 @@ if (isset($_GET['id'])) {
             }
             $updateStmt->bind_param("ii", $aantal, $product_id);
             if (!$updateStmt->execute()) {
-                $conn->rollback(); // Rollback transaction if stock update fails
                 die("Failed to restore stock: " . $updateStmt->error);
             }
         }
+
         $stmt->close();
     }
 
     // Function to delete records from the producten_has_voedselpakketen table
     function deleteVoedselpakketProducts($conn, $id) {
-        // Restore the stock before deleting the products
+        // First, restore the product stock before deletion
         restoreProductStock($conn, $id);
 
-        // Delete the products linked to the voedselpakket
+        // Then delete the products linked to the voedselpakket
         $sql = "DELETE FROM producten_has_voedselpakketen WHERE Voedselpakketen_idVoedselpakketen = ?";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
@@ -61,16 +58,19 @@ if (isset($_GET['id'])) {
         }
         $stmt->bind_param("i", $id);
         if (!$stmt->execute()) {
-            $conn->rollback(); // Rollback transaction if deletion fails
             die("Execute failed: " . $stmt->error);
         }
         return $stmt->affected_rows > 0;
     }
 
-    // Function to delete the voedselpakket
+    // Function to delete a voedselpakket
     function deleteVoedselpakket($conn, $id) {
+        // Start a transaction
+        $conn->begin_transaction();
+
         // Delete related records first and restore stock
         if (!deleteVoedselpakketProducts($conn, $id)) {
+            $conn->rollback();
             return false;
         }
 
@@ -82,20 +82,20 @@ if (isset($_GET['id'])) {
         }
         $stmt->bind_param("i", $id);
         if (!$stmt->execute()) {
-            $conn->rollback(); // Rollback transaction if voedselpakket deletion fails
+            $conn->rollback(); // Roll back transaction if deletion fails
             die("Execute failed: " . $stmt->error);
         }
 
+        // Commit the transaction if everything is successful
+        $conn->commit();
         return $stmt->affected_rows > 0;
     }
 
     // Attempt to delete the voedselpakket
     if (deleteVoedselpakket($conn, $id)) {
-        // Commit the transaction if everything is successful
-        $conn->commit();
-        echo "<script>alert('Voedselpakket succesvol verwijderd en voorraad hersteld.'); window.location.href='voedselpakket.php';</script>";
+        echo "<script>alert('Voedselpakket successfully deleted and stock restored.'); window.location.href='voedselpakket.php';</script>";
     } else {
-        echo "<script>alert('Het verwijderen van het voedselpakket is mislukt.'); window.location.href='voedselpakket.php';</script>";
+        echo "<script>alert('Failed to delete voedselpakket.'); window.location.href='voedselpakket.php';</script>";
     }
 } else {
     // Redirect back if no ID is provided

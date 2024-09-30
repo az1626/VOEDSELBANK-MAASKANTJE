@@ -104,10 +104,10 @@ $result = $stmt->get_result();
                 <td>{$row['aantal_babys']}</td>
                 <td>{$row['dieetwensen']}</td>
                 <td>
-                    <a href='edit_family.php?id={$row['idKlanten']}' class='action-link'>Edit</a>
+                    <a href='edit_family.php?id={$row['idKlanten']}' class='action-link'>Bewerken</a>
                     <form method='post' action='' style='display:inline;'>
                         <input type='hidden' name='delete_id' value='{$row['idKlanten']}'>
-                        <button type='submit' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Delete</button>
+                        <a type='submit' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Verwijder</a>
                     </form>
                 </td>
                 </tr>";

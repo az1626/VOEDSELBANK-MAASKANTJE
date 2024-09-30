@@ -340,7 +340,7 @@ $conn->close();
         $('#selectedProductId').val('');
         $('#productQuantity').val('');
         $('#productSearch').val('');
-        $('#productList').hide();
+        $('#productList').hide(); // Hide product dropdown
     }
 </script>
 </body>
