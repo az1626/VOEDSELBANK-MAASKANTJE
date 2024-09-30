@@ -231,18 +231,97 @@ $conn->close();
             <div id="selectedProductsContainer"></div>
         </div>
 
-        <label for="samenstellingsdatum">Samenstellingsdatum:</label>
-        <input type="date" id="samenstellingsdatum" name="samenstellingsdatum" required>
-
-        <label for="uitgiftedatum">Uitgiftedatum:</label>
-        <input type="date" id="uitgiftedatum" name="uitgiftedatum" required>
+        <!-- Dates -->
+        <div>
+            <label for="samenstellingsdatum">Samenstellingsdatum:</label>
+            <input type="date" name="samenstellingsdatum" required>
+            <label for="uitgiftedatum">Uitgiftedatum:</label>
+            <input type="date" name="uitgiftedatum" required>
+        </div>
 
         <button type="submit" name="add_voedselpakket">Voeg toe</button>
     </form>
 </div>
-<script src="JS/Voedselpakket.js"></script>
+
 <script>
-    const dieetwensen = <?php echo json_encode($dieetwensen); ?>;
+    function showClientList() {
+        $('#clientList').show();
+    }
+
+    function filterClients() {
+        var input = $('#clientSearch').val().toLowerCase();
+        $('#clientList .client-option').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(input) > -1);
+        });
+    }
+
+    function selectClient(id, naam) {
+        $('#selectedClientId').val(id);
+        $('#clientSearch').val(naam);
+        $('#clientList').hide();
+        displayDietPreferences(id);
+    }
+
+    function displayDietPreferences(clientId) {
+        // This should be dynamically populated based on selected client
+        var dietPreferences = <?php echo json_encode($dieetwensen); ?>;
+        var preferences = dietPreferences[clientId] || [];
+        $('#dieetwensen_display').html('<strong>Dieetwensen:</strong> ' + (preferences.length ? preferences.join(', ') : 'Geen'));
+    }
+
+    function showProductList() {
+        $('#productList').show();
+    }
+
+    function filterProducts() {
+        var input = $('#productSearch').val().toLowerCase();
+        $('#productList .product-option').filter(function() {
+            $(this).toggle($(this).data('naam').toLowerCase().indexOf(input) > -1);
+        });
+    }
+
+    function selectProduct(id, naam, voorraad, categorieId) {
+        $('#selectedProductId').val(id);
+        $('#productQuantity').attr('max', voorraad); // Set max quantity based on voorraad
+        $('#productSearch').val(naam);
+        $('#selectedCategoryId').val(categorieId);
+        $('#productList').hide();
+    }
+
+    function addProduct() {
+        const productId = $('#selectedProductId').val();
+        const productName = $('#productSearch').val();
+        const productQuantity = $('#productQuantity').val();
+        const categoryId = $('#selectedCategoryId').val();
+
+        // Ensure that a product is selected and quantity is valid
+        if (productId && productQuantity > 0) {
+            const productHtml = `
+                <div class="selected-product" data-id="${productId}">
+                    <span>${productName} (Aantal: ${productQuantity})</span>
+                    <button type="button" onclick="removeProduct(this)">Verwijder</button>
+                    <input type="hidden" name="producten[]" value="${productId}">
+                    <input type="hidden" name="quantities[]" value="${productQuantity}">
+                    <input type="hidden" name="categorie_ids[]" value="${categoryId}">
+                </div>
+            `;
+            $('#selectedProductsContainer').append(productHtml);
+            resetProductSelection();
+        } else {
+            alert('Selecteer een product en voer een geldige hoeveelheid in.');
+        }
+    }
+
+    function removeProduct(button) {
+        $(button).closest('.selected-product').remove();
+    }
+
+    function resetProductSelection() {
+        $('#selectedProductId').val('');
+        $('#productQuantity').val('');
+        $('#productSearch').val('');
+        $('#productList').hide(); // Hide product dropdown
+    }
 </script>
 </body>
 </html>
