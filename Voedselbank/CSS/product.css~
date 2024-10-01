@@ -150,8 +150,9 @@ td a:hover {
 .close:hover, .close:focus {
   color: black;
   text-decoration: none;
-  cursor: pointer;
+  cursor: pointer;  
 }
+
 
 @media (max-width: 768px) {
   .container {
