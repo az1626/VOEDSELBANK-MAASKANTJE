@@ -136,7 +136,7 @@ $result = $stmt->get_result();
                 <td>{$row['ean']}</td>
                 <td>{$row['leveranciers']}</td>
                 <td>
-                    <a href='edit_product.php?id={$row['idProducten']}'>Bewerken</a> | 
+                    <a href='edit_product.php?id={$row['idProducten']}'>Bewerken</a> 
                     <a href='?id={$row['idProducten']}' onclick='return confirm(\"Weet je zeker dat je dit product wilt verwijderen?\")'>Verwijderen</a>
                 </td>
                 </tr>";
