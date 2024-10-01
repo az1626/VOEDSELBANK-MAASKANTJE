@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 // Handle deletion if an ID is provided
 if (isset($_POST['delete_id'])) {
     $klant_id = intval($_POST['delete_id']);
-    
+
     // Controleren of er voedselpakketten aan de klant zijn gekoppeld
     $sql = "SELECT COUNT(*) AS pakket_count FROM voedselpakketen WHERE Klanten_idKlanten = ?";
     $stmt = $conn->prepare($sql);
@@ -69,7 +69,10 @@ $result = $stmt->get_result();
 
 <div class="container">
     <h1>Beheer Klanten Data</h1>
-    <a href="add_family.php" class="btn">Voeg Familie</a>
+
+    <div class="btn-container">
+        <a href="add_family.php" class="btn">Voeg klant toe</a> <!-- Improved button -->
+    </div>
 
     <?php
     if (isset($_SESSION['success'])) {
@@ -94,7 +97,7 @@ $result = $stmt->get_result();
             <th>Aantal Kinderen</th>
             <th>Aantal Babys</th>
             <th>Dieetwensen</th>
-            <th>Actions</th>
+            <th>Acties</th>
             </tr>";
 
         while($row = $result->fetch_assoc()) {
@@ -112,7 +115,7 @@ $result = $stmt->get_result();
                     <a href='edit_family.php?id={$row['idKlanten']}' class='action-link'>Bewerken</a>
                     <form method='post' action='' style='display:inline;'>
                         <input type='hidden' name='delete_id' value='{$row['idKlanten']}'>
-                        <button type='submit' class='action-link' onclick='return confirm(\"Weet je zeker dat je dit record wilt verwijderen?\");'>Verwijder</button>
+                        <button type='submit' class='btn delete-btn' onclick='return confirm(\"Weet je zeker dat je dit record wilt verwijderen?\");'>Verwijder</button> <!-- Improved button -->
                     </form>
                 </td>
                 </tr>";

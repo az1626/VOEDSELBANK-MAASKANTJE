@@ -1,0 +1,104 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #4caf50;
+  color: white;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: space-between; /* Adjusted for better spacing */
+  margin-bottom: 20px;
+}
+
+.btn-container a {
+  text-decoration: none;
+}
+
+.btn-container button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.btn-container button:hover {
+  background-color: #45a049;
+}
+
+.action-link {
+  color: #4caf50;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.action-link:hover {
+  text-decoration: underline;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .btn-container {
+    flex-direction: column; /* Stack buttons on smaller screens */
+    align-items: flex-start; /* Align buttons to the start */
+  }
+
+  .btn-container button {
+    width: 100%; /* Full width for buttons */
+    margin-bottom: 10px; /* Space between stacked buttons */
+  }
+
+  table {
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+
+  th, td {
+    padding: 8px; /* Smaller padding for table cells */
+  }
+}
