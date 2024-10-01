@@ -107,12 +107,5 @@ $user_role = $_SESSION['role'];
         <?php endif; ?>
     </div>
 </div>
-<!-- footer -->
-<footer>
-    <p>&copy; 2024 Voedselbank Maaskantje. Helpen we samen de gemeenschap!</p>
-    <p>Bezoek ons op <a href="https://www.voedselbankmaaskantje.nl">www.voedselbankmaaskantje.nl</a> voor meer informatie.</p>
-    <p>Adres: Dorpsstraat 123, Maaskantje</p>
-    <p>Telefoon: 06-12345678</p>
-</footer>
 </body>
 </html>

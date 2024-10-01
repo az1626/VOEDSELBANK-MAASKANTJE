@@ -117,14 +117,6 @@ tr:hover {
   text-decoration: none;
 }
 
-.delete-btn {
- background-color: #dc3545;
-}
-
-.delete-btn:hover {
-  background-color: #b02a37; 
-}
-
 .success-message {
   background-color: #d4edda;
   color: #155724;

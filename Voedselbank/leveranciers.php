@@ -61,15 +61,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // Handle delete request
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $sql = "DELETE FROM Leveranciers WHERE idLeveranciers = ?";
+
+    // Check if the supplier is linked to any products
+    $sql = "SELECT COUNT(*) AS product_count FROM producten_has_leveranciers WHERE Leveranciers_idLeveranciers = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
 
-    if ($stmt->execute()) {
-        header("Location: leveranciers.php?deleted=success");
-        exit;
+    // If the supplier is linked to products, show an error message
+    if ($row['product_count'] > 0) {
+        $error_message = "Je kunt deze leverancier niet verwijderen omdat deze aan producten is gekoppeld.";
     } else {
-        echo "<p>Error: " . $stmt->error . "</p>";
+        // If no associations, delete the supplier
+        $sql = "DELETE FROM Leveranciers WHERE idLeveranciers = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
+            header("Location: leveranciers.php?deleted=success");
+            exit;
+        } else {
+            $error_message = "Error: " . htmlspecialchars($stmt->error);
+        }
     }
 
     $stmt->close();
@@ -190,12 +205,9 @@ $result = $stmt->get_result();
                 <td>{$row['telefoonnummer']}</td>
                 <td>{$row['email']}</td>
                 <td>{$row['eerstevolgende_levering']}</td>
-                <td class='action-links'>
-                    <button class='editBtn btn' data-id='{$row['idLeveranciers']}' data-naam='{$row['naam']}' data-adres='{$row['adres']}' data-contactpersoon='{$row['contactpersoon']}' data-telefoonnummer='{$row['telefoonnummer']}' data-email='{$row['email']}' data-eerstevolgende_levering='{$row['eerstevolgende_levering']}'>Wijzig</button>
-                    <form action='leveranciers.php' method='GET' style='display:inline;' onsubmit='return confirm(\"Weet je zeker dat je deze leverancier wilt verwijderen?\");'>
-                        <input type='hidden' name='delete' value='{$row['idLeveranciers']}'>
-                        <button type='submit' class='btn delete-btn'>Verwijder</button>
-                    </form>
+                <td>
+                    <button class='edit-btn' data-id='{$row['idLeveranciers']}' data-naam='{$row['naam']}' data-adres='{$row['adres']}' data-contactpersoon='{$row['contactpersoon']}' data-telefoonnummer='{$row['telefoonnummer']}' data-email='{$row['email']}' data-eerstevolgende_levering='{$row['eerstevolgende_levering']}'>Bewerken</button>
+                    <a href='leveranciers.php?delete={$row['idLeveranciers']}' class='delete'>Verwijderen</a>
                 </td>
             </tr>";
         }
@@ -209,6 +221,40 @@ $result = $stmt->get_result();
     ?>
 </div>
 
-<script src="JS/leveranciers.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Open Add Modal
+    document.getElementById("openAddModalBtn").onclick = function () {
+        document.getElementById("addModal").style.display = "block";
+    };
+
+    // Close Add Modal
+    document.getElementById("closeAddModal").onclick = function () {
+        document.getElementById("addModal").style.display = "none";
+    };
+
+    // Close Edit Modal
+    document.getElementById("closeEditModal").onclick = function () {
+        document.getElementById("editModal").style.display = "none";
+    };
+
+    // Handle Edit Button Click
+    const editButtons = document.querySelectorAll(".edit-btn");
+    editButtons.forEach((button) => {
+        button.onclick = function () {
+            document.getElementById("editId").value = this.getAttribute("data-id");
+            document.getElementById("editNaam").value = this.getAttribute("data-naam");
+            document.getElementById("editAdres").value = this.getAttribute("data-adres");
+            document.getElementById("editContactpersoon").value = this.getAttribute("data-contactpersoon");
+            document.getElementById("editTelefoonnummer").value = this.getAttribute("data-telefoonnummer");
+            document.getElementById("editEmail").value = this.getAttribute("data-email");
+            document.getElementById("editEerstevolgende_levering").value = this.getAttribute("data-eerstevolgende_levering");
+
+            document.getElementById("editModal").style.display = "block"; // Show the edit modal
+        };
+    });
+});
+</script>
+
 </body>
 </html>
