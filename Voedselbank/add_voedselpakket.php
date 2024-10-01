@@ -309,13 +309,23 @@ $conn->close();
     }
 
     function addProduct() {
-        const productId = $('#selectedProductId').val();
-        const productName = $('#productSearch').val();
-        const productQuantity = $('#productQuantity').val();
-        const categoryId = $('#selectedCategoryId').val();
+    const productId = $('#selectedProductId').val();
+    const productName = $('#productSearch').val();
+    const productQuantity = $('#productQuantity').val();
+    const categoryId = $('#selectedCategoryId').val();
 
-        // Ensure that a product is selected and quantity is valid
-        if (productId && productQuantity > 0) {
+    // Ensure that a product is selected and quantity is valid
+    if (productId && productQuantity > 0) {
+        const existingProduct = $(`.selected-product[data-id='${productId}']`);
+        
+        if (existingProduct.length > 0) {
+            // If product already exists, update its quantity
+            const currentQuantity = parseInt(existingProduct.find('input[name="quantities[]"]').val()) || 0;
+            const newQuantity = currentQuantity + parseInt(productQuantity);
+            existingProduct.find('span').text(`${productName} (Aantal: ${newQuantity})`);
+            existingProduct.find('input[name="quantities[]"]').val(newQuantity);
+        } else {
+            // Otherwise, create a new entry
             const productHtml = `
                 <div class="selected-product" data-id="${productId}">
                     <span>${productName} (Aantal: ${productQuantity})</span>
@@ -326,11 +336,13 @@ $conn->close();
                 </div>
             `;
             $('#selectedProductsContainer').append(productHtml);
-            resetProductSelection();
-        } else {
-            alert('Selecteer een product en voer een geldige hoeveelheid in.');
         }
+        resetProductSelection();
+    } else {
+        alert('Selecteer een product en voer een geldige hoeveelheid in.');
     }
+}
+
 
     function removeProduct(button) {
         $(button).closest('.selected-product').remove();
