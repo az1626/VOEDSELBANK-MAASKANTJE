@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->close();
 
         if ($count > 0) {
-            $error_message = "Error: This dietary wish already exists!";
+            $error_message = "Deze dieetwens bestaal al!";
         } else {
             // Prepare the SQL statement
             $sql = "INSERT INTO dieetwensen (naam) VALUES (?)";
