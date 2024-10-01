@@ -29,18 +29,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Add new dietary wish
         $naam = $_POST['naam'];
 
-        // Prepare the SQL statement
-        $sql = "INSERT INTO dieetwensen (naam) VALUES (?)";
+        // Check for duplicate dietary wish
+        $sql = "SELECT COUNT(*) FROM dieetwensen WHERE naam = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $naam);
-
-        // Execute the statement and handle success/error
-        if ($stmt->execute()) {
-            $success_message = "New dietary wish added successfully!";
-        } else {
-            $error_message = "Error: " . $stmt->error;
-        }
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
         $stmt->close();
+
+        if ($count > 0) {
+            $error_message = "Error: This dietary wish already exists!";
+        } else {
+            // Prepare the SQL statement
+            $sql = "INSERT INTO dieetwensen (naam) VALUES (?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $naam);
+
+            // Execute the statement and handle success/error
+            if ($stmt->execute()) {
+                $success_message = "New dietary wish added successfully!";
+            } else {
+                $error_message = "Error: " . $stmt->error;
+            }
+            $stmt->close();
+        }
     }
 }
 
@@ -146,14 +159,12 @@ $conn->close();
                     <tr>
                         <td><?php echo htmlspecialchars($row['naam']); ?></td>
                         <td>
-                        
-                        <?php if ($_SESSION['role'] == 1): ?>
-                      <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Wijzig</button>
-                        <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this entry?');">Verwijder</a>
-                      <?php else: ?>
-                      <span>Alleen bekijken</span>
-                     <?php endif; ?>
-</td>
+                            <?php if ($_SESSION['role'] == 1): ?>
+                                <button class="edit-btn" data-id="<?php echo htmlspecialchars($row['idDieetwensen']); ?>" data-name="<?php echo htmlspecialchars($row['naam']); ?>">Wijzig</button>
+                                <a href="?delete_id=<?php echo urlencode($row['idDieetwensen']); ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this entry?');">Verwijder</a>
+                            <?php else: ?>
+                                <span>Alleen bekijken</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endwhile; ?>
