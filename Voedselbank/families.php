@@ -11,30 +11,35 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 // Handle deletion if an ID is provided
 if (isset($_POST['delete_id'])) {
     $klant_id = intval($_POST['delete_id']);
-
-    // First, delete related voedselpakketen records
-    $sql = "DELETE FROM voedselpakketen WHERE Klanten_idKlanten = ?";
+    
+    // Controleren of er voedselpakketten aan de klant zijn gekoppeld
+    $sql = "SELECT COUNT(*) AS pakket_count FROM voedselpakketen WHERE Klanten_idKlanten = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $klant_id);
     $stmt->execute();
-    $stmt->close();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
 
-    // Then, delete related dieetwensen records (if needed)
-    $sql = "DELETE FROM Klanten_has_Dieetwensen WHERE Klanten_idKlanten = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $klant_id);
-    $stmt->execute();
-    $stmt->close();
-
-    // Finally, delete the klant record
-    $sql = "DELETE FROM Klanten WHERE idKlanten = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $klant_id);
-
-    if ($stmt->execute()) {
-        $_SESSION['success'] = "Family deleted successfully!";
+    if ($row['pakket_count'] > 0) {
+        $_SESSION['error'] = "Je kan geen klanten verwijderen die al een voedselpakket hebben.";
     } else {
-        $_SESSION['error'] = "Error: " . htmlspecialchars($stmt->error);
+        // Verwijder de gekoppelde dieetwensen van de klant
+        $sql = "DELETE FROM Klanten_has_Dieetwensen WHERE Klanten_idKlanten = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $klant_id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Verwijder de klant zelf
+        $sql = "DELETE FROM Klanten WHERE idKlanten = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $klant_id);
+
+        if ($stmt->execute()) {
+            $_SESSION['success'] = "Klant succesvol verwijderd!";
+        } else {
+            $_SESSION['error'] = "Error: " . htmlspecialchars($stmt->error);
+        }
     }
 
     $stmt->close();
@@ -107,7 +112,7 @@ $result = $stmt->get_result();
                     <a href='edit_family.php?id={$row['idKlanten']}' class='action-link'>Bewerken</a>
                     <form method='post' action='' style='display:inline;'>
                         <input type='hidden' name='delete_id' value='{$row['idKlanten']}'>
-                        <a type='submit' class='action-link' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Verwijder</a>
+                        <button type='submit' class='action-link' onclick='return confirm(\"Weet je zeker dat je dit record wilt verwijderen?\");'>Verwijder</button>
                     </form>
                 </td>
                 </tr>";

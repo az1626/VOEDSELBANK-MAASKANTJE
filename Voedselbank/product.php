@@ -10,14 +10,29 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] != 1 && $_SESSION['role']
 
 // Check if a product ID is provided in the URL for deletion
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']); // Ensure the ID is treated as an integer to prevent SQL injection
+    $id = intval($_GET['id']); // Zorg ervoor dat de ID een integer is om SQL-injectie te voorkomen
 
-    // Prepare the SQL statement to delete the product
+    // Controleer of het product is gekoppeld aan een voedselpakket
+    $sql = "SELECT COUNT(*) AS pakket_count FROM producten_has_voedselpakketen WHERE Producten_idProducten = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Als het product aan voedselpakketen is gekoppeld, geef een foutmelding
+    if ($row['pakket_count'] > 0) {
+        $_SESSION['error'] = "Je kunt geen producten verwijderen die al aan voedselpakketten zijn gekoppeld.";
+        header("Location: product.php");
+        exit;
+    }
+
+    // Anders, verwijder het product
     $sql = "DELETE FROM Producten WHERE idProducten = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
-    // Execute the statement and handle the result
+    // Voer de verwijdering uit en behandel het resultaat
     if ($stmt->execute()) {
         $_SESSION['success'] = "Product succesvol verwijderd!";
         header("Location: product.php");
@@ -26,7 +41,7 @@ if (isset($_GET['id'])) {
         $_SESSION['error'] = "Fout: " . htmlspecialchars($stmt->error);
     }
 
-    // Close the statement
+    // Sluit de statement
     $stmt->close();
 }
 
@@ -51,13 +66,14 @@ $sql = "SELECT p.idProducten, p.naam, p.aantal, p.ean, c.naam AS categorie,
 $stmt = $conn->prepare($sql);
 
 if ($stmt === false) {
-    die('Prepare failed: ' . htmlspecialchars($conn->error));
+    die('Fout bij het voorbereiden van de query: ' . htmlspecialchars($conn->error));
 }
 
 $search_param = "%" . $search . "%";
 $stmt->bind_param("ss", $search_param, $search_param);
 $stmt->execute();
 $result = $stmt->get_result();
+
 ?>
 
 <!DOCTYPE html>
