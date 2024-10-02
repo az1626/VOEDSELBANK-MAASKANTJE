@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
     $ean_nummer = $_POST['ean_nummer'];
 
     // Update the product details in the database
-    $sql = "UPDATE Producten SET naam = ?, categorie_id = ?, aantal = ?, ean = ? WHERE idProducten = ?";
+    $sql = "UPDATE Producten SET naam = ?, Categorieen_idCategorieen = ?, aantal = ?, ean = ? WHERE idProducten = ?";
     $stmt = $conn->prepare($sql);
     
     if ($stmt === false) {
