@@ -66,12 +66,6 @@ $user_role = $_SESSION['role'];
             </div>
         <?php elseif ($user_role == 2): ?> <!-- Medewerker -->
             <div class="dashboard-item">
-                <i class="fas fa-shopping-basket"></i>
-                <h2>Voedselpakketten</h2>
-                <p>Stel voedselpakketten samen</p>
-                <a href="voedselpakket.php">Ga naar Pakketten</a>
-            </div>
-            <div class="dashboard-item">
                 <i class="fas fa-box-open"></i>
                 <h2>Beheer Voorraad</h2>
                 <p>Beheer de voorraad van producten</p>
@@ -79,9 +73,9 @@ $user_role = $_SESSION['role'];
             </div>
             <div class="dashboard-item">
                 <i class="fas fa-users"></i>
-                <h2>Beheer Gezinnen</h2>
-                <p>Beheer en organiseer gezinsinformatie</p>
-                <a href="families.php">Ga naar Gezinnen</a>
+                <h2>Beheer Leveranciers</h2>
+                <p>Beheer en organiseer Leveranciers</p>
+                <a href="leveranciers.php">Ga naar Leveranciers</a>
             </div>
             <div class="dashboard-item">
                 <i class="fas fa-plus-circle"></i>
